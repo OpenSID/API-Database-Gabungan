@@ -27,14 +27,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:openkab'])->group(function () {
+Route::middleware([])->group(function () {
     // Dasbor
     Route::prefix('dasbor')->group(function () {
         Route::get('/', DasborController::class);
     });
 
     // Wilayah
-    Route::prefix('wilayah')->middleware(['can:penduduk-read'])->group(function () {
+    Route::prefix('wilayah')->middleware([])->group(function () {
         Route::get('desa', [WilayahController::class, 'desa']);
         Route::get('dusun', [WilayahController::class, 'dusun']);
         Route::get('rw', [WilayahController::class, 'rw']);
@@ -42,7 +42,7 @@ Route::middleware(['auth:openkab'])->group(function () {
         Route::get('penduduk', [WilayahController::class, 'penduduk']);
     });
 
-    Route::prefix('penduduk')->middleware(['can:penduduk-read'])->group(function () {
+    Route::prefix('penduduk')->middleware([])->group(function () {
         Route::get('/', [PendudukController::class, 'index']);
 
         // Referensi
@@ -58,7 +58,7 @@ Route::middleware(['auth:openkab'])->group(function () {
     });
 
     // Dokumen
-    Route::prefix('dokumen')->middleware(['can:penduduk-read'])->group(function () {
+    Route::prefix('dokumen')->middleware([])->group(function () {
         Route::get('/', DokumenController::class);
     });
 
