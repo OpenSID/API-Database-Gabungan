@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'openkab' => [
+            'driver' => 'openkab',
+            'provider' => 'users',
+        ],
     ],
 
     /*

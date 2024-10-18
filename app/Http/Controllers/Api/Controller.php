@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use App\Http\Controllers\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, ValidatesRequests;
-
     protected function fractal(
         $data,
         null|callable|\League\Fractal\TransformerAbstract $transformer,
@@ -19,6 +15,7 @@ class Controller extends BaseController
             $data,
             $transformer,
             \League\Fractal\Serializer\JsonApiSerializer::class
-        )->withResourceName($resourceName);
+        )
+            ->withResourceName($resourceName);
     }
 }

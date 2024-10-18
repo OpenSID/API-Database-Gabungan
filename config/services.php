@@ -31,4 +31,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'openkab' => [
+        'base_url' => env('OPENKAB_BASE_URL'),
+    ],
+
 ];
