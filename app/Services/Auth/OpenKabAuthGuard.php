@@ -39,8 +39,8 @@ class OpenKabAuthGuard implements Guard
             
             if ($response->successful()) {
                 // Set the user to the response (which should be a user object/array)
-                $this->user = $response->json('user'); // Cast response to object if necessary
-                $this->user->abilities = $response->json('abilities');
+                $this->user = (object) $response->json('user'); // Cast response to object if necessary
+                $this->user->abilities = (array) $response->json('abilities');
             }
         }
 

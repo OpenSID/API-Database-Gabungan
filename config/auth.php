@@ -42,7 +42,6 @@ return [
         ],
         'openkab' => [
             'driver' => 'openkab',
-            'provider' => 'users',
         ],
     ],
 

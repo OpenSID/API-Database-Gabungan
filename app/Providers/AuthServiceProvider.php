@@ -32,10 +32,9 @@ class AuthServiceProvider extends ServiceProvider
             return new OpenKabAuthGuard($app->make('request'));
         });
 
-        // You may want to bind the Gate to a closure that checks abilities dynamically
         Gate::before(function ($user, $ability) {
             if ($user && isset($user->abilities)) {
-                return in_array($ability, $user->abilities);
+                return in_array('*', $user->abilities) || array_key_exists($ability, array_flip($user->abilities));
             }
         });
     }
