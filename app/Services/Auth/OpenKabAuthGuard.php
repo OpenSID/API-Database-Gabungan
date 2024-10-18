@@ -34,6 +34,7 @@ class OpenKabAuthGuard implements Guard
         if ($token) {
             // Validate token with Laravel A
             $response = Http::withHeaders([
+                'Accept' => 'application/json',
                 'Authorization' => "Bearer {$token}",
             ])->get("{$this->baseUrl}/api/v1/validate-token");
             
