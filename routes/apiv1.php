@@ -1,20 +1,20 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DasborController;
 use App\Http\Controllers\Api\ArtikelController;
 use App\Http\Controllers\Api\BantuanController;
-use App\Http\Controllers\Api\BantuanKabupatenController;
-use App\Http\Controllers\Api\DasborController;
 use App\Http\Controllers\Api\DokumenController;
-use App\Http\Controllers\Api\KategoriController;
-use App\Http\Controllers\Api\KategoriDesaController;
-use App\Http\Controllers\Api\KeluargaController;
-use App\Http\Controllers\Api\PendudukController;
-use App\Http\Controllers\Api\PengaturanController;
-use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\SummaryController;
 use App\Http\Controllers\Api\WebsiteController;
 use App\Http\Controllers\Api\WilayahController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\KategoriController;
+use App\Http\Controllers\Api\KeluargaController;
+use App\Http\Controllers\Api\PendudukController;
+use App\Http\Controllers\Api\StatistikController;
+use App\Http\Controllers\Api\PengaturanController;
+use App\Http\Controllers\Api\KategoriDesaController;
+use App\Http\Controllers\Api\BantuanKabupatenController;
 
 /*
 |--------------------------------------------------------------------------

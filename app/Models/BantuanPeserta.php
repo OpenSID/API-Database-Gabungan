@@ -21,22 +21,22 @@ class BantuanPeserta extends \Illuminate\Database\Eloquent\Model
 
     public function getNikAttribute()
     {
-        return $this->penduduk->nik;
+        return $this->penduduk?->nik;
     }
 
     public function getNoKKAttribute()
     {
-        return $this->penduduk->keluarga->no_kk;
+        return $this->penduduk?->keluarga?->no_kk;
     }
 
     public function getJenisKelaminAttribute()
     {
-        return $this->penduduk->jenisKelamin;
+        return $this->penduduk?->jenisKelamin;
     }
 
     public function getKeteranganAttribute()
     {
-        return $this->penduduk->pendudukStatusDasar;
+        return $this->penduduk?->pendudukStatusDasar;
     }
 
     /**

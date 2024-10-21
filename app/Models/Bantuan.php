@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Traits\FilterWilayahTrait;
+use App\Models\Traits\QueryTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class Bantuan extends Model
 {
     use FilterWilayahTrait;
+    use QueryTrait;
 
     public const SASARAN_PENDUDUK = 1;
 
@@ -90,7 +92,7 @@ class Bantuan extends Model
 
     private function getPeserta($id, $sasaran)
     {
-        $query = $this->dbConnection->table('program_peserta')
+        $query = BantuanPeserta::query()
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
             ->where('program_peserta.program_id', $id);

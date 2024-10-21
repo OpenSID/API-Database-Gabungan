@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Traits\FilterWilayahTrait;
+use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Relations\hasOne;
 
 class Rtm extends \Illuminate\Database\Eloquent\Model
 {
     use FilterWilayahTrait;
+    use QueryTrait;
 
     public const KATEGORI_STATISTIK = [
         'bdt' => 'BDT',
