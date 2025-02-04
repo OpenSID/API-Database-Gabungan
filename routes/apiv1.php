@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
+use App\Http\Controllers\Api\KetenagakerjaanController;
+use App\Http\Controllers\Api\PendidikanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +34,10 @@ Route::middleware(['auth:openkab'])->group(function () {
     Route::prefix('dasbor')->group(function () {
         Route::get('/', DasborController::class);
     });
+
+    // API Data Presisi
+    Route::get('/ketenagakerjaan', KetenagakerjaanController::class);
+    Route::get('/pendidikan', PendidikanController::class);
 
     // Wilayah
     Route::prefix('wilayah')->middleware([])->group(function () {
