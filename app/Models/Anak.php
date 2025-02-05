@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Anak extends Model
+
+class Anak extends BaseModel
 {
     public const NORMAL = 1;
 

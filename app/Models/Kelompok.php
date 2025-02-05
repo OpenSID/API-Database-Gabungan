@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Kelompok extends \Illuminate\Database\Eloquent\Model
+class Kelompok extends BaseModel
 {
     /**
      * The table associated with the model.

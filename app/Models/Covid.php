@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Traits\ConfigIdTrait;
-use Illuminate\Database\Eloquent\Model;
 
-class Covid extends Model
+
+class Covid extends BaseModel
 {
     use ConfigIdTrait;
 
