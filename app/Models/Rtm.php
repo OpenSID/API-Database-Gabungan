@@ -6,7 +6,7 @@ use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Relations\hasOne;
 
-class Rtm extends \Illuminate\Database\Eloquent\Model
+class Rtm extends BaseModel
 {
     use FilterWilayahTrait;
     use QueryTrait;
@@ -30,6 +30,16 @@ class Rtm extends \Illuminate\Database\Eloquent\Model
         return $this->hasOne(Penduduk::class, 'id', 'nik_kepala');
     }
 
+    /**
+     * Define a one-to-many relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function anggota()
+    {
+        return $this->hasMany(Penduduk::class, 'id_rtm', 'no_kk')->status();
+    }
+    
     /**
      * Scope query untuk bdt.
      *

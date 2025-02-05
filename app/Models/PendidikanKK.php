@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class PendidikanKK extends \Illuminate\Database\Eloquent\Model
+class PendidikanKK extends BaseModel
 {
     /** {@inheritdoc} */
     protected $table = 'tweb_penduduk_pendidikan_kk';

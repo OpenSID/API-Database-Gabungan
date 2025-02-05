@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DasborController;
 use App\Http\Controllers\Api\ArtikelController;
+use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\BantuanController;
 use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\SummaryController;
@@ -15,6 +16,11 @@ use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
+use App\Http\Controllers\Api\DDKController;
+use App\Http\Controllers\Api\DTKSController;
+use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\PrasaranaSaranaController;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +32,31 @@ use App\Http\Controllers\Api\BantuanKabupatenController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::post('/signin', [AuthController::class, 'login']);
 
-Route::middleware(['auth:openkab'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('validate-token', function (Request $request) {
+        $user = $request->user();
+    
+        // Check if the user has an authenticated token
+        if ($user && $user->currentAccessToken()) {
+            // Get the current access token
+            $token = $user->currentAccessToken();
+    
+            // Fetch the abilities associated with the token
+            $abilities = $token->abilities;
+    
+            return response()->json([
+                'user' => $user,
+                'abilities' => $abilities,
+            ]);
+        }
+    
+        return response()->json([
+            'message' => 'No active token found.',
+        ], 401);
+    });
+
     // Dasbor
     Route::prefix('dasbor')->group(function () {
         Route::get('/', DasborController::class);
@@ -130,6 +159,23 @@ Route::middleware(['auth:openkab'])->group(function () {
             Route::get('/', 'index')->name('api.pengaturan_aplikasi');
             Route::post('/update', 'update');
         });
+    
+     // Prodeskel
+    Route::prefix('prodeskel')->group(function () {
+        Route::prefix('ddk')->group(function () {
+            Route::get('pangan', [DDKController::class, 'pangan']);
+        });
+        Route::prefix('potensi')->group(function () {
+            Route::get('prasarana-sarana', [PrasaranaSaranaController::class, 'prasaranaSarana']);
+            Route::get('kelembagaan', [KelembagaanController::class, 'kelembagaan']);
+            Route::get('kelembagaan/penduduk', [KelembagaanController::class, 'kelembagaan_penduduk']);
+        });
+    });
+
+    // Satu Data
+    Route::prefix('satu-data')->group(function () {
+        Route::get('dtks', DTKSController::class);
+    });
 });
 
 // Statistik

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class KelasSosial extends \Illuminate\Database\Eloquent\Model
+class KelasSosial extends BaseModel
 {
     /**
      * The table associated with the model.

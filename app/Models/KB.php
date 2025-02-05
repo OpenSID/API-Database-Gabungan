@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class KB extends \Illuminate\Database\Eloquent\Model
+class KB extends BaseModel
 {
     /** {@inheritdoc} */
     protected $table = 'tweb_cara_kb';

@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Models\Traits\FilterWilayahTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Keluarga extends \Illuminate\Database\Eloquent\Model
+class Keluarga extends BaseModel
 {
     use FilterWilayahTrait;
 

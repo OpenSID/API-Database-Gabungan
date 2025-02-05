@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class SasaranPaud extends \Illuminate\Database\Eloquent\Model
+class SasaranPaud extends BaseModel
 {
     /**
      * The table associated with the model.

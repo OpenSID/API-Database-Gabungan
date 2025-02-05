@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class KIA extends \Illuminate\Database\Eloquent\Model
+class KIA extends BaseModel
 {
     /**
      * The table associated with the model.

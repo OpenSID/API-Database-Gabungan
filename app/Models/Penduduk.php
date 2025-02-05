@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Enums\PenolongKelahiranEnum $penolong_kelahiran
  * @property \Carbon\Carbon              $tanggallahir
  */
-class Penduduk extends \Illuminate\Database\Eloquent\Model
+class Penduduk extends BaseModel
 {
     use FilterWilayahTrait;
     use HasFactory;

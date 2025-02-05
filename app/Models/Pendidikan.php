@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Pendidikan extends \Illuminate\Database\Eloquent\Model
+class Pendidikan extends BaseModel
 {
     /**
      * The table associated with the model.
