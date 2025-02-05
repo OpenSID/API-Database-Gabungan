@@ -59,6 +59,101 @@ class PendudukRepository
             ->jsonPaginate();
     }
 
+    public function listPendudukKesehatan()
+    {
+        return QueryBuilder::for(Penduduk::filterWilayah()->select([
+            'id',
+            'nik',
+            'nama',
+            'golongan_darah_id',
+            'cacat_id',
+            'sakit_menahun_id',
+            'cara_kb_id',
+            'hamil',
+            'id_asuransi',
+            'no_asuransi',
+        ]))
+        ->allowedFields('*')  // Tentukan field yang diizinkan untuk dipilih
+        ->allowedFilters([  // Tentukan filter yang diizinkan
+            AllowedFilter::exact('id'),
+            AllowedFilter::exact('sex'),
+            AllowedFilter::exact('status'),
+            AllowedFilter::exact('status_dasar'),
+            AllowedFilter::exact('keluarga.no_kk'),
+            AllowedFilter::exact('clusterDesa.dusun'),
+            AllowedFilter::exact('clusterDesa.rw'),
+            AllowedFilter::exact('clusterDesa.rt'),
+            AllowedFilter::callback('search', function ($query, $value) {
+                $query->where(function ($query) use ($value) {
+                    $query->where('nama', 'like', "%{$value}%")
+                        ->orWhere('nik', 'like', "%{$value}%")
+                        ->orWhere('tag_id_card', 'like', "%{$value}%");
+                });
+            }),
+        ])
+        ->allowedSorts([  // Tentukan kolom yang dapat digunakan untuk sorting
+            'nik',
+            'nama',
+            'umur',
+            'created_at',
+        ])
+        ->jsonPaginate();
+    }
+
+    public function listPendudukJaminanSosial()
+    {
+        return QueryBuilder::for(Penduduk::withRef()->filterWilayah()->select([
+            'id',
+            'nik',
+            'nama',
+            'id_asuransi',
+            'no_asuransi',
+            'bpjs_ketenagakerjaan',
+            'cacat_id',
+        ]))
+        ->allowedFields('*')  // Tentukan field yang diizinkan untuk dipilih
+        ->allowedFilters([  // Tentukan filter yang diizinkan
+            AllowedFilter::exact('id'),
+            AllowedFilter::callback('search', function ($query, $value) {
+                $query->where(function ($query) use ($value) {
+                    $query->where('nama', 'like', "%{$value}%")
+                        ->orWhere('nik', 'like', "%{$value}%");
+                });
+            }),
+        ])
+        ->allowedSorts([  // Tentukan kolom yang dapat digunakan untuk sorting
+            'nik',
+            'nama',
+        ])
+        ->jsonPaginate();
+    }
+
+    public function listPendudukProdeskel()
+    {
+        return QueryBuilder::for(Penduduk::with('prodeskelLembagaAdat')->withRef()->filterWilayah()->select([
+            'id',
+            'nik',
+            'nama',
+            'agama_id',
+            'suku',
+            'config_id', // Pastikan config_id termasuk dalam query
+        ]))
+            ->allowedFields([
+                'id', 'nik', 'nama', 'agama_id', 'suku', 'prodeskelLembagaAdat.id', 'prodeskelLembagaAdat.kategori', 'prodeskelLembagaAdat.data',
+            ])
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($query) use ($value) {
+                        $query->where('nama', 'like', "%{$value}%")
+                            ->orWhere('nik', 'like', "%{$value}%");
+                    });
+                }),
+            ])
+            ->allowedSorts(['nik', 'nama'])
+            ->jsonPaginate();
+    }
+
     public function listStatistik($kategori): array|object
     {
         return collect(match ($kategori) {

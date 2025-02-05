@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
+use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\KelembagaanController;
@@ -175,6 +176,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Satu Data
     Route::prefix('satu-data')->group(function () {
         Route::get('dtks', DTKSController::class);
+    });
+
+    Route::prefix('data')->group(function () {
+        Route::controller(DataController::class)->group(function () {
+            Route::get('/kesehatan', 'kesehatan');
+            Route::get('/jaminan-sosial', 'jaminanSosial');
+            Route::get('/penduduk-potensi-kelembagaan', 'pendudukPotensiKelembagaan');
+        });        
     });
 });
 

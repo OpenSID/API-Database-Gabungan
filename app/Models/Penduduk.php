@@ -522,4 +522,16 @@ class Penduduk extends BaseModel
             'logPerubahanPenduduk',
         ]);
     }
+
+    public function prodeskelLembagaAdat()
+    {
+        return $this->hasMany(ProdeskelPotensi::class, 'config_id', 'config_id')
+                    ->where('kategori', 'lembaga-adat');
+    }
+
+    public function prodeskelPrasaranaPeribadatan()
+    {
+        return $this->hasMany(ProdeskelPotensi::class, 'config_id', 'config_id')
+                    ->where('kategori', 'prasarana-peribadatan');
+    }
 }
