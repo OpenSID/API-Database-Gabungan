@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DDKController;
+use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
@@ -184,6 +185,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/jaminan-sosial', 'jaminanSosial');
             Route::get('/penduduk-potensi-kelembagaan', 'pendudukPotensiKelembagaan');
         });        
+    });
+
+    Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+        Route::get('desa', [DesaController::class, 'index']);
+        Route::prefix('opendk')->group(function () {
+            Route::get('desa/{kec}', [DesaController::class, 'all']);
+        });
+        
     });
 });
 
