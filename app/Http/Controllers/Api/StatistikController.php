@@ -199,9 +199,9 @@ class StatistikController extends Controller
                ->join('config', 'config.id', '=', 'program_peserta.config_id', 'left')
                ->join('tweb_penduduk', 'tweb_penduduk.id', '=', 'program_peserta.kartu_id_pend', 'left');
             if ($this->kategori == 'penduduk') {
-                $data = $data->where('program.sasaran', '=', 1);
+                $data = $data->where('program.sasaran', '=', Bantuan::SASARAN_PENDUDUK);
             } elseif ($this->kategori == 'keluarga') {
-                $data = $data->where('program.sasaran', '=', 2);
+                $data = $data->where('program.sasaran', '=', Bantuan::SASARAN_KELUARGA);
             } else {
                 $data = $data->where('program.id', '=', $this->kategori);
             }
