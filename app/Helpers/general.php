@@ -16,6 +16,65 @@ if (! function_exists('openkab_versi')) {
     }
 }
 
+if (! function_exists('convertMenu')) {
+    /**
+     * Helper untuk menentukan convert menu agar sesuai dengan editor.
+     *
+     * @param mixed $value
+     * @param mixed $checked
+     *
+     * @return string
+     */
+    function convertMenu($menu, $parentId = null, &$idCounter = 1)
+    {
+        $convertedMenu = [
+            'id' => $idCounter++,
+            'parent_id' => $parentId,
+            'text' => $menu['text'] ?? 'text',
+            'href' => $menu['url'] ?? null,
+            'icon' => $menu['icon'],
+            'permission' => $menu['permission'],
+        ];
+
+        if (isset($menu['submenu']) && is_array($menu['submenu'])) {
+            $convertedMenu['children'] = [];
+            foreach ($menu['submenu'] as $submenu) {
+                $convertedMenu['children'][] = convertMenu($submenu, $convertedMenu['id'], $idCounter);
+            }
+        }
+
+        return $convertedMenu;
+    }
+}
+
+if (! function_exists('convertDatabaseMenu')) {
+    /**
+     * Helper untuk menentukan convert menu untuk disimpan di database.
+     *
+     * @return array
+     */
+    function convertDatabaseMenu($menu, $parentId = null, &$idCounter = 1)
+    {
+        $convertedMenu = [
+            'id' => $idCounter++,
+            'parent_id' => $parentId,
+            'text' => $menu['text'] ?? 'text',
+            'url' => $menu['href'] ?? null,
+            'icon' => $menu['icon'] ?? null,
+            'permission' => $menu['permission'] ?? null,
+        ];
+
+        if (isset($menu['children']) && is_array($menu['children'])) {
+            $convertedMenu['submenu'] = [];
+            foreach ($menu['children'] as $submenu) {
+                $convertedMenu['submenu'][] = convertDatabaseMenu($submenu, $convertedMenu['id'], $idCounter);
+            }
+        }
+
+        return $convertedMenu;
+    }
+}
+
 if (! function_exists('persen')) {
     /**
      * Menampilkan nilai persentase.

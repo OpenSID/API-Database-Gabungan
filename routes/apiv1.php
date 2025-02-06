@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
+use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\TeamController;
 use Illuminate\Http\Request;
 
 /*
@@ -162,9 +164,28 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Pengaturan Aplikasi
     Route::controller(PengaturanController::class)
         ->prefix('pengaturan')->group(function () {
-            Route::get('/', 'index')->name('api.pengaturan_aplikasi');
+            Route::get('/', 'index');
             Route::post('/update', 'update');
+            
+            Route::controller(TeamController::class)
+                ->prefix('group')->group(function () {
+                    Route::get('/', 'index');
+                    Route::get('/show/{id}', 'show');
+                    Route::post('/delete', 'delete');
+                    Route::post('/', 'store');
+                    Route::put('/{id}', 'update');
+                    Route::get('/menu', 'menu');
+                    Route::get('/listModul/{id}', 'listModul');
+                    Route::put('/updateMenu/{id}', 'updateMenu');
+                });
+                
+            Route::controller(SettingController::class)
+                ->prefix('settings')->group(function () {
+                    Route::get('/', 'index');
+                    Route::put('/{id}', 'update');
+                });
         });
+
     
      // Prodeskel
     Route::prefix('prodeskel')->group(function () {
