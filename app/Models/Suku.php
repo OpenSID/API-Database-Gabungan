@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Suku extends Model
+
+class Suku extends BaseModel
 {
     /**
      * The table associated with the model.

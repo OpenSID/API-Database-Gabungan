@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\ConfigIdTrait;
 
-class BantuanPeserta extends \Illuminate\Database\Eloquent\Model
+class BantuanPeserta extends BaseModel
 {
     use ConfigIdTrait;
 

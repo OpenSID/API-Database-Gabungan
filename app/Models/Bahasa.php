@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class Bahasa extends Model
+
+class Bahasa extends BaseModel
 {
     /**
      * The table associated with the model.

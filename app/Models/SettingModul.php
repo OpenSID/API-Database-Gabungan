@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class SettingModul extends \Illuminate\Database\Eloquent\Model
+class SettingModul extends BaseModel
 {
     use HasFactory;
 

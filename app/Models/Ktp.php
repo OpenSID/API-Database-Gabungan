@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\ConfigIdTrait;
 
-class Ktp extends \Illuminate\Database\Eloquent\Model
+class Ktp extends BaseModel
 {
     use ConfigIdTrait;
 

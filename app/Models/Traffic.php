@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Traffic extends \Illuminate\Database\Eloquent\Model
+class Traffic extends BaseModel
 {
     /** {@inheritdoc} */
     protected $table = 'sys_traffic';

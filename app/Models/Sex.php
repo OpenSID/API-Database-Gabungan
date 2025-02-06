@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Sex extends \Illuminate\Database\Eloquent\Model
+class Sex extends BaseModel
 {
     /**
      * The table associated with the model.

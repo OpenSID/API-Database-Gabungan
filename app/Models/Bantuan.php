@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
-class Bantuan extends Model
+class Bantuan extends BaseModel
 {
     use FilterWilayahTrait;
     use QueryTrait;

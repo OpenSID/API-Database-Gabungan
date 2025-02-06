@@ -7,7 +7,7 @@ use App\Models\Traits\ConfigIdTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
-class Umur extends \Illuminate\Database\Eloquent\Model
+class Umur extends BaseModel
 {
     use ConfigIdTrait;
 

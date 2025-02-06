@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Pengaturan extends \Illuminate\Database\Eloquent\Model
+class Pengaturan extends BaseModel
 {
     public $timestamps = false;
 
