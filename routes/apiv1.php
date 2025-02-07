@@ -19,7 +19,9 @@ use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DTKSController;
+use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
 use Illuminate\Http\Request;
 
@@ -62,6 +64,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('dasbor')->group(function () {
         Route::get('/', DasborController::class);
     });
+
+    Route::get('/pariwisata', PariwisataController::class);
+    Route::get('/infrastruktur', [InfrastrukturController::class, 'data']);
 
     // Wilayah
     Route::prefix('wilayah')->middleware([])->group(function () {
