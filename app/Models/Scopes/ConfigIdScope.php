@@ -4,7 +4,7 @@ namespace App\Models\Scopes;
 
 use App\Models\Config;
 use Illuminate\Database\Eloquent\Builder;
-
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Schema;
 
