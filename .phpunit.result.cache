@@ -1,0 +1,1 @@
+{"version":1,"defects":{"Tests\\Feature\\PendidikanTest::test_get_api_pendidikan":8,"Tests\\Feature\\KetenagakerjaanTest::test_get_api_ketenagakerjaan":7},"times":{"Tests\\Feature\\KetenagakerjaanTest::test_get_api_ketenagakerjaan":1.235,"Tests\\Feature\\PendidikanTest::test_get_api_pendidikan":0.083}}

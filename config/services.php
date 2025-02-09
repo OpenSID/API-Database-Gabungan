@@ -33,6 +33,8 @@ return [
 
     'openkab' => [
         'base_url' => env('OPENKAB_BASE_URL'),
+        'email' => env('OPENKAB_EMAIL'),
+        'password' => env('OPENKAB_PASSWORD'),
     ],
 
 ];
