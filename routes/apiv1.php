@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
+use App\Http\Controllers\Api\SuplemenController;
 use Illuminate\Http\Request;
 
 /*
@@ -213,3 +214,15 @@ Route::get('data-website', WebsiteController::class);
 Route::get('data-summary', SummaryController::class);
 // Desa teraktif
 Route::get('/desa-aktif', [KategoriDesaController::class, 'index']);
+
+Route::controller(SuplemenController::class)
+    ->prefix('suplemen')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::post('/terdata/hapus', 'delete_multiple')->name('suplemen-terdata.delete-multiple');
+        Route::post('/update/{id}', 'update');
+        Route::get('/terdata/{sasaran}/{id}', 'detail');
+        Route::get('/sasaran', 'sasaran');
+        Route::get('/status', 'status');
+        Route::delete('/hapus/{id}', 'destroy')->name('suplemen.hapus');
+    });
