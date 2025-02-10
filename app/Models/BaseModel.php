@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
@@ -9,7 +10,19 @@ class BaseModel extends Model
     /** {@inheritdoc} */
     protected $connection = 'openkab';
 
+    /** {@inheritdoc} */
+    protected $dbConnection;
+
     protected $guarded = [];
+
+    /**
+     * constract.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->dbConnection = DB::connection($this->connection);
+    }
 
     /**
      * Select untuk Statistik menggunakan case.
