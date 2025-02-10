@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"Tests\\Feature\\PariwisataTest::test_get_data_pariwisata":0.141,"Tests\\Feature\\InfrastrukturTest::test_get_data_infrastruktur":0.062}}
+{"version":1,"defects":{"Tests\\Feature\\PendidikanTest::test_get_api_pendidikan":8,"Tests\\Feature\\KetenagakerjaanTest::test_get_api_ketenagakerjaan":7},"times":{"Tests\\Feature\\KetenagakerjaanTest::test_get_api_ketenagakerjaan":1.235,"Tests\\Feature\\PendidikanTest::test_get_api_pendidikan":0.083}}

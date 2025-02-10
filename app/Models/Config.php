@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Config extends BaseModel
 {
@@ -61,5 +62,13 @@ class Config extends BaseModel
     public function scopeOrderByTraffic($query)
     {
         return $query->orderByRaw('(SELECT sum(jumlah) FROM sys_traffic WHERE config_id = config.id) DESC');
+    }
+
+    /**
+     * Get the sebutanDesa associated with the Config.
+     */
+    public function sebutanDesa(): HasOne
+    {
+        return $this->hasOne(SettingAplikasi::class, 'config_id', 'id')->where('key', 'sebutan_desa');
     }
 }
