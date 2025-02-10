@@ -96,7 +96,7 @@ class StatistikControllerApiTest extends TestCase
     {                
         $kodeKabupaten = Config::inRandomOrder()->first()->kode_kabupaten;
         $url = '/api/v1/statistik-web/get-list-kecamatan/'.$kodeKabupaten.'?'.http_build_query([]);
-        $total = Config::select(['kode_kecamatan'])->distinct()->get()->count();
+        $total = Config::select(['kode_kecamatan'])->where('kode_kabupaten', $kodeKabupaten)->distinct()->get()->count();
         $response = $this->getJson($url);        
         $response->assertStatus(Response::HTTP_OK);
         $this->assertEquals($total, count($response->json() ?? []));        
