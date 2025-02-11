@@ -31,10 +31,10 @@ class SuplemenTransformer extends TransformerAbstract
                                         <i class="fas fa-trash"></i>
                                     </button>';
 
-        $edit = $suplemen->terdata_count > 0 ? '' : '<a href="'.url('suplemen/form', $suplemen->id).'" class="btn btn-warning btn-sm" title="Edit Data"><i class="fa fa-pencil"></i></a> ';
+        $edit = $suplemen->terdata_count > 0 ? '' : '<a href="'.config('services.openkab.base_url').'/suplemen/form'.'/'.$suplemen->id.'" class="btn btn-warning btn-sm" title="Edit Data"><i class="fa fa-pencil"></i></a> ';
 
         // Rincian Data
-        $aksi .= '<a href="'.url('suplemen/rincian', $suplemen->id).'" class="btn bg-purple btn-sm" title="Rincian Data"><i class="fa fa-list-ol"></i></a> ';
+        $aksi .= '<a href="'.config('services.openkab.base_url').'/suplemen/rincian'.'/'.$suplemen->id.'" class="btn bg-purple btn-sm" title="Rincian Data"><i class="fa fa-list-ol"></i></a> ';
 
         // $aksi .= '<a href="#" class="btn bg-navy btn-sm btn-import" title="Impor Data"><i class="fa fa-upload"></i></a> ';
 
