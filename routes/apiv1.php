@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
@@ -207,7 +208,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
             Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
         });
-        
+        Route::prefix('keuangan')->group(function () {
+            Route::get('apbdes', [KeuanganController::class, 'apbdes']);
+            Route::get('laporan_apbdes', [KeuanganController::class, 'laporan_apbdes']);
+        });
     });
 });
 
