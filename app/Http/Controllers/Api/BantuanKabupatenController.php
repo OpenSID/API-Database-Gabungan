@@ -16,10 +16,6 @@ class BantuanKabupatenController extends Controller
     {
     }
 
-    public function __invoke()
-    {
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -44,11 +40,13 @@ class BantuanKabupatenController extends Controller
             $data['sdate'] = Carbon::parse($data['sdate']);
             $data['edate'] = Carbon::parse($data['edate']);
             $data['status'] = $data['sdate'] < now() && $data['edate'] < now() ? 0 : 1;
-            $data['userid'] = 0;
-            Bantuan::create($data);
+            // $data['userid'] = 0;
+            
+            $bantuan = Bantuan::create($data);
 
             return response()->json([
                 'success' => true,
+                'data' => $bantuan
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             report($e);
@@ -74,7 +72,7 @@ class BantuanKabupatenController extends Controller
             $data['sdate'] = Carbon::parse($data['sdate']);
             $data['edate'] = Carbon::parse($data['edate']);
             $data['status'] = $data['sdate'] < now() && $data['edate'] < now() ? 0 : 1;
-            $data['userid'] = 0;
+            // $data['userid'] = 0;
             $bantuan = Bantuan::find((int) $id);
             $bantuan->update($data);
 
