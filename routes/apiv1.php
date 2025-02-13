@@ -108,7 +108,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
-            Route::get('/show', 'show')->name('api.keluarga.detail');
+            Route::get('/show', 'show');
         });
 
     // Statistik
