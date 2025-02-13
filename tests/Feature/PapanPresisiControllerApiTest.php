@@ -5,11 +5,19 @@ namespace Tests\Feature;
 use App\Models\Papan;
 use App\Models\User;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Schema;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class PapanPresisiControllerApiTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if(!Schema::connection('openkab')->hasTable('data_presisi_papan')) {
+            $this->markTestSkipped('Tabel data_presisi_papan belum ada');
+        }
+    }
     /**
      * A basic feature test example.
      *
