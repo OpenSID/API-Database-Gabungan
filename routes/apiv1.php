@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
 use Illuminate\Http\Request;
@@ -188,6 +189,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Satu Data
     Route::prefix('satu-data')->group(function () {
         Route::get('dtks', DTKSController::class);
+    });
+
+    Route::prefix('presisi')->group(function () {
+        Route::get('papan', PapanPresisiController::class);
     });
 
     Route::prefix('data')->group(function () {

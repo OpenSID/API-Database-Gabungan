@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BaseModel extends Model
 {
@@ -62,5 +63,15 @@ class BaseModel extends Model
     public function scopeMinMaxTahun($query, $column = self::CREATED_AT)
     {
         return $query->selectRaw("YEAR(MIN({$column})) AS tahun_awal, YEAR(MAX({$column})) AS tahun_akhir");
+    }
+
+    /**
+     * Get the desa associated with the desa.
+     *
+     * @return \Illuminate\Database\EloquenConfiglations\HasOne
+     */
+    public function desa(): HasOne
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
     }
 }
