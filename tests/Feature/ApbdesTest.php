@@ -15,19 +15,19 @@ class ApbdesTest extends TestCase
      *
      * @return void
      */
-    public function test_get_laporan_apbdes_by_kode_kecamatan()
+    public function test_get_apbdes_by_kode_kecamatan()
     {
         $token = Setting::where('key', 'opendk_api_key')->first()->value;
         $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
 
-        $total = Keuangan::whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->count();
+        $total = Keuangan::whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->get()->count();
         if (! $token) {
             $this->fail('Token not found');
         }
 
-        $url = '/api/v1/keuangan/laporan_apbdes?'.http_build_query([
+        $url = '/api/v1/keuangan/apbdes?'.http_build_query([
             'filter[kode_kecamatan]' => $kodeKecamatan,
-        ]);
+        ]);        
 
         // Kirim permintaan sync penduduk dengan header Authorization
         $response = $this->getJson($url, [

@@ -20,12 +20,12 @@ class LaporanApbdesTest extends TestCase
         $token = Setting::where('key', 'opendk_api_key')->first()->value;
         $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
 
-        $total = LaporanSinkronisasi::whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->apbdes()->count();
+        $total = LaporanSinkronisasi::whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->apbdes()->get()->count();
         if (! $token) {
             $this->fail('Token not found');
         }
 
-        $url = '/api/v1/keuangan/apbdes?'.http_build_query([
+        $url = '/api/v1/keuangan/laporan_apbdes?'.http_build_query([
             'filter[kode_kecamatan]' => $kodeKecamatan,
         ]);
 
@@ -46,9 +46,11 @@ class LaporanApbdesTest extends TestCase
                         'tipe',
                         'judul',
                         'tahun',
-                        'bulan',
+                        'semester',
                         'nama_file',
+                        'created_at_local',
                         'url_file',
+                        'kirim'
                     ],
                 ],
             ],
