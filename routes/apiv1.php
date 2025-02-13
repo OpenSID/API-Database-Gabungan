@@ -16,10 +16,15 @@ use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
+use App\Http\Controllers\Api\KetenagakerjaanController;
+use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DDKController;
+use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
+use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
 use Illuminate\Http\Request;
 
@@ -62,6 +67,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('dasbor')->group(function () {
         Route::get('/', DasborController::class);
     });
+
+    Route::get('/pariwisata', PariwisataController::class);
+    Route::get('/infrastruktur', [InfrastrukturController::class, 'data']);
+    
+    // API Data Presisi
+    Route::get('/ketenagakerjaan', KetenagakerjaanController::class);
+    Route::get('/pendidikan', PendidikanController::class);
 
     // Wilayah
     Route::prefix('wilayah')->middleware([])->group(function () {
@@ -185,6 +197,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/penduduk-potensi-kelembagaan', 'pendudukPotensiKelembagaan');
         });        
     });
+
+    Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+        Route::get('desa', [DesaController::class, 'index']);
+        Route::prefix('opendk')->group(function () {
+            Route::get('desa/{kec}', [DesaController::class, 'all']);
+        });
+        
+    });
 });
 
 // Statistik
@@ -205,6 +225,13 @@ Route::controller(StatistikController::class)
         });
         Route::get('/bantuan', 'bantuan');
         Route::get('/bantuan/tahun', [BantuanController::class, 'tahun']);
+        Route::get('/get-list-coordinate', 'getListCoordinate');
+        Route::get('/get-list-program', 'getListProgram');
+        Route::get('/get-list-tahun', 'getListTahun');
+        Route::get('/get-list-kabupaten', 'getListKabupaten');
+        Route::get('/get-list-kecamatan/{id}', 'getListKecamatan');
+        Route::get('/get-list-desa/{id}', 'getListDesa');        
+        Route::get('/get-list-penerima', 'getListPenerimaBantuan');
     });
 
 // Bantuan
