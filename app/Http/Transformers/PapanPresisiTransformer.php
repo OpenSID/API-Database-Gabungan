@@ -17,6 +17,7 @@ class PapanPresisiTransformer extends TransformerAbstract
         }
         $papan->id = $papan->id_rtm;
         $papan->makeHidden('rtm', 'uuid', 'dtks');
+        $papan->nik_kepala_rtm = $papan->rtm?->kepalaKeluarga?->nik;
         return $papan->toArray();
     }
 }
