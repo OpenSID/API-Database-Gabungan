@@ -3,43 +3,83 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Http\Response;
+use App\Models\Suplemen;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use Illuminate\Http\Response;
 
 class SuplemenTest extends TestCase
 {
-    /**
-     * Test untuk mendapatkan data suplemen.
-     */
-    public function test_get_data_suplemen(): void
+    public function setUp(): void
     {
-        // Pastikan ada user di database
-        $user = User::inRandomOrder()->first();
-        $this->assertNotNull($user, "User tidak ditemukan di database. Pastikan ada data user.");
+        parent::setUp();
+        $this->user = User::inRandomOrder()->first();
+        $this->assertNotNull($this->user, "User tidak ditemukan di database. Pastikan ada data user.");
+        Sanctum::actingAs($this->user);
+    }
 
-        // Autentikasi dengan Sanctum
-        Sanctum::actingAs($user);
+    public function test_get_data_suplemen()
+    {
+        $response = $this->getJson('/api/v1/suplemen');
+        $response->assertStatus(Response::HTTP_OK)
+                 ->assertJsonStructure([
+                     'data' => [
+                         '*' => ['nama', 'sasaran', 'status', 'keterangan']
+                     ]
+                 ]);
+    }
 
-        // URL API yang akan diuji
-        $url = '/api/v1/suplemen';
+    public function test_store_suplemen()
+    {
+        $data = [
+            'sasaran' => 1,
+            'nama' => 'Suplemen A',
+            'keterangan' => 'Keterangan Suplemen A',
+            'status' => 1,
+            'sumber' => 'OpenKab',
+            'form_isian' => null
+        ];
 
-        // Kirim request ke API
-        $response = $this->getJson($url);
+        $response = $this->postJson('/api/v1/suplemen', $data);
+        $response->assertStatus(Response::HTTP_CREATED)
+                 ->assertJson(['success' => true, 'message' => 'Data berhasil disimpan.']);
+    }
 
-        // Pastikan respons status adalah 200 (OK)
-        $response->assertStatus(Response::HTTP_OK);
+    public function test_update_suplemen()
+    {
+        $suplemen = Suplemen::factory()->create();
 
-        // Periksa apakah struktur JSON sesuai
-        $response->assertJsonStructure([
-            'data' => [ // Sesuaikan jika API memiliki key "data"
-                '*' => [
-                    'nama',
-                    'sasaran',
-                    'status',
-                    'keterangan'
-                ]
-            ]
-        ]);
+        $updateData = ['sasaran' => 2, 
+            'nama' => 'Suplemen B', 
+            'keterangan' => 'Keterangan Suplemen B',
+            'status' => 0,
+            'sumber' => 'OpenSID',
+            'form_isian' => null];
+        $response = $this->postJson("/api/v1/suplemen/update/{$suplemen->id}", $updateData);
+
+        $response->assertStatus(Response::HTTP_OK)
+                 ->assertJson(['success' => true, 'message' => 'Data berhasil diperbarui.']);
+    }
+
+    public function test_delete_suplemen()
+    {
+        $suplemen = Suplemen::factory()->create();
+        $response = $this->deleteJson("/api/v1/suplemen/hapus/{$suplemen->id}");
+        $response->assertStatus(Response::HTTP_OK)
+                 ->assertJson(['success' => true]);
+    }
+
+    public function test_get_sasaran()
+    {
+        $response = $this->getJson('/api/v1/suplemen/sasaran');
+        $response->assertStatus(Response::HTTP_OK)
+                 ->assertJsonStructure(['success', 'data' => [['id', 'nama']]]);
+    }
+
+    public function test_get_status()
+    {
+        $response = $this->getJson('/api/v1/suplemen/status');
+        $response->assertStatus(Response::HTTP_OK)
+                 ->assertJsonStructure(['success', 'data' => [['id', 'nama']]]);
     }
 }
