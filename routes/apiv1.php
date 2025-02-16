@@ -24,9 +24,11 @@ use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
+use App\Http\Controllers\Api\SuplemenController;
 use Illuminate\Http\Request;
 
 /*
@@ -207,8 +209,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
             Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
         });
-        
+        Route::prefix('keuangan')->group(function () {
+            Route::get('apbdes', [KeuanganController::class, 'apbdes']);
+            Route::get('laporan_apbdes', [KeuanganController::class, 'laporan_apbdes']);
+        });
     });
+
+    Route::post('/suplemen', [SuplemenController::class, 'store']);
+    Route::post('/suplemen/terdata/hapus', [SuplemenController::class, 'delete_multiple'])->name('suplemen-terdata.delete-multiple');
+    Route::post('/suplemen/update/{id}', [SuplemenController::class, 'update']);
+    Route::get('/suplemen', [SuplemenController::class, 'index']);
+    Route::get('/suplemen/terdata/{sasaran}/{id}', [SuplemenController::class, 'detail']);
+    Route::get('/suplemen/sasaran', [SuplemenController::class, 'sasaran']);
+    Route::get('/suplemen/status', [SuplemenController::class, 'status']);
+    Route::delete('/suplemen/hapus/{id}', [SuplemenController::class, 'destroy'])->name('suplemen.hapus');
 });
 
 // Statistik
