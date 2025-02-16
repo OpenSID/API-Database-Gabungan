@@ -175,6 +175,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', 'index')->name('api.pengaturan_aplikasi');
             Route::post('/update', 'update');
         });
+
+    Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+        Route::get('opendk/bantuan', [BantuanController::class, 'syncBantuanOpenDk']);
+        Route::get('opendk/bantuan/{id}', [BantuanController::class, 'getBantuanOpenDk']);
+        Route::get('/opendk/bantuan-peserta', [BantuanController::class, 'syncBantuanPesertaOpenDk']);
+        Route::get('/opendk/bantuan-peserta/{id}/{kode_desa}', [BantuanController::class, 'getBantuanPesertaOpenDk']);
+    });
     
      // Prodeskel
     Route::prefix('prodeskel')->group(function () {
