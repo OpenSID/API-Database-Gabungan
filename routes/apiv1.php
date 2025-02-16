@@ -24,7 +24,9 @@ use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
+use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\PariwisataController;
+use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
 use App\Http\Controllers\Api\SuplemenController;
 use Illuminate\Http\Request;
@@ -108,7 +110,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
-            Route::get('/show', 'show')->name('api.keluarga.detail');
+            Route::get('/show', 'show');
         });
 
     // Statistik
@@ -202,9 +204,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
-            Route::get('desa/{kec}', [DesaController::class, 'all']);
+            Route::get('desa/{kec}', [DesaController::class, 'all']);            
+            Route::get('pembangunan', [PembangunanController::class, 'syncPembangunanOpenDk']);
+            Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
+            Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
         });
-        
+        Route::prefix('keuangan')->group(function () {
+            Route::get('apbdes', [KeuanganController::class, 'apbdes']);
+            Route::get('laporan_apbdes', [KeuanganController::class, 'laporan_apbdes']);
+        });
     });
 
     Route::post('/suplemen', [SuplemenController::class, 'store']);

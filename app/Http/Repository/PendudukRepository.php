@@ -391,7 +391,7 @@ class PendudukRepository
 
     public function countStatistikByKategori(string $tabelReferensi, string $idReferensi, string $whereFooter = null): array|object
     {
-        $query = DB::table("{$tabelReferensi}")
+        $query = DB::connection('openkab')->table("{$tabelReferensi}")
             ->select("{$tabelReferensi}.id", "{$tabelReferensi}.nama");
 
         if (session()->has('desa')) {
