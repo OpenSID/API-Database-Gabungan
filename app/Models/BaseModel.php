@@ -2,14 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BaseModel extends Model
 {
     /** {@inheritdoc} */
     protected $connection = 'openkab';
 
+    /** {@inheritdoc} */
+    protected $dbConnection;
+
     protected $guarded = [];
+
+    /**
+     * constract.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->dbConnection = DB::connection($this->connection);
+    }
 
     /**
      * Select untuk Statistik menggunakan case.
@@ -62,5 +76,15 @@ class BaseModel extends Model
     public function scopeMinMaxTahun($query, $column = self::CREATED_AT)
     {
         return $query->selectRaw("YEAR(MIN({$column})) AS tahun_awal, YEAR(MAX({$column})) AS tahun_akhir");
+    }
+
+    /**
+     * Get the desa associated with the desa.
+     *
+     * @return \Illuminate\Database\EloquenConfiglations\HasOne
+     */
+    public function desa(): HasOne
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
     }
 }

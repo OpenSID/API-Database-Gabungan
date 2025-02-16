@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SakitMenahunEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -63,6 +64,7 @@ class Penduduk extends BaseModel
         'statusPerkawinan',
         'statusHamil',
         'namaAsuransi',
+        'namaSakitMenahun',
         'umur',
         'tanggalLahirId',
         'urlFoto',
@@ -163,17 +165,7 @@ class Penduduk extends BaseModel
     public function cacat()
     {
         return $this->belongsTo(Cacat::class, 'cacat_id')->withDefault();
-    }
-
-    /**
-     * Define an inverse one-to-one or many relationship.
-     *
-     * @return BelongsTo
-     */
-    public function sakitMenahun()
-    {
-        return $this->belongsTo(SakitMenahun::class, 'sakit_menahun_id')->withDefault();
-    }
+    }    
 
     /**
      * Define an inverse one-to-one or many relationship.
@@ -399,6 +391,12 @@ class Penduduk extends BaseModel
             : '';
     }
 
+    public function getNamaSakitMenahunAttribute()
+    {
+        $sakitMenahunId = $this->sakit_menahun_id ?? SakitMenahunEnum::TIDAK_ADA_TIDAK_SAKIT;
+        return SakitMenahunEnum::getDescription($sakitMenahunId);
+    }
+
     /**
      * Getter umur attribute.
      *
@@ -507,8 +505,7 @@ class Penduduk extends BaseModel
             'pekerjaan',
             'wargaNegara',
             'golonganDarah',
-            'cacat',
-            'sakitMenahun',
+            'cacat',            
             'kb',
             'statusKawin',
             'statusRekamKtp',
