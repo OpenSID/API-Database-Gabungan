@@ -13,3 +13,5 @@ Di rilis ini, versi 2502.0.0 berisi penambahan [diisi fitur] dan perbaikan lain 
 9. [#26](https://github.com/OpenSID/API-Database-Gabungan/issues/26) Penambahan API tarik data pembangunan OpenDK dari OpenKab ke API database gabungan.
 10. [#36](https://github.com/OpenSID/API-Database-Gabungan/issues/36) Penambahan unit testing  API dokumen & keluarga.
 11. [#24](https://github.com/OpenSID/API-Database-Gabungan/issues/24) Penambahan API Tarik data keuangan OpenDK dari OpenKab ke API database gabungan.
+12. [#5](https://github.com/OpenSID/API-Database-Gabungan/issues/5) Penambahan API Suplemen dari OpenKab ke API database gabungan.
+13. [#38](https://github.com/OpenSID/API-Database-Gabungan/issues/38) Penambahan API Data Penduduk database dari OpenKab dan tambahkan unit testing penduduk.
