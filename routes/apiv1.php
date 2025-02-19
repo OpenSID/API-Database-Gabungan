@@ -25,8 +25,13 @@ use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
+use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\PariwisataController;
+use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
+use App\Http\Controllers\Api\SuplemenController;
+use App\Http\Controllers\Api\PlanController;
+use App\Http\Controllers\Api\PointController;
 use Illuminate\Http\Request;
 
 /*
@@ -108,7 +113,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
-            Route::get('/show', 'show')->name('api.keluarga.detail');
+            Route::get('/show', 'show');
         });
 
     // Statistik
@@ -173,6 +178,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', 'index')->name('api.pengaturan_aplikasi');
             Route::post('/update', 'update');
         });
+
+    Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+        Route::get('opendk/bantuan', [BantuanController::class, 'syncBantuanOpenDk']);
+        Route::get('opendk/bantuan/{id}', [BantuanController::class, 'getBantuanOpenDk']);
+        Route::get('/opendk/bantuan-peserta', [BantuanController::class, 'syncBantuanPesertaOpenDk']);
+        Route::get('/opendk/bantuan-peserta/{id}/{kode_desa}', [BantuanController::class, 'getBantuanPesertaOpenDk']);
+    });
     
      // Prodeskel
     Route::prefix('prodeskel')->group(function () {
@@ -206,11 +218,37 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
-            Route::get('desa/{kec}', [DesaController::class, 'all']);
+            Route::get('desa/{kec}', [DesaController::class, 'all']);            
+            Route::get('pembangunan', [PembangunanController::class, 'syncPembangunanOpenDk']);
+            Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
+            Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
         });
-        
+        Route::prefix('keuangan')->group(function () {
+            Route::get('apbdes', [KeuanganController::class, 'apbdes']);
+            Route::get('laporan_apbdes', [KeuanganController::class, 'laporan_apbdes']);
+        });
     });
+
+    Route::post('/suplemen', [SuplemenController::class, 'store']);
+    Route::post('/suplemen/terdata/hapus', [SuplemenController::class, 'delete_multiple'])->name('suplemen-terdata.delete-multiple');
+    Route::post('/suplemen/update/{id}', [SuplemenController::class, 'update']);
+    Route::get('/suplemen', [SuplemenController::class, 'index']);
+    Route::get('/suplemen/terdata/{sasaran}/{id}', [SuplemenController::class, 'detail']);
+    Route::get('/suplemen/sasaran', [SuplemenController::class, 'sasaran']);
+    Route::get('/suplemen/status', [SuplemenController::class, 'status']);
+    Route::delete('/suplemen/hapus/{id}', [SuplemenController::class, 'destroy'])->name('suplemen.hapus');
+
+    Route::get('/point', [PointController::class, 'index']);
+    Route::get('/point/status', [PointController::class, 'status']);
+    Route::delete('/point/hapus/{id}', [PointController::class, 'destroy'])->name('point.hapus');
+    Route::post('/point/multiple-delete', [PointController::class, 'delete_multiple'])->name('point.delete-multiple');
+    Route::get('/subpoint/{id}', [PointController::class, 'detail']);
+    Route::post('/point', [PointController::class, 'store']);
+
+    Route::get('/plan', [PlanController::class, 'index']);
 });
+
+Route::get('/plan/get-list-coordinate/{parrent?}/{id?}', [PlanController::class, 'getListCoordinate']);
 
 // Statistik
 Route::controller(StatistikController::class)
