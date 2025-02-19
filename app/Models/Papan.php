@@ -94,7 +94,7 @@ class Papan extends BaseModel
      */
     public function dtks()
     {
-        return $this->hasOne(\App\Models\DTKS::class, 'id_rtm', 'id_rtm')
+        return $this->hasOne(\App\Models\DTKS::class, 'id_rtm', 'rtm_id')
             ->where('versi_kuisioner', \App\Enums\Dtks\DtksEnum::VERSION_CODE);
     }
 
@@ -105,12 +105,12 @@ class Papan extends BaseModel
      */
     public function rtm()
     {
-        return $this->hasOne(Rtm::class, 'id', 'id_rtm');
+        return $this->hasOne(Rtm::class, 'id', 'rtm_id');
     }
 
     public function keluarga()
     {
-        return $this->hasOne(Keluarga::class, 'id', 'id_keluarga');
+        return $this->hasOne(Keluarga::class, 'id', 'keluarga_id');
     }
 
     public function kepalaRumahTangga()
@@ -120,7 +120,7 @@ class Papan extends BaseModel
             \App\Models\Rtm::class,
             'id', // Foreign key on Rtm table
             'id', // Foreign key on Penduduk table
-            'id_rtm', // Local key on Papan table
+            'rtm_id', // Local key on Papan table
             'nik_kepala' // Local key on Rtm table
         );
     }

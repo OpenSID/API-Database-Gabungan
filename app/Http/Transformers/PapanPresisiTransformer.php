@@ -15,7 +15,7 @@ class PapanPresisiTransformer extends TransformerAbstract
         foreach ($dtksFieldMapping as $key => $value) {
             $papan->{$key} = $pilihanBagian3[$value][$papan->{$key}] ?? '';
         }
-        $papan->id = $papan->id_rtm;
+        $papan->id = $papan->rtm_id;
         $papan->makeHidden('rtm', 'uuid', 'dtks');
         $papan->nik_kepala_rtm = $papan->rtm?->kepalaKeluarga?->nik;
         return $papan->toArray();
