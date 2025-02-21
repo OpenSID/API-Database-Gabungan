@@ -18,3 +18,4 @@ Di rilis ini, versi 2502.0.0 berisi penambahan [diisi fitur] dan perbaikan lain 
 14. [#39](https://github.com/OpenSID/API-Database-Gabungan/issues/39) Penambahan API Wilayah dari OpenDK ke API database gabungan.
 15. [#25](https://github.com/OpenSID/API-Database-Gabungan/issues/25) Penambahan API Tarik data bantuan OpenDK dari OpenKab ke API database gabungan.
 16. [#23](https://github.com/OpenSID/API-Database-Gabungan/issues/23) Penambahan API Poin & Plan dari OpenKab ke API database gabungan.
+17. [#41](https://github.com/OpenSID/API-Database-Gabungan/issues/41) Penambahan API data papan dari modul Data Presisi bagian papan.
