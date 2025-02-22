@@ -20,6 +20,10 @@ class Rtm extends BaseModel
 
     public $timestamps = false;
 
+    protected $appends = [
+        'jumlah_kk',
+    ];
+
     /**
      * Define a one-to-one relationship.
      *
@@ -72,5 +76,10 @@ class Rtm extends BaseModel
         return $query->whereHas('kepalaKeluarga', static function ($query) use ($value) {
             $query->status($value)->where('rtm_level', '1');
         });
+    }
+
+    public function getJumlahKkAttribute()
+    {
+        return $this->anggota()->distinct('id_kk')->count('id_kk');
     }
 }
