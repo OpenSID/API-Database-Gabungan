@@ -18,17 +18,17 @@ class Sandang extends BaseModel
 
     public function keluarga()
     {
-        return $this->hasOne(Keluarga::class, 'id', 'id_keluarga');
+        return $this->hasOne(Keluarga::class, 'id', 'keluarga_id');
     }
 
     public function rtm()
     {
-        return $this->hasOne(Rtm::class, 'id', 'id_rtm');
+        return $this->hasOne(Rtm::class, 'id', 'rtm_id');
     }
 
     public function penduduk()
     {
-        return $this->belongsTo(Penduduk::class, 'id_anggota', 'id');
+        return $this->belongsTo(Penduduk::class, 'anggota_id', 'id');
     }
 
     public function config()

@@ -37,7 +37,7 @@ class SandangController extends Controller
 
             foreach($data as $item){
 
-                $sandang = Sandang::where('id_rtm', $id)->where('id_anggota', $item['id_anggota'])->first();
+                $sandang = Sandang::where('rtm_id', $id)->where('anggota_id', $item['anggota_id'])->first();
 
                 // Cek apakah semua item tidak kosong
                 if (!in_array(null, $item, true) && !in_array('', $item, true)) {

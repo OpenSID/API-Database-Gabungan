@@ -91,9 +91,9 @@ class SandangControllerApiTest extends TestCase
                         'nik',
                         'no_kk',
                         'nama',
-                        'id_rtm',
-                        'id_keluarga',
-                        'id_anggota',
+                        'rtm_id',
+                        'keluarga_id',
+                        'anggota_id',
                         'jml_pakaian_yg_dimiliki',
                         'frekwensi_beli_pakaian_pertahun',
                         'jenis_pakaian',
@@ -147,9 +147,9 @@ class SandangControllerApiTest extends TestCase
                         'nik',
                         'no_kk',
                         'nama',
-                        'id_rtm',
-                        'id_keluarga',
-                        'id_anggota',
+                        'rtm_id',
+                        'keluarga_id',
+                        'anggota_id',
                         'jml_pakaian_yg_dimiliki',
                         'frekwensi_beli_pakaian_pertahun',
                         'jenis_pakaian',
@@ -181,12 +181,12 @@ class SandangControllerApiTest extends TestCase
 
     }
 
-    public function test_get_sandang_by_id_rtm(): void
+    public function test_get_sandang_by_rtm_id(): void
     {
         $idRtm = Rtm::inRandomOrder()->first()->id;
 
         $url = '/api/v1/data-presisi/sandang?'.http_build_query([
-            'filter[id_rtm]' => $idRtm
+            'filter[rtm_id]' => $idRtm
         ]);
 
         $response = $this->getJson($url);
@@ -203,9 +203,9 @@ class SandangControllerApiTest extends TestCase
                         'nik',
                         'no_kk',
                         'nama',
-                        'id_rtm',
-                        'id_keluarga',
-                        'id_anggota',
+                        'rtm_id',
+                        'keluarga_id',
+                        'anggota_id',
                         'jml_pakaian_yg_dimiliki',
                         'frekwensi_beli_pakaian_pertahun',
                         'jenis_pakaian',
@@ -242,13 +242,13 @@ class SandangControllerApiTest extends TestCase
         $sandang = Sandang::inRandomOrder()->first();
 
         // Act: Kirim request update
-        $response = $this->postJson("/api/v1/data-presisi/sandang/update/{$sandang->id_rtm}", [
+        $response = $this->postJson("/api/v1/data-presisi/sandang/update/{$sandang->rtm_id}", [
             'form' => [
                 [
                     'frekwensi_beli_pakaian_pertahun' => '2 Kali',
                     'frekwensi_ganti_pakaian' => '1 Kali',
-                    'id_anggota' => $sandang->id_anggota,
-                    'id_keluarga' => $sandang->id_keluarga,
+                    'anggota_id' => $sandang->anggota_id,
+                    'keluarga_id' => $sandang->keluarga_id,
                     'jenis_pakaian' => 'Pakaian Jadi',
                     'jml_pakaian_kerja' => '2 Stel',
                     'jml_pakaian_sembahyang' => '1 Stel',

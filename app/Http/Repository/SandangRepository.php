@@ -15,10 +15,10 @@ class SandangRepository
         return QueryBuilder::for(Sandang::filterWilayah())
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                AllowedFilter::exact('id_rtm'),
+                AllowedFilter::exact('rtm_id'),
                 AllowedFilter::exact('config_id'),
-                AllowedFilter::exact('id_keluarga'),
-                AllowedFilter::exact('id_anggota'),
+                AllowedFilter::exact('keluarga_id'),
+                AllowedFilter::exact('anggota_id'),
                 AllowedFilter::exact('status_pengisian'),
                 AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
                     $query->whereHas('config', function ($query) use ($value) {
@@ -39,7 +39,7 @@ class SandangRepository
                     });
                 }),
             ])
-            ->allowedSorts(['id', 'id_rtm', 'id_keluarga', 'id_anggota', 'tanggal_pengisian'])
+            ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'anggota_id', 'tanggal_pengisian'])
             ->jsonPaginate();
     }
 

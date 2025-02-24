@@ -98,7 +98,7 @@ class Penduduk extends BaseModel
 
     public function sandang()
     {
-        return $this->hasOne(Sandang::class, 'id_anggota')->withDefault();
+        return $this->hasOne(Sandang::class, 'anggota_id')->withDefault();
     }
 
     /**
