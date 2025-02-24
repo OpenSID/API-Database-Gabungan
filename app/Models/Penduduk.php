@@ -96,6 +96,11 @@ class Penduduk extends BaseModel
         return $this->belongsTo(Agama::class, 'agama_id')->withDefault();
     }
 
+    public function sandang()
+    {
+        return $this->hasOne(Sandang::class, 'id_anggota')->withDefault();
+    }
+
     /**
      * Define an inverse one-to-one or many relationship.
      *

@@ -43,6 +43,11 @@ class Rtm extends BaseModel
     {
         return $this->hasMany(Penduduk::class, 'id_rtm', 'no_kk')->status();
     }
+
+    public function ho_anggota()
+    {
+        return $this->hasOne(Penduduk::class, 'id_rtm', 'no_kk')->status();
+    }
     
     /**
      * Scope query untuk bdt.
