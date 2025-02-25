@@ -55,6 +55,7 @@ class PendudukRepository
                 'nama',
                 'umur',
                 'created_at',
+                'tag_id_card'
             ])
             ->jsonPaginate();
     }
