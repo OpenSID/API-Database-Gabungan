@@ -20,6 +20,7 @@ Di rilis ini, versi 2502.0.0 berisi penambahan [diisi fitur] dan perbaikan lain 
 16. [#23](https://github.com/OpenSID/API-Database-Gabungan/issues/23) Penambahan API Poin & Plan dari OpenKab ke API database gabungan.
 17. [#41](https://github.com/OpenSID/API-Database-Gabungan/issues/41) Penambahan API data papan dari modul Data Presisi bagian papan.
 18. [#42](https://github.com/OpenSID/API-Database-Gabungan/issues/42) Penambahan unti testing dan memperbaiki function response api store bantuan kabupaten.
+19. [#45](https://github.com/OpenSID/API-Database-Gabungan/issues/45) Penambahan api dan unit testing data presisi sandang.
 
 ### Perbaikan Bug
 1. [#575](https://github.com/OpenSID/OpenKab/issues/575) Perbaikan halaman penduduk di OpenKab ketika melakukan sorting tag id card

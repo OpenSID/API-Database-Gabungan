@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
+use App\Http\Controllers\Api\SandangController;
 use App\Http\Controllers\Api\SuplemenController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
@@ -80,6 +81,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // API Data Presisi
     Route::get('/ketenagakerjaan', KetenagakerjaanController::class);
     Route::get('/pendidikan', PendidikanController::class);
+
+    
+    Route::prefix('data-presisi')->group(function () {
+        Route::controller(SandangController::class)
+        ->prefix('sandang')->group(function () {
+            Route::get('/', 'sandang');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+    });
 
     // Wilayah
     Route::prefix('wilayah')->middleware([])->group(function () {

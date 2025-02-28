@@ -68,6 +68,7 @@ class Penduduk extends BaseModel
         'umur',
         'tanggalLahirId',
         'urlFoto',
+        'alamat_wilayah',
     ];
 
     /** {@inheritdoc} */
@@ -95,6 +96,11 @@ class Penduduk extends BaseModel
     public function agama()
     {
         return $this->belongsTo(Agama::class, 'agama_id')->withDefault();
+    }
+
+    public function sandang()
+    {
+        return $this->hasOne(Sandang::class, 'anggota_id')->withDefault();
     }
 
     /**
@@ -530,5 +536,22 @@ class Penduduk extends BaseModel
     {
         return $this->hasMany(ProdeskelPotensi::class, 'config_id', 'config_id')
                     ->where('kategori', 'prasarana-peribadatan');
+    }
+
+    public static function get_alamat_wilayah($data)
+    {
+        $dusun          = (setting('sebutan_dusun') == '-') ? '' : ucwords(strtolower(setting('sebutan_dusun'))) . ' ' . ucwords(strtolower($data['dusun']));
+        $alamat_wilayah = "{$data['alamat']} RT {$data['rt']} / RW {$data['rw']} " . $dusun;
+
+        return trim($alamat_wilayah);
+    }
+
+    public function getAlamatWilayahAttribute(): string
+    {
+        if ($this->id_kk != null) {
+            return $this->keluarga->alamat . ' RT ' . $this->keluarga->wilayah->rt . ' / RW ' . $this->keluarga->wilayah->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->keluarga->wilayah->dusun);
+        }
+
+        return $this->alamat_sekarang . ' RT ' . $this->wilayah->rt . ' / RW ' . $this->wilayah->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah->dusun);
     }
 }
