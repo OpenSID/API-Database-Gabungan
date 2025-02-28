@@ -16,13 +16,13 @@ define('STATUS_SUPLEMEN', serialize([
     '0' => 'Tidak Aktif',
 ]));
 
-if (! function_exists('openkab_versi')) {
+if (! function_exists('app_version')) {
     /**
      * OpenKab database gabungan versi.
      */
-    function openkab_versi()
+    function app_version()
     {
-        return 'v2410.0.0';
+        return 'v2503.0.0';
     }
 }
 
