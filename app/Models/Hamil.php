@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class Hamil extends \Illuminate\Database\Eloquent\Model
+class Hamil extends BaseModel
 {
     /**
      * The table associated with the model.

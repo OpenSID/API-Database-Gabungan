@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 
-class Bantuan extends Model
+class Bantuan extends BaseModel
 {
     use FilterWilayahTrait;
     use QueryTrait;
@@ -208,5 +208,13 @@ class Bantuan extends Model
     public function scopeTahun($query)
     {
         return $query->selectRaw('YEAR(MIN(sdate)) AS tahun_awal, YEAR(MAX(edate)) AS tahun_akhir');
+    }
+
+    /**
+     * Get the phone associated with the config.
+     */
+    public function config()
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
     }
 }

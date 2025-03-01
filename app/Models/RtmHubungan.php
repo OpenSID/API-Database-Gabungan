@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class RtmHubungan extends \Illuminate\Database\Eloquent\Model
+class RtmHubungan extends BaseModel
 {
     /** {@inheritdoc} */
     protected $table = 'tweb_rtm_hubungan';

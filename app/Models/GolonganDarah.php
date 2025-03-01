@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class GolonganDarah extends \Illuminate\Database\Eloquent\Model
+class GolonganDarah extends BaseModel
 {
     /** {@inheritdoc} */
     protected $table = 'tweb_golongan_darah';

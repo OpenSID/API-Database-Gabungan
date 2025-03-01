@@ -4,10 +4,10 @@ namespace App\Models;
 
 use App\Models\Enums\StatusDasarEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+
 use Illuminate\Support\Facades\DB;
 
-class LogPenduduk extends Model
+class LogPenduduk extends BaseModel
 {
     use HasFactory;
 

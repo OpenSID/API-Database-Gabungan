@@ -6,13 +6,23 @@ use Illuminate\Support\Str;
 use App\Models\SettingAplikasi;
 use Intervention\Image\Facades\Image;
 
-if (! function_exists('openkab_versi')) {
+define('SASARAN', serialize([
+    '1' => 'Penduduk',
+    '2' => 'Keluarga / KK',
+]));
+
+define('STATUS_SUPLEMEN', serialize([
+    '1' => 'Aktif',
+    '0' => 'Tidak Aktif',
+]));
+
+if (! function_exists('app_version')) {
     /**
      * OpenKab database gabungan versi.
      */
-    function openkab_versi()
+    function app_version()
     {
-        return 'v2410.0.0';
+        return 'v2503.0.0';
     }
 }
 

@@ -6,7 +6,7 @@ use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Relations\hasOne;
 
-class Rtm extends \Illuminate\Database\Eloquent\Model
+class Rtm extends BaseModel
 {
     use FilterWilayahTrait;
     use QueryTrait;
@@ -20,6 +20,10 @@ class Rtm extends \Illuminate\Database\Eloquent\Model
 
     public $timestamps = false;
 
+    protected $appends = [
+        'jumlah_kk',
+    ];
+
     /**
      * Define a one-to-one relationship.
      *
@@ -30,6 +34,21 @@ class Rtm extends \Illuminate\Database\Eloquent\Model
         return $this->hasOne(Penduduk::class, 'id', 'nik_kepala');
     }
 
+    /**
+     * Define a one-to-many relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function anggota()
+    {
+        return $this->hasMany(Penduduk::class, 'id_rtm', 'no_kk')->status();
+    }
+
+    public function ho_anggota()
+    {
+        return $this->hasOne(Penduduk::class, 'id_rtm', 'no_kk')->status();
+    }
+    
     /**
      * Scope query untuk bdt.
      *
@@ -62,5 +81,10 @@ class Rtm extends \Illuminate\Database\Eloquent\Model
         return $query->whereHas('kepalaKeluarga', static function ($query) use ($value) {
             $query->status($value)->where('rtm_level', '1');
         });
+    }
+
+    public function getJumlahKkAttribute()
+    {
+        return $this->anggota()->distinct('id_kk')->count('id_kk');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-class IbuHamil extends \Illuminate\Database\Eloquent\Model
+class IbuHamil extends BaseModel
 {
     /**
      * Static data status kehamilan ibu.

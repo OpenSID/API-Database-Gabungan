@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SakitMenahunEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Enums\PenolongKelahiranEnum $penolong_kelahiran
  * @property \Carbon\Carbon              $tanggallahir
  */
-class Penduduk extends \Illuminate\Database\Eloquent\Model
+class Penduduk extends BaseModel
 {
     use FilterWilayahTrait;
     use HasFactory;
@@ -63,9 +64,11 @@ class Penduduk extends \Illuminate\Database\Eloquent\Model
         'statusPerkawinan',
         'statusHamil',
         'namaAsuransi',
+        'namaSakitMenahun',
         'umur',
         'tanggalLahirId',
         'urlFoto',
+        'alamat_wilayah',
     ];
 
     /** {@inheritdoc} */
@@ -93,6 +96,11 @@ class Penduduk extends \Illuminate\Database\Eloquent\Model
     public function agama()
     {
         return $this->belongsTo(Agama::class, 'agama_id')->withDefault();
+    }
+
+    public function sandang()
+    {
+        return $this->hasOne(Sandang::class, 'anggota_id')->withDefault();
     }
 
     /**
@@ -163,17 +171,7 @@ class Penduduk extends \Illuminate\Database\Eloquent\Model
     public function cacat()
     {
         return $this->belongsTo(Cacat::class, 'cacat_id')->withDefault();
-    }
-
-    /**
-     * Define an inverse one-to-one or many relationship.
-     *
-     * @return BelongsTo
-     */
-    public function sakitMenahun()
-    {
-        return $this->belongsTo(SakitMenahun::class, 'sakit_menahun_id')->withDefault();
-    }
+    }    
 
     /**
      * Define an inverse one-to-one or many relationship.
@@ -399,6 +397,12 @@ class Penduduk extends \Illuminate\Database\Eloquent\Model
             : '';
     }
 
+    public function getNamaSakitMenahunAttribute()
+    {
+        $sakitMenahunId = $this->sakit_menahun_id ?? SakitMenahunEnum::TIDAK_ADA_TIDAK_SAKIT;
+        return SakitMenahunEnum::getDescription($sakitMenahunId);
+    }
+
     /**
      * Getter umur attribute.
      *
@@ -507,8 +511,7 @@ class Penduduk extends \Illuminate\Database\Eloquent\Model
             'pekerjaan',
             'wargaNegara',
             'golonganDarah',
-            'cacat',
-            'sakitMenahun',
+            'cacat',            
             'kb',
             'statusKawin',
             'statusRekamKtp',
@@ -521,5 +524,34 @@ class Penduduk extends \Illuminate\Database\Eloquent\Model
             'logPenduduk',
             'logPerubahanPenduduk',
         ]);
+    }
+
+    public function prodeskelLembagaAdat()
+    {
+        return $this->hasMany(ProdeskelPotensi::class, 'config_id', 'config_id')
+                    ->where('kategori', 'lembaga-adat');
+    }
+
+    public function prodeskelPrasaranaPeribadatan()
+    {
+        return $this->hasMany(ProdeskelPotensi::class, 'config_id', 'config_id')
+                    ->where('kategori', 'prasarana-peribadatan');
+    }
+
+    public static function get_alamat_wilayah($data)
+    {
+        $dusun          = (setting('sebutan_dusun') == '-') ? '' : ucwords(strtolower(setting('sebutan_dusun'))) . ' ' . ucwords(strtolower($data['dusun']));
+        $alamat_wilayah = "{$data['alamat']} RT {$data['rt']} / RW {$data['rw']} " . $dusun;
+
+        return trim($alamat_wilayah);
+    }
+
+    public function getAlamatWilayahAttribute(): string
+    {
+        if ($this->id_kk != null) {
+            return $this->keluarga->alamat . ' RT ' . $this->keluarga->wilayah->rt . ' / RW ' . $this->keluarga->wilayah->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->keluarga->wilayah->dusun);
+        }
+
+        return $this->alamat_sekarang . ' RT ' . $this->wilayah->rt . ' / RW ' . $this->wilayah->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah->dusun);
     }
 }

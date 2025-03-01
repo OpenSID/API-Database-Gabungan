@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\ConfigIdTrait;
 
-class BantuanPeserta extends \Illuminate\Database\Eloquent\Model
+class BantuanPeserta extends BaseModel
 {
     use ConfigIdTrait;
 
@@ -57,5 +57,13 @@ class BantuanPeserta extends \Illuminate\Database\Eloquent\Model
     public function penduduk()
     {
         return $this->belongsTo(Penduduk::class, 'kartu_id_pend');
+    }
+
+    /**
+     * Get the phone associated with the config.
+     */
+    public function config()
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
     }
 }

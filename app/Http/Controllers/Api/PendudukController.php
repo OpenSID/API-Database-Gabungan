@@ -72,7 +72,7 @@ class PendudukController extends Controller
     public function pindah(PindahRequest $request)
     {
         try {
-            DB::beginTransaction();
+            DB::connection('openkab')->beginTransaction();
 
             $data = $request->validated();
 
@@ -90,7 +90,7 @@ class PendudukController extends Controller
                 ->exists();
 
             if ($log_penduduk_lama) {
-                DB::rollback();
+                DB::connection('openkab')->rollback();
 
                 return response()->json([
                     'success' => false,
@@ -108,7 +108,7 @@ class PendudukController extends Controller
                     ->exists();
 
                 if ($log_penduduk_tujuan) {
-                    DB::rollback();
+                    DB::connection('openkab')->rollback();
 
                     return response()->json([
                         'success' => false,
@@ -136,6 +136,7 @@ class PendudukController extends Controller
                 $penduduk_baru->config_id = $data['kelurahan_tujuan'];
                 $penduduk_baru->id_kk = null;
                 $penduduk_baru->status_dasar = 1;
+                $penduduk_baru->tanggalperkawinan = $penduduk_baru->tanggalperkawinan = '000-00-00' ? NULL : $penduduk_baru->tanggalperkawinan;
                 $penduduk_baru->save();
 
                 $log_penduduk = [
@@ -153,21 +154,10 @@ class PendudukController extends Controller
             }
 
             $penduduk_lama->status_dasar = 3;
-            $penduduk_lama->save();
-
-            // LOG keluarga
-            if ($penduduk_lama->keluarga->id) {
-                LogKeluarga::create([
-                    'id_kk' => $penduduk_lama->keluarga->id,
-                    'config_id' => $penduduk_lama->config_id,
-                    'id_peristiwa' => 3,
-                    'updated_by' => 1,
-                    'id_log_penduduk' => $penduduk_lama->id,
-                ]);
-            }
+            $penduduk_lama->save();            
 
             // LOG penduduk
-            LogPenduduk::create([
+            $logPendudukLama = LogPenduduk::create([
                 'id_pend' => $penduduk_lama->id,
                 'kode_peristiwa' => 3,
                 'config_id' => $penduduk_lama->config_id,
@@ -180,16 +170,26 @@ class PendudukController extends Controller
                 'ref_pindah' => $request->ref_pindah,
                 'catatan' => $request->catatan,
             ]);
-
+            
             // LOG penduduk Desa Tujuan
             LogPenduduk::create($log_penduduk);
-            DB::commit();
+            // LOG keluarga
+            if ($penduduk_lama->keluarga->id) {
+                LogKeluarga::create([
+                    'id_kk' => $penduduk_lama->keluarga->id,
+                    'config_id' => $penduduk_lama->config_id,
+                    'id_peristiwa' => 3,
+                    'updated_by' => 1,
+                    'id_log_penduduk' => $logPendudukLama->id,
+                ]);
+            }
+            DB::connection('openkab')->commit();
 
             return response()->json([
                 'success' => true,
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::connection('openkab')->rollback();
             report($e);
 
             return response()->json([

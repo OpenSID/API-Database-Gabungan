@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Traits\ConfigIdTrait;
-use Illuminate\Database\Eloquent\Model;
 
-class ClusterDesa extends Model
+
+class ClusterDesa extends BaseModel
 {
     use ConfigIdTrait;
 
