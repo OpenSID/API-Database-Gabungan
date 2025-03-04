@@ -1,4 +1,4 @@
-Di rilis ini, versi 2502.0.0 berisi penambahan [diisi fitur] dan perbaikan lain yang diminta pengguna.
+Di rilis ini, versi 2503.0.0 berisi penambahan API untuk OpenKab dan perbaikan lain yang diminta pengguna.
 
 #### Penambahan Fitur
 
