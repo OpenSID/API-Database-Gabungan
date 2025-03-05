@@ -14,9 +14,9 @@ class PointTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = User::inRandomOrder()->first();
-        $this->assertNotNull($this->user, "User tidak ditemukan di database. Pastikan ada data user.");
-        Sanctum::actingAs($this->user);
+        $user = User::inRandomOrder()->first();
+        $this->assertNotNull($user, "User tidak ditemukan di database. Pastikan ada data user.");
+        Sanctum::actingAs($user);
     }
 
     public function test_get_data_point()
