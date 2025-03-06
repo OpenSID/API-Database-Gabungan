@@ -18,8 +18,8 @@ class RtmTransformer extends TransformerAbstract
             'kepala_keluarga' => optional($item->kepalaKeluarga)->nama ?? 'TIDAK TAHU',
             'dtks' => $item->terdaftar_dtks ? 'Terdaftar' : 'Tidak Terdaftar',
             'jumlah_anggota' => $item->anggota->count(),
-            'jumlah_pakaian_yang_dimiliki' => $item->ho_anggota->sandang->jml_pakaian_yg_dimiliki,
-            'frekwensi_beli_pakaian' => $item->ho_anggota->sandang->frekwensi_beli_pakaian_pertahun,
+            'jumlah_pakaian_yang_dimiliki' => $item->ho_anggota?->sandang?->jml_pakaian_yg_dimiliki,
+            'frekwensi_beli_pakaian' => $item->ho_anggota?->sandang?->frekwensi_beli_pakaian_pertahun,
             'jumlah_kk' => $item->jumlah_kk,
             'alamat' => $item->kepalaKeluarga->alamat_wilayah,
             'dusun' => $item->kepalaKeluarga->keluarga->wilayah->dusun,
@@ -27,6 +27,6 @@ class RtmTransformer extends TransformerAbstract
             'rt' => $item->kepalaKeluarga->keluarga->wilayah->rt,
             'tgl_daftar' => $item->tgl_daftar ?? 'TIDAK TAHU',
         ];
-        
+
     }
 }
