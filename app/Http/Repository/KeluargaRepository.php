@@ -15,9 +15,28 @@ class KeluargaRepository
             ->allowedFields('*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
-                'no_kk',
-                'nik_kepala',
-                'kelas_sosial',
+                AllowedFilter::exact('no_kk'),
+                AllowedFilter::exact('nik_kepala'),
+                AllowedFilter::exact('kelas_sosial'),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->whereHas('config', static fn ($query) => $query->where('kode_kecamatan', $value));
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_desa', $value);
+                    });
+                }),
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($query) use ($value) {
+                        $query->where('no_kk', 'like', "%{$value}%")
+                        ->orWhereHas('kepalaKeluarga', function ($query) use ($value) {
+                            $query->where('nama', 'like', "%{$value}%");
+                        })
+                        ->orWhereHas('config', function ($query) use ($value) {
+                            $query->where('nama_desa', 'like', "%{$value}%");
+                        });
+                    });
+                }),
             ])
             ->allowedSorts([
                 'no_kk',

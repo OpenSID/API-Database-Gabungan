@@ -16,6 +16,11 @@ class KeluargaController extends Controller
     {
     }
 
+    public function keluarga()
+    {
+        return $this->fractal($this->keluarga->listKeluarga(), new RincianKeluargaTransformer(), 'keluarga')->respond();
+    }
+
     /**
      * Display the specified resource.
      *
