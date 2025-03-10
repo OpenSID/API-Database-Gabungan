@@ -100,7 +100,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('dusun', [WilayahController::class, 'dusun']);
         Route::get('rw', [WilayahController::class, 'rw']);
         Route::get('rt', [WilayahController::class, 'rt']);
-        Route::get('penduduk', [WilayahController::class, 'penduduk']);
     });
 
     Route::prefix('penduduk')->middleware([])->group(function () {
@@ -299,6 +298,12 @@ Route::controller(StatistikController::class)
         Route::get('/get-list-desa/{id}', 'getListDesa');        
         Route::get('/get-list-penerima', 'getListPenerimaBantuan');
     });
+
+// wilayah
+// Wilayah
+Route::prefix('wilayah')->group(function () {
+    Route::get('penduduk', [WilayahController::class, 'penduduk']);
+});
 
 // Bantuan
 // Data utama website
