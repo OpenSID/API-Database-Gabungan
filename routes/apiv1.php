@@ -26,6 +26,8 @@ use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
+use App\Http\Controllers\Api\LaporanPendudukController;
+use App\Http\Controllers\Api\OpendkSynchronizeController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
@@ -222,6 +224,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/kesehatan', 'kesehatan');
             Route::get('/jaminan-sosial', 'jaminanSosial');
             Route::get('/penduduk-potensi-kelembagaan', 'pendudukPotensiKelembagaan');
+        });        
+    });
+
+    // Sinkronisasi OpenDK
+    Route::prefix('opendk')->group(function () {
+        Route::get('', [OpendkSynchronizeController::class, 'index'])->name('synchronize.opendk.index');
+        Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+            Route::get('data', [OpendkSynchronizeController::class, 'getData']);
+            Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
+            Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
         });        
     });
 
