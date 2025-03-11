@@ -11,12 +11,15 @@ class ArtikelRepository
     public function listArtikel()
     {
         return QueryBuilder::for(Config::class)
-            ->select('nama_kecamatan', 'nama_desa')
+            ->select('nama_kabupaten', 'nama_kecamatan', 'nama_desa')
             ->selectRaw('count(artikel.id) as jumlah')
             ->join('artikel', 'config.id', '=', 'artikel.config_id')
-            ->groupBy('config.nama_desa', 'config.nama_kecamatan')
+            ->groupBy('config.nama_desa', 'config.nama_kecamatan', 'config.nama_kabupaten')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
+                AllowedFilter::exact('kode_kecamatan'),
+                AllowedFilter::exact('kode_kabupaten'),
+                AllowedFilter::exact('kode_desa'),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where('nama_desa', 'LIKE', '%'.$value.'%')
                         ->orWhere('tgl_upload', 'LIKE', '%'.$value.'%');
