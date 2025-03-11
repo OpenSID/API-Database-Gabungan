@@ -21,7 +21,7 @@ class RincianKeluargaTransformer extends TransformerAbstract
             'no_kk' => $keluarga?->no_kk ?? '-',
             'nik_kepala' => $keluarga?->kepalaKeluarga?->nik ?? '-',
             'nama_kk' => $keluarga?->kepalaKeluarga?->nama ?? '-',
-            'foto' => $keluarga?->kepalaKeluarga?->foto ?? 'foto.jpg',
+            'foto' => $keluarga?->kepalaKeluarga?->foto ?? null,
             'tgl_daftar' => $keluarga?->tgl_daftar ?? '-',
             'tgl_cetak_kk' => $keluarga?->tgl_cetak_kk ?? '-',
             'id' => $keluarga?->id ?? '-',
