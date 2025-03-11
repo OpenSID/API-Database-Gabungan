@@ -311,3 +311,7 @@ Route::get('data-website', WebsiteController::class);
 Route::get('data-summary', SummaryController::class);
 // Desa teraktif
 Route::get('/desa-aktif', [KategoriDesaController::class, 'index']);
+
+Route::prefix('opendk')->group(function () {
+    Route::post('/penduduk-nik-tanggalahir', [PendudukController::class, 'pendudukNikTanggalahir']);
+});
