@@ -8,4 +8,15 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        rollupOptions: {
+          //external: ['datatables.net-responsive', 'dataTables.mark.js', 'dataTables.net-buttons/js/buttons.colVis.min.mjs', 'dataTables.net-buttons/js/buttons.html5.min.mjs', 'dataTables.net-buttons/js/buttons.print.min.mjs'],
+          output: {
+            // expose jQuery as a global variable
+            globals: {
+              jquery: 'jQuery'
+            }
+          }
+        },
+      },
 });
