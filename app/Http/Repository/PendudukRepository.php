@@ -2,6 +2,7 @@
 
 namespace App\Http\Repository;
 
+use App\Models\Config;
 use App\Models\Covid;
 use App\Models\Ktp;
 use App\Models\LogPenduduk;
@@ -14,6 +15,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class PendudukRepository
 {
+    private $kodeDesa;
     public function pendudukReferensi(string $class)
     {
         return QueryBuilder::for($class)
@@ -155,12 +157,18 @@ class PendudukRepository
             ->jsonPaginate();
     }
 
-    public function listStatistik($kategori): array|object
+    public function listStatistik($kategori, $kodeDesa): array|object
     {
+        $this->setKodeDesa($kodeDesa);
+        if($this->getKodeDesa()) {
+            $configDesa = Config::where('kode_desa', $this->getKodeDesa())->first()->id;
+            request()->merge(['config_desa' => $configDesa]);
+        }
         return collect(match ($kategori) {
             'rentang-umur' => $this->caseRentangUmur(),
             'kategori-umur' => $this->caseKategoriUmur(),
             'akta-kelahiran' => $this->caseAktaKelahiran(),
+            'akta-nikah' => $this->caseAktaNikah(),
             'status-covid' => $this->caseStatusCovid(),
             'suku' => $this->caseSuku(),
             'ktp' => $this->caseKtp(),
@@ -354,6 +362,17 @@ class PendudukRepository
         ];
     }
 
+    private function caseAktaNikah(): array|object
+    {
+        $umur = Umur::countStatistikAktaNikah()->status(Umur::RENTANG)->get();
+        $query = $this->countStatistikPendudukHidup();
+
+        return [
+            'header' => $umur,
+            'footer' => $this->listFooter($umur, $query),
+        ];
+    }
+
     private function caseWithReferensi(string $kategori): array|object
     {
         $referensi = $this->tabelReferensi($kategori);
@@ -373,6 +392,7 @@ class PendudukRepository
         if (request('config_desa')) {
             $configDesa = request('config_desa');
         }
+
         if (isset(request('filter')['tahun']) || isset(request('filter')['bulan'])) {
             $periode = [request('filter')['tahun'] ?? date('Y'), request('filter')['bulan'] ?? '12', '01'];
             $tanggalPeristiwa = Carbon::parse(implode('-', $periode))->endOfMonth()->format('Y-m-d');
@@ -559,5 +579,15 @@ class PendudukRepository
                 'created_at',
             ])
             ->jsonPaginate();
+    }
+
+    protected function setKodeDesa($kodeDesa)
+    {
+        $this->kodeDesa = $kodeDesa;
+    }
+
+    protected function getKodeDesa()
+    {
+        return $this->kodeDesa;
     }
 }
