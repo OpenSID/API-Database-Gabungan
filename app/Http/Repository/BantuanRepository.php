@@ -3,6 +3,7 @@
 namespace App\Http\Repository;
 
 use App\Models\Bantuan;
+use App\Models\Config;
 use App\Models\Kelompok;
 use App\Models\Keluarga;
 use App\Models\Rtm;
@@ -94,7 +95,18 @@ class BantuanRepository
 
     public function caseKategoriPenduduk(): array
     {
-        $header = Bantuan::countStatistikPenduduk()->get();
+        $configDesa = null;
+        $kodeDesa = request('kode_desa') ?? null;
+        $kodeKecamatan = request('kode_kecamatan') ?? null;
+        if($kodeDesa) {
+            $configDesa = Config::where('kode_desa', $kodeDesa)->first()->id;
+        }
+        $header = Bantuan::countStatistikPenduduk()
+                    ->when($kodeKecamatan, static fn($q) => $q->whereHas('config', function ($q) use ($kodeKecamatan) {
+                        return $q->where('kode_kecamatan', $kodeKecamatan);
+                    }))
+                    ->when($configDesa, static fn($q) => $q->where('program.config_id', $configDesa))
+                    ->get();
         $footer = $this->countStatistikKategoriPenduduk();
 
         return [
@@ -106,7 +118,6 @@ class BantuanRepository
     private function countStatistikKategoriPenduduk(): object
     {
         $configDesa = request('config_desa') ?? null;
-
         $bantuan = new Bantuan();
         // if (! isset(request('filter')['tahun']) && ! isset(request('filter')['bulan'])) {
         //     $bantuan->status();
@@ -123,7 +134,18 @@ class BantuanRepository
 
     public function caseKategoriKeluarga(): array
     {
-        $header = Bantuan::countStatistikKeluarga()->get();
+        $configDesa = null;
+        $kodeDesa = request('kode_desa') ?? null;
+        $kodeKecamatan = request('kode_kecamatan') ?? null;
+        if($kodeDesa) {
+            $configDesa = Config::where('kode_desa', $kodeDesa)->first()->id;
+        }
+        $header = Bantuan::countStatistikKeluarga()
+                ->when($kodeKecamatan, static fn($q) => $q->whereHas('config', function ($q) use ($kodeKecamatan) {
+                    return $q->where('kode_kecamatan', $kodeKecamatan);
+                }))
+                ->when($configDesa, static fn($q) => $q->where('program.config_id', $configDesa))
+                ->get();
         $footer = $this->countStatistikKategoriKeluarga();
 
         return [
