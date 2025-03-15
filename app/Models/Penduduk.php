@@ -171,7 +171,7 @@ class Penduduk extends BaseModel
     public function cacat()
     {
         return $this->belongsTo(Cacat::class, 'cacat_id')->withDefault();
-    }    
+    }
 
     /**
      * Define an inverse one-to-one or many relationship.
@@ -511,7 +511,7 @@ class Penduduk extends BaseModel
             'pekerjaan',
             'wargaNegara',
             'golonganDarah',
-            'cacat',            
+            'cacat',
             'kb',
             'statusKawin',
             'statusRekamKtp',
