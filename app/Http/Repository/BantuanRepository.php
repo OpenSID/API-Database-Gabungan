@@ -3,6 +3,7 @@
 namespace App\Http\Repository;
 
 use App\Models\Bantuan;
+use App\Models\BantuanSaja;
 use App\Models\Config;
 use App\Models\Kelompok;
 use App\Models\Keluarga;
@@ -97,15 +98,17 @@ class BantuanRepository
     {
         $configDesa = null;
         $kodeDesa = request('kode_desa') ?? null;
+        $tahun = request('filter')['tahun'] ?? null;
         $kodeKecamatan = request('kode_kecamatan') ?? null;
         if($kodeDesa) {
             $configDesa = Config::where('kode_desa', $kodeDesa)->first()->id;
+            request()->merge(['config_desa' => $configDesa]);
         }
-        $header = Bantuan::countStatistikPenduduk()
+        $header = BantuanSaja::countStatistikPenduduk()
                     ->when($kodeKecamatan, static fn($q) => $q->whereHas('config', function ($q) use ($kodeKecamatan) {
                         return $q->where('kode_kecamatan', $kodeKecamatan);
-                    }))
-                    ->when($configDesa, static fn($q) => $q->where('program.config_id', $configDesa))
+                    }))->when($tahun, static fn($q) => $q->whereYear('sdate', '<=', $tahun)
+                    ->whereYear('edate', '>=', $tahun))
                     ->get();
         $footer = $this->countStatistikKategoriPenduduk();
 
@@ -136,15 +139,17 @@ class BantuanRepository
     {
         $configDesa = null;
         $kodeDesa = request('kode_desa') ?? null;
+        $tahun = request('filter')['tahun'] ?? null;
         $kodeKecamatan = request('kode_kecamatan') ?? null;
         if($kodeDesa) {
             $configDesa = Config::where('kode_desa', $kodeDesa)->first()->id;
+            request()->merge(['config_desa' => $configDesa]);
         }
-        $header = Bantuan::countStatistikKeluarga()
+        $header = BantuanSaja::countStatistikKeluarga()
                 ->when($kodeKecamatan, static fn($q) => $q->whereHas('config', function ($q) use ($kodeKecamatan) {
                     return $q->where('kode_kecamatan', $kodeKecamatan);
-                }))
-                ->when($configDesa, static fn($q) => $q->where('program.config_id', $configDesa))
+                }))->when($tahun, static fn($q) => $q->whereYear('sdate', '<=', $tahun)
+                    ->whereYear('edate', '>=', $tahun))
                 ->get();
         $footer = $this->countStatistikKategoriKeluarga();
 
