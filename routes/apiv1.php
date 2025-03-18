@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
+use App\Http\Controllers\Api\KecamatanController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
@@ -240,6 +241,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
+            Route::get('profile/{kec}', [KecamatanController::class, 'all']);            
             Route::get('desa/{kec}', [DesaController::class, 'all']);            
             Route::get('pembangunan', [PembangunanController::class, 'syncPembangunanOpenDk']);
             Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
