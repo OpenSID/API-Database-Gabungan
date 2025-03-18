@@ -228,14 +228,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('data', [OpendkSynchronizeController::class, 'getData']);
             Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
             Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
-        });        
+        });
     });
 
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
-            Route::get('profile/{kec}', [KecamatanController::class, 'all']);            
-            Route::get('desa/{kec}', [DesaController::class, 'all']);            
+            Route::get('profile/{kec}', [KecamatanController::class, 'all']);
+            Route::get('desa/{kec}', [DesaController::class, 'all']);
             Route::get('pembangunan', [PembangunanController::class, 'syncPembangunanOpenDk']);
             Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
             Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
@@ -247,6 +247,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('keuangan')->group(function () {
             Route::get('apbdes', [KeuanganController::class, 'apbdes']);
             Route::get('laporan_apbdes', [KeuanganController::class, 'laporan_apbdes']);
+            Route::get('summary', [KeuanganController::class, 'summary']);
         });
     });
 
