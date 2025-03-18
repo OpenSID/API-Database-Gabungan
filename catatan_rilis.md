@@ -9,3 +9,7 @@ Di rilis ini, versi 2503.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 ### Perbaikan Bug
 
 1. [#54](https://github.com/OpenSID/API-Database-Gabungan/issues/54) Perbaikan error halaman presisi dan dasbor OpenKab.
+
+### Perubahan Teknis
+
+1. [#47](https://github.com/OpenSID/API-Database-Gabungan/issues/47) Penambahan informasi data json collection postman untuk API database gabungan.
