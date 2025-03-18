@@ -107,8 +107,7 @@ class BantuanRepository
         $header = BantuanSaja::countStatistikPenduduk()
                     ->when($kodeKecamatan, static fn($q) => $q->whereHas('config', function ($q) use ($kodeKecamatan) {
                         return $q->where('kode_kecamatan', $kodeKecamatan);
-                    }))->when($tahun, static fn($q) => $q->whereYear('sdate', '<=', $tahun)
-                    ->whereYear('edate', '>=', $tahun))
+                    }))->when($tahun, static fn($q) => $q->whereYear('sdate', $tahun))
                     ->get();
         $footer = $this->countStatistikKategoriPenduduk();
 

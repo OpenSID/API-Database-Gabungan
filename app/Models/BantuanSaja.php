@@ -6,5 +6,4 @@ class BantuanSaja extends Bantuan
 {
     /** {@inheritdoc} */
     protected $appends = [];
-
 }
