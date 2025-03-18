@@ -23,9 +23,12 @@ use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
+use App\Http\Controllers\Api\KecamatanController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
+use App\Http\Controllers\Api\LaporanPendudukController;
+use App\Http\Controllers\Api\OpendkSynchronizeController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
@@ -98,7 +101,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('dusun', [WilayahController::class, 'dusun']);
         Route::get('rw', [WilayahController::class, 'rw']);
         Route::get('rt', [WilayahController::class, 'rt']);
-        Route::get('penduduk', [WilayahController::class, 'penduduk']);
     });
 
     Route::prefix('penduduk')->middleware([])->group(function () {
@@ -219,10 +221,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
+    // Sinkronisasi OpenDK
+    Route::prefix('opendk')->group(function () {
+        Route::get('', [OpendkSynchronizeController::class, 'index'])->name('synchronize.opendk.index');
+        Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+            Route::get('data', [OpendkSynchronizeController::class, 'getData']);
+            Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
+            Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
+        });        
+    });
+
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
-            Route::get('desa/{kec}', [DesaController::class, 'all']);
+            Route::get('profile/{kec}', [KecamatanController::class, 'all']);            
+            Route::get('desa/{kec}', [DesaController::class, 'all']);            
             Route::get('pembangunan', [PembangunanController::class, 'syncPembangunanOpenDk']);
             Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
             Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
@@ -288,6 +301,12 @@ Route::controller(StatistikController::class)
         Route::get('/get-list-desa/{id}', 'getListDesa');
         Route::get('/get-list-penerima', 'getListPenerimaBantuan');
     });
+
+// wilayah
+// Wilayah
+Route::prefix('wilayah')->group(function () {
+    Route::get('penduduk', [WilayahController::class, 'penduduk']);
+});
 
 // Bantuan
 // Data utama website
