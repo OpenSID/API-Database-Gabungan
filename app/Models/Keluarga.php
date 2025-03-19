@@ -55,6 +55,11 @@ class Keluarga extends BaseModel
         return $this->belongsTo(Wilayah::class, 'id_cluster');
     }
 
+    public function config()
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
+    }
+
     /**
      * Scope untuk Statistik.
      */

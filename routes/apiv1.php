@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
+use App\Http\Controllers\Api\KecamatanController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
@@ -52,21 +53,21 @@ Route::post('/signin', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('validate-token', function (Request $request) {
         $user = $request->user();
-    
+
         // Check if the user has an authenticated token
         if ($user && $user->currentAccessToken()) {
             // Get the current access token
             $token = $user->currentAccessToken();
-    
+
             // Fetch the abilities associated with the token
             $abilities = $token->abilities;
-    
+
             return response()->json([
                 'user' => $user,
                 'abilities' => $abilities,
             ]);
         }
-    
+
         return response()->json([
             'message' => 'No active token found.',
         ], 401);
@@ -79,12 +80,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/pariwisata', PariwisataController::class);
     Route::get('/infrastruktur', [InfrastrukturController::class, 'data']);
-    
+
     // API Data Presisi
     Route::get('/ketenagakerjaan', KetenagakerjaanController::class);
     Route::get('/pendidikan', PendidikanController::class);
 
-    
+
     Route::prefix('data-presisi')->group(function () {
         Route::controller(SandangController::class)
         ->prefix('sandang')->group(function () {
@@ -125,6 +126,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
+            Route::get('/', 'keluarga');
             Route::get('/show', 'show');
         });
 
@@ -191,13 +193,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/update', 'update');
         });
 
-    Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
-        Route::get('opendk/bantuan', [BantuanController::class, 'syncBantuanOpenDk']);
-        Route::get('opendk/bantuan/{id}', [BantuanController::class, 'getBantuanOpenDk']);
-        Route::get('/opendk/bantuan-peserta', [BantuanController::class, 'syncBantuanPesertaOpenDk']);
-        Route::get('/opendk/bantuan-peserta/{id}/{kode_desa}', [BantuanController::class, 'getBantuanPesertaOpenDk']);
-    });
-    
      // Prodeskel
     Route::prefix('prodeskel')->group(function () {
         Route::prefix('ddk')->group(function () {
@@ -224,6 +219,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/kesehatan', 'kesehatan');
             Route::get('/jaminan-sosial', 'jaminanSosial');
             Route::get('/penduduk-potensi-kelembagaan', 'pendudukPotensiKelembagaan');
+        });
+    });
+
+    // Sinkronisasi OpenDK
+    Route::prefix('opendk')->group(function () {
+        Route::get('', [OpendkSynchronizeController::class, 'index'])->name('synchronize.opendk.index');
+        Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+            Route::get('data', [OpendkSynchronizeController::class, 'getData']);
+            Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
+            Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
         });        
     });
 
@@ -240,10 +245,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
+            Route::get('profile/{kec}', [KecamatanController::class, 'all']);            
             Route::get('desa/{kec}', [DesaController::class, 'all']);            
             Route::get('pembangunan', [PembangunanController::class, 'syncPembangunanOpenDk']);
             Route::get('pembangunan/{id}', [PembangunanController::class, 'getPembangunanOpenDk']);
             Route::get('pembangunan-rincian/{id}/{kode_desa}', [PembangunanController::class, 'getPembangunanRincianOpenDk']);
+            Route::get('bantuan', [BantuanController::class, 'syncBantuanOpenDk']);
+            Route::get('bantuan/{id}', [BantuanController::class, 'getBantuanOpenDk']);
+            Route::get('bantuan-peserta', [BantuanController::class, 'syncBantuanPesertaOpenDk']);
+            Route::get('bantuan-peserta/{id}/{kode_desa}', [BantuanController::class, 'getBantuanPesertaOpenDk']);
         });
         Route::prefix('keuangan')->group(function () {
             Route::get('apbdes', [KeuanganController::class, 'apbdes']);
@@ -251,22 +261,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
-    Route::post('/suplemen', [SuplemenController::class, 'store']);
-    Route::post('/suplemen/terdata/hapus', [SuplemenController::class, 'delete_multiple'])->name('suplemen-terdata.delete-multiple');
-    Route::post('/suplemen/update/{id}', [SuplemenController::class, 'update']);
-    Route::get('/suplemen', [SuplemenController::class, 'index']);
-    Route::get('/suplemen/terdata/{sasaran}/{id}', [SuplemenController::class, 'detail']);
-    Route::get('/suplemen/sasaran', [SuplemenController::class, 'sasaran']);
-    Route::get('/suplemen/status', [SuplemenController::class, 'status']);
-    Route::delete('/suplemen/hapus/{id}', [SuplemenController::class, 'destroy'])->name('suplemen.hapus');
+    Route::prefix('suplemen')->group(function () {
+        Route::post('/', [SuplemenController::class, 'store']);
+        Route::post('terdata/hapus', [SuplemenController::class, 'delete_multiple'])->name('suplemen-terdata.delete-multiple');
+        Route::post('update/{id}', [SuplemenController::class, 'update']);
+        Route::get('', [SuplemenController::class, 'index']);
+        Route::get('terdata/{sasaran}/{id}', [SuplemenController::class, 'detail']);
+        Route::get('sasaran', [SuplemenController::class, 'sasaran']);
+        Route::get('status', [SuplemenController::class, 'status']);
+        Route::delete('hapus/{id}', [SuplemenController::class, 'destroy'])->name('suplemen.hapus');
+    });
 
-    Route::get('/point', [PointController::class, 'index']);
-    Route::get('/point/status', [PointController::class, 'status']);
-    Route::delete('/point/hapus/{id}', [PointController::class, 'destroy'])->name('point.hapus');
-    Route::post('/point/multiple-delete', [PointController::class, 'delete_multiple'])->name('point.delete-multiple');
+    Route::prefix('point')->group(function () {
+        Route::get('', [PointController::class, 'index']);
+        Route::get('status', [PointController::class, 'status']);
+        Route::delete('hapus/{id}', [PointController::class, 'destroy'])->name('point.hapus');
+        Route::post('multiple-delete', [PointController::class, 'delete_multiple'])->name('point.delete-multiple');
+        Route::post('', [PointController::class, 'store']);
+    });
+
     Route::get('/subpoint/{id}', [PointController::class, 'detail']);
-    Route::post('/point', [PointController::class, 'store']);
-
     Route::get('/plan', [PlanController::class, 'index']);
 });
 
@@ -295,7 +309,7 @@ Route::controller(StatistikController::class)
         Route::get('/get-list-tahun', 'getListTahun');
         Route::get('/get-list-kabupaten', 'getListKabupaten');
         Route::get('/get-list-kecamatan/{id}', 'getListKecamatan');
-        Route::get('/get-list-desa/{id}', 'getListDesa');        
+        Route::get('/get-list-desa/{id}', 'getListDesa');
         Route::get('/get-list-penerima', 'getListPenerimaBantuan');
     });
 
