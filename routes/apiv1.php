@@ -126,6 +126,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
+            Route::get('/', 'keluarga');
             Route::get('/show', 'show');
         });
 
@@ -219,6 +220,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/jaminan-sosial', 'jaminanSosial');
             Route::get('/penduduk-potensi-kelembagaan', 'pendudukPotensiKelembagaan');
         });
+    });
+
+    // Sinkronisasi OpenDK
+    Route::prefix('opendk')->group(function () {
+        Route::get('', [OpendkSynchronizeController::class, 'index'])->name('synchronize.opendk.index');
+        Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+            Route::get('data', [OpendkSynchronizeController::class, 'getData']);
+            Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
+            Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
+        });        
     });
 
     // Sinkronisasi OpenDK
