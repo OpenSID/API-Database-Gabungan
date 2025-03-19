@@ -171,7 +171,7 @@ class Penduduk extends BaseModel
     public function cacat()
     {
         return $this->belongsTo(Cacat::class, 'cacat_id')->withDefault();
-    }    
+    }
 
     /**
      * Define an inverse one-to-one or many relationship.
@@ -511,7 +511,7 @@ class Penduduk extends BaseModel
             'pekerjaan',
             'wargaNegara',
             'golonganDarah',
-            'cacat',            
+            'cacat',
             'kb',
             'statusKawin',
             'statusRekamKtp',
@@ -549,9 +549,9 @@ class Penduduk extends BaseModel
     public function getAlamatWilayahAttribute(): string
     {
         if ($this->id_kk != null) {
-            return $this->keluarga->alamat . ' RT ' . $this->keluarga->wilayah->rt . ' / RW ' . $this->keluarga->wilayah->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->keluarga->wilayah->dusun);
+            return $this->keluarga->alamat . ' RT ' . $this->keluarga?->wilayah?->rt . ' / RW ' . $this->keluarga->wilayah?->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->keluarga->wilayah?->dusun);
         }
 
-        return $this->alamat_sekarang . ' RT ' . $this->wilayah->rt . ' / RW ' . $this->wilayah->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah->dusun);
+        return $this->alamat_sekarang . ' RT ' . $this->wilayah?->rt . ' / RW ' . $this->wilayah?->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah?->dusun);
     }
 }

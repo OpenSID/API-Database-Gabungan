@@ -24,6 +24,8 @@ class DesaTransformer extends TransformerAbstract
             'nama_kecamatan' => $config->nama_kecamatan,
             'kode_kecamatan' => $config->kode_kecamatan,
             'website' => $config->website,
+            'lat' => $config->lat,
+            'lng' => $config->lng,
             'path' => $config->path,
             'sebutan_desa' => $config->sebutanDesa->value ?? '',
         ];
