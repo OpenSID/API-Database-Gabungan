@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\hasOne;
 
 class Rtm extends BaseModel
@@ -32,6 +33,26 @@ class Rtm extends BaseModel
     public function kepalaKeluarga()
     {
         return $this->hasOne(Penduduk::class, 'id', 'nik_kepala');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiKesehatans(): HasMany
+    {
+        return $this->hasMany(DataPresisiKesehatan::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiKesehatan(): hasOne
+    {
+        return $this->hasOne(DataPresisiKesehatan::class, 'rtm_id', 'id');
     }
 
     /**
@@ -86,5 +107,10 @@ class Rtm extends BaseModel
     public function getJumlahKkAttribute()
     {
         return $this->anggota()->distinct('id_kk')->count('id_kk');
+    }
+
+    public function config()
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
     }
 }
