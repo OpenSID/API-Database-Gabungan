@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
+use App\Http\Controllers\Api\DataPresisiKesehatanController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
@@ -90,6 +91,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(SandangController::class)
         ->prefix('sandang')->group(function () {
             Route::get('/', 'sandang');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+
+        Route::controller(DataPresisiKesehatanController::class)
+        ->prefix('kesehatan')->group(function () {
+            Route::get('/', 'kesehatan');
             Route::post('/update/{id}', 'update');
             Route::get('/rtm', 'rtm');
         });
