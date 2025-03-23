@@ -7,6 +7,7 @@ Di rilis ini, versi 2503.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 3. [#61](https://github.com/OpenSID/API-Database-Gabungan/issues/61) Penambahan API statistik OpenDK.
 4. [#63](https://github.com/OpenSID/API-Database-Gabungan/issues/63) Penambahan API keluarga untuk kebutuhan OpenDK.
 5. [#64](https://github.com/OpenSID/API-Database-Gabungan/issues/64) Penambahan API untuk pengecekan penduduk berdasarkan nik, tanggal lahir dan kode kecamatan. 
+6. [#66](https://github.com/OpenSID/API-Database-Gabungan/issues/66) Penambahan API statistik anggaran desa.
 
 ### Perbaikan Bug
 
