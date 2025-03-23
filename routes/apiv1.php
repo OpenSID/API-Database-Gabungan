@@ -126,6 +126,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
+            Route::get('/', 'keluarga');
             Route::get('/show', 'show');
         });
 
@@ -231,6 +232,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         });
     });
 
+    // Sinkronisasi OpenDK
+    Route::prefix('opendk')->group(function () {
+        Route::get('', [OpendkSynchronizeController::class, 'index'])->name('synchronize.opendk.index');
+        Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
+            Route::get('data', [OpendkSynchronizeController::class, 'getData']);
+            Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
+            Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
+        });        
+    });
+
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {
         Route::get('desa', [DesaController::class, 'index']);
         Route::prefix('opendk')->group(function () {
@@ -315,3 +326,7 @@ Route::get('data-website', WebsiteController::class);
 Route::get('data-summary', SummaryController::class);
 // Desa teraktif
 Route::get('/desa-aktif', [KategoriDesaController::class, 'index']);
+
+Route::prefix('opendk')->group(function () {
+    Route::post('/penduduk-nik-tanggalahir', [PendudukController::class, 'pendudukNikTanggalahir']);
+});
