@@ -12,7 +12,6 @@ class TokenController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $token = null;
         $generatedToken = $request->get('generate');
         // hanya satu token yang valid untuk user yang sama
         if ($generatedToken) {
@@ -21,9 +20,12 @@ class TokenController extends Controller
             });
 
             $token = $request->user()->createToken('auth_token')->plainTextToken;
-            Session::flash('token', $token);
+            $lastToken = $request->user()->tokens()->first();
+            $lastToken->plaintext = $token;
+            $lastToken->save();
             return redirect()->route('token');
         }
+        $token = $request->user()->tokens->first()?->plaintext ?? null;
         return view('token.index', compact('token'));
     }
 }
