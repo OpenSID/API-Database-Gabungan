@@ -42,6 +42,13 @@ class Umur extends BaseModel
         return $this->scopeCountStatistik($query, 'akta');
     }
 
+    public function scopecountStatistikAktaNikah($query)
+    {
+        // $where = "AND (DATE_FORMAT(FROM_DAYS(TO_DAYS( NOW()) - TO_DAYS(tanggallahir)) , '%Y')+0)>=dari AND (DATE_FORMAT(FROM_DAYS( TO_DAYS(NOW()) - TO_DAYS(tanggallahir)) , '%Y')+0) <= sampai AND akta_lahir <> ''";
+
+        return $this->scopeCountStatistik($query, 'akta-nikah');
+    }
+
     /**
      * Scope untuk Statistik Umur Rentang dan Kategori.
      */
@@ -83,6 +90,8 @@ class Umur extends BaseModel
                     return $q->where(['config_id' => $configDesa]);
                 })->when($type == 'akta', function ($q) {
                     return $q->whereNotNull('akta_lahir');
+                })->when($type == 'akta-nikah', function ($q) {
+                    return $q->where(function($r){ return $r->where('status_kawin', 2)->whereNotNull('akta_perkawinan')->orWhereNotIn('akta_perkawinan',[' ','-']);});
                 })->toBoundSql();
         $subQuery = "select  tpu.id, count(tp.umur) as total, sex  from ($queryPenduduk) as tp
             join tweb_penduduk_umur tpu on tpu.config_id = $defaultConfigId and (tp.umur BETWEEN tpu.dari and tpu.sampai) and tpu.status = ".$this->getKlasifikasi().'
