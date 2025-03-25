@@ -9,6 +9,7 @@ Di rilis ini, versi 2503.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 5. [#64](https://github.com/OpenSID/API-Database-Gabungan/issues/64) Penambahan API untuk pengecekan penduduk berdasarkan nik, tanggal lahir dan kode kecamatan. 
 6. [#66](https://github.com/OpenSID/API-Database-Gabungan/issues/66) Penambahan API statistik anggaran desa.
 7. [#52](https://github.com/OpenSID/API-Database-Gabungan/issues/52) Penambahan konfig API database gabungan + user manajemen.
+8. [#67](https://github.com/OpenSID/API-Database-Gabungan/issues/67) Penambahan api dan unit testing data presisi kesehatan.
 
 ### Perbaikan Bug
 
