@@ -11,6 +11,7 @@ use App\Models\Penduduk;
 use App\Models\PendudukStatus;
 use App\Models\PendudukStatusDasar;
 use App\Models\Sex;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -196,6 +197,38 @@ class PendudukController extends Controller
                 'success' => false,
                 'message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function syncPendudukOpenDk()
+    {
+        return $this->fractal($this->penduduk->listPendudukSyncOpenDk(), new PendudukTransformer, 'penduduk')->respond();
+    }
+
+    public function pendudukNikTanggalahir(Request $request)
+    {
+        $response = Penduduk::where('nik', $request->nik)
+        ->when($request->filled('tanggallahir'), function ($query) use ($request) {
+            return $query->where('tanggallahir', $request->tanggallahir);
+        })
+        ->when($request->filled('kode_kecamatan'), function ($query) use ($request) {
+            return $query->whereRelation('config', 'kode_kecamatan', $request->kode_kecamatan);
+        })
+        ->first();
+
+
+        if($response)
+        {
+            return response()->json([
+                'success' => true,
+                'data' => $response
+            ], Response::HTTP_OK);
+
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'data tidak ditemukn',
+            ], Response::HTTP_ALREADY_REPORTED);
         }
     }
 }
