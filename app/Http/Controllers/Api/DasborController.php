@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Response;
-use App\Http\Controllers\Controller;
 use App\Http\Repository\DasborRepository;
 
 class DasborController extends Controller

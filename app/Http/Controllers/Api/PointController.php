@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Repository\PointRepository;
 use App\Http\Transformers\PointTransformer;
 use App\Models\Point;

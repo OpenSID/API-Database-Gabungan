@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Repository\PlanRepository;
 use App\Http\Transformers\PlanTransformer;
 use App\Models\Lokasi;
