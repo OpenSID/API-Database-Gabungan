@@ -4,6 +4,7 @@ namespace App\Http\Repository;
 
 use App\Models\DataPresisiJaminanSosial;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DataPresisiJaminanSosialRepository
@@ -38,6 +39,12 @@ class DataPresisiJaminanSosialRepository
                         ->orWhere('keluarga.no_kk', 'like', "%{$value}%");
                     });
                 }),
+            ])->allowedFields('penduduk.nik', 'penduduk.nama', 'keluarga.no_kk')
+            ->allowedIncludes([
+                'keluarga',
+                'rtm',
+                'penduduk',
+                'config',
             ])
             ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'anggota_id', 'config_id'])
             ->jsonPaginate();

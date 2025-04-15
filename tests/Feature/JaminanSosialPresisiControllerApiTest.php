@@ -38,12 +38,15 @@ class JaminanSosialPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
-        $url = '/api/v1/data-presisi/jaminan-sosial?'.http_build_query([]);
+        $url = '/api/v1/data-presisi/jaminan-sosial?'.http_build_query([
+            'include' => 'keluarga,penduduk',
+
+        ]);
         $total = DataPresisiJaminanSosial::tahunAktif()->count();
         $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonPath('meta.pagination.total', $total);
-
+        //print_r($response->json());
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
