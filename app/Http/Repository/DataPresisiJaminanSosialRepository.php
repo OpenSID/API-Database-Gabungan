@@ -45,6 +45,8 @@ class DataPresisiJaminanSosialRepository
                 'rtm',
                 'penduduk',
                 'config',
+                'listAnggota',
+                AllowedInclude::count('anggota'),
             ])
             ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'anggota_id', 'config_id'])
             ->jsonPaginate();

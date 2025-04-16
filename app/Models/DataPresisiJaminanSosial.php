@@ -34,6 +34,16 @@ class DataPresisiJaminanSosial extends BaseUuidModel
         return $this->hasOne(Config::class, 'id', 'config_id');
     }
 
+    public function anggota()
+    {
+        return $this->hasMany(DataPresisiJaminanSosial::class, 'rtm_id', 'rtm_id')->where('data_presisi_tahun_id', '!=', $this->data_presisi_tahun_id);
+    }
+
+    public function listAnggota()
+    {
+        return $this->anggota()->with('penduduk');
+    }
+
     public function tahun()
     {
         return $this->hasOne(DataPresisiTahun::class, 'uuid', 'data_presisi_tahun_id');
