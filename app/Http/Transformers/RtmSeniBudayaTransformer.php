@@ -23,8 +23,11 @@ class RtmSeniBudayaTransformer extends TransformerAbstract
             'kepala_keluarga' => optional($item->kepalaKeluarga)->nama ?? 'TIDAK TAHU',
             'dtks' => $item->terdaftar_dtks ? 'Terdaftar' : 'Tidak Terdaftar',
             'jumlah_anggota' => $item->anggota->count(),
-            'jenis_seni_yang_dikuasai' => $item->ho_anggota?->dataPresisiSeniBudaya?->jenis_seni_yang_dikuasai,
-            'jumlah_penghasilan_dari_seni' => $item->ho_anggota?->dataPresisiSeniBudaya?->jumlah_penghasilan_dari_seni,
+            'jenis_seni_yang_dikuasai' => $item->ho_anggota?->dataPresisiSeniBudaya?->jenis_seni_yang_dikuasai ?? 'TIDAK TAHU',
+            'jenis_seni_value' => $item->ho_anggota?->dataPresisiSeniBudaya?->jenis_seni_yang_dikuasai['jenis_seni_value'] ?? 'TIDAK TAHU',
+            'sub_jenis_seni' => $item->ho_anggota?->dataPresisiSeniBudaya?->jenis_seni_yang_dikuasai['sub_jenis_seni'] ?? 'TIDAK TAHU',
+
+            'jumlah_penghasilan_dari_seni' => $item->ho_anggota?->dataPresisiSeniBudaya?->jumlah_penghasilan_dari_seni ?? 'TIDAK TAHU',
             'jumlah_kk' => $item->jumlah_kk,
             'alamat' => $item->kepalaKeluarga->alamat_wilayah,
             'dusun' => $item->kepalaKeluarga->keluarga->wilayah->dusun,
