@@ -3,6 +3,7 @@
 namespace App\Http\Transformers;
 
 use App\Enums\AgamaEnum;
+use App\Enums\FrekwensiAktivitasKeagamaanEnum;
 use App\Models\DataPresisiAgama;
 use League\Fractal\TransformerAbstract;
 
@@ -15,6 +16,7 @@ class DataPresisiAgamaTransformer extends TransformerAbstract
     public function transform(DataPresisiAgama $item)
     {
         $item->id = $item->uuid;
+        $item->frekwensi = FrekwensiAktivitasKeagamaanEnum::getDescription($item->frekwensi_mengikuti_kegiatan_setahun) ?? null;
         $item->agama = AgamaEnum::getDescription($item->agama_id) ?? null;
         return $item->attributesToArray();
     }
@@ -71,6 +73,7 @@ class DataPresisiAgamaTransformer extends TransformerAbstract
                 'nik' => $item->penduduk->nik ?? null,
                 'nama' => $item->penduduk->nama ?? null,
                 'agama' => AgamaEnum::getDescription($item->agama_id) ?? null,
+                'frekwensi' => FrekwensiAktivitasKeagamaanEnum::getDescription($item->frekwensi_mengikuti_kegiatan_setahun) ?? null
             ]);
         }, 'anggota');
     }

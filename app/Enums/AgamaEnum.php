@@ -26,7 +26,7 @@ class AgamaEnum extends Enum
             self::BUDHA     => 'BUDHA',
             self::KHONGHUCU => 'KHONGHUCU',
             self::LAINNYA   => 'Kepercayaan Terhadap Tuhan YME / Lainnya',
-            default => parent::getDescription($value),
+            default => '',
         };
     }
 }
