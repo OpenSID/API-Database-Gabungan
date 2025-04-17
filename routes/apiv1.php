@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
+use App\Http\Controllers\Api\DataPresisiKetenagakerjaanController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
@@ -98,6 +99,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(DataPresisiKesehatanController::class)
         ->prefix('kesehatan')->group(function () {
             Route::get('/', 'kesehatan');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+
+        Route::controller(DataPresisiKetenagakerjaanController::class)
+        ->prefix('ketenagakerjaan')->group(function () {
+            Route::get('/', 'ketenagakerjaan');
             Route::post('/update/{id}', 'update');
             Route::get('/rtm', 'rtm');
         });
