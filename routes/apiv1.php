@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
+use App\Http\Controllers\Api\DataPresisiAgamaController;
 use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
 use App\Http\Controllers\Api\DataPresisiPendidikanController;
@@ -105,6 +106,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/rtm', 'rtm');
         });
 
+        Route::controller(DataPresisiAgamaController::class)
+        ->prefix('agama')->group(function () {
+            Route::get('/', 'index');
+        });
+        
         Route::controller(DataPresisiJaminanSosialController::class)
         ->prefix('jaminan-sosial')->group(function () {
             Route::get('/', 'index');
