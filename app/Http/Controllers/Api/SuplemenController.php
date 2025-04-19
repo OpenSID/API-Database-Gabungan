@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Repository\SuplemenRepository;
 use App\Http\Transformers\SuplemenTerdataTransformer;
 use App\Http\Transformers\SuplemenTransformer;

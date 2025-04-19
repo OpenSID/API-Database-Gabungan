@@ -21,6 +21,8 @@ use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
+use App\Http\Controllers\Api\DataPresisiPendidikanController;
+use App\Http\Controllers\Api\DataPresisiPanganController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
@@ -106,6 +108,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(DataPresisiJaminanSosialController::class)
         ->prefix('jaminan-sosial')->group(function () {
             Route::get('/', 'index');
+        });
+        
+        Route::controller(DataPresisiPendidikanController::class)
+        ->prefix('pendidikan')->group(function () {
+            Route::get('/', 'pendidikan');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+        
+        Route::controller(DataPresisiPanganController::class)
+        ->prefix('pangan')->group(function () {
+            Route::get('/', 'pangan');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
         });
     });
 
