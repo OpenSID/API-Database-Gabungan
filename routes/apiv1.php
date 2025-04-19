@@ -19,8 +19,13 @@ use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
+use App\Http\Controllers\Api\DataPresisiAdatController;
+use App\Http\Controllers\Api\DataPresisiAgamaController;
+use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
 use App\Http\Controllers\Api\DataPresisiKetenagakerjaanController;
+use App\Http\Controllers\Api\DataPresisiPendidikanController;
+use App\Http\Controllers\Api\DataPresisiPanganController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
@@ -106,6 +111,35 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(DataPresisiKetenagakerjaanController::class)
         ->prefix('ketenagakerjaan')->group(function () {
             Route::get('/', 'ketenagakerjaan');
+             Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+        
+        Route::controller(DataPresisiAdatController::class)
+        ->prefix('adat')->group(function () {
+            Route::get('/', 'index');
+        });
+        
+        Route::controller(DataPresisiAgamaController::class)
+        ->prefix('agama')->group(function () {
+            Route::get('/', 'index');
+        });
+        
+        Route::controller(DataPresisiJaminanSosialController::class)
+        ->prefix('jaminan-sosial')->group(function () {
+            Route::get('/', 'index');
+        });
+        
+        Route::controller(DataPresisiPendidikanController::class)
+        ->prefix('pendidikan')->group(function () {
+            Route::get('/', 'pendidikan');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+        
+        Route::controller(DataPresisiPanganController::class)
+        ->prefix('pangan')->group(function () {
+            Route::get('/', 'pangan');
             Route::post('/update/{id}', 'update');
             Route::get('/rtm', 'rtm');
         });
@@ -255,7 +289,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('data', [OpendkSynchronizeController::class, 'getData']);
             Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
             Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
-        });        
+        });
     });
 
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {

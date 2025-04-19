@@ -2,22 +2,21 @@
 
 namespace App\Http\Repository;
 
-use App\Models\DataPresisiKesehatan;
+use App\Models\DataPresisiPangan;
 use App\Models\Rtm;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class DataPresisiKesehatanRepository
+class DataPresisiPanganRepository
 {
-    public function listKesehatan()
+    public function listPangan()
     {
-        return QueryBuilder::for(DataPresisiKesehatan::filterWilayah())
+        return QueryBuilder::for(DataPresisiPangan::filterWilayah())
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('rtm_id'),
                 AllowedFilter::exact('config_id'),
                 AllowedFilter::exact('keluarga_id'),
-                AllowedFilter::exact('anggota_id'),
                 AllowedFilter::exact('status_pengisian'),
                 AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
                     $query->whereHas('config', function ($query) use ($value) {
@@ -29,16 +28,13 @@ class DataPresisiKesehatanRepository
                         $query->where('kode_desa', $value);
                     });
                 }),
-                AllowedFilter::callback('penduduk', function ($query, $value) {
-                    $query->where('nama', $value);
-                }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
                         $query->where('status_pengisian', 'like', "%{$value}%");
                     });
                 }),
             ])
-            ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'anggota_id', 'tanggal_pengisian'])
+            ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'tanggal_pengisian'])
             ->jsonPaginate();
     }
 
@@ -49,6 +45,7 @@ class DataPresisiKesehatanRepository
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('nik_kepala'),
                 AllowedFilter::exact('no_kk'),
+                AllowedFilter::exact('config_id'),
                 AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
                     $query->whereHas('config', function ($query) use ($value) {
                         $query->where('kode_kecamatan', $value);
