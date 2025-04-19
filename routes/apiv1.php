@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\DataPresisiAdatController;
 use App\Http\Controllers\Api\DataPresisiAgamaController;
 use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
+use App\Http\Controllers\Api\DataPresisiKetenagakerjaanController;
 use App\Http\Controllers\Api\DataPresisiPendidikanController;
 use App\Http\Controllers\Api\DataPresisiPanganController;
 use App\Http\Controllers\Api\DDKController;
@@ -107,6 +108,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/rtm', 'rtm');
         });
 
+        Route::controller(DataPresisiKetenagakerjaanController::class)
+        ->prefix('ketenagakerjaan')->group(function () {
+            Route::get('/', 'ketenagakerjaan');
+             Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+        
         Route::controller(DataPresisiAdatController::class)
         ->prefix('adat')->group(function () {
             Route::get('/', 'index');

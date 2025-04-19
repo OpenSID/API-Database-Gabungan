@@ -7,6 +7,7 @@ Di rilis ini, versi 2504.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 3. [#72](https://github.com/OpenSID/API-Database-Gabungan/issues/72) Penambahan API jaminan sosial bersumber dari modul Data Presis.
 4. [#80](https://github.com/OpenSID/API-Database-Gabungan/issues/80) Penambahan API Presisi Agama.
 5. [#81](https://github.com/OpenSID/API-Database-Gabungan/issues/81) Penambahan API Presisi Adat.
+6. [#82](https://github.com/OpenSID/API-Database-Gabungan/issues/82) Penambahan API modul data presisi ketenagakerjaan.
 
 ### Perbaikan Bug
 
