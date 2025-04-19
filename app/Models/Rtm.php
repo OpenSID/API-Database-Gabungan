@@ -76,6 +76,26 @@ class Rtm extends BaseModel
     }
 
     /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiPendidikans(): HasMany
+    {
+        return $this->hasMany(DataPresisiPendidikan::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiPendidikan(): hasOne
+    {
+        return $this->hasOne(DataPresisiPendidikan::class, 'rtm_id', 'id');
+    }
+
+    /**
      * Define a one-to-many relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany

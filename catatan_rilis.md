@@ -3,6 +3,7 @@ Di rilis ini, versi 2504.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 #### Penambahan Fitur
 
 1. [#78](https://github.com/OpenSID/API-Database-Gabungan/issues/78) Penambahan API data presisi pangan dan membuat unit testing.
+2. [#79](https://github.com/OpenSID/API-Database-Gabungan/issues/79) Penambahan API data presisi pendidikan dan membuat unit testing.
 
 ### Perbaikan Bug
 
