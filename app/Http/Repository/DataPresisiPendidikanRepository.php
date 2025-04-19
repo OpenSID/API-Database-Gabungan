@@ -2,16 +2,16 @@
 
 namespace App\Http\Repository;
 
-use App\Models\DataPresisiKesehatan;
+use App\Models\DataPresisiPendidikan;
 use App\Models\Rtm;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class DataPresisiKesehatanRepository
+class DataPresisiPendidikanRepository
 {
-    public function listKesehatan()
+    public function listPendidikan()
     {
-        return QueryBuilder::for(DataPresisiKesehatan::filterWilayah())
+        return QueryBuilder::for(DataPresisiPendidikan::filterWilayah())
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('rtm_id'),
@@ -49,6 +49,7 @@ class DataPresisiKesehatanRepository
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('nik_kepala'),
                 AllowedFilter::exact('no_kk'),
+                AllowedFilter::exact('config_id'),
                 AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
                     $query->whereHas('config', function ($query) use ($value) {
                         $query->where('kode_kecamatan', $value);
