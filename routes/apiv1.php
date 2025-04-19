@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
+use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
 use App\Http\Controllers\Api\DataPresisiPendidikanController;
 use App\Http\Controllers\Api\DataPresisiPanganController;
@@ -104,6 +105,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/rtm', 'rtm');
         });
 
+        Route::controller(DataPresisiJaminanSosialController::class)
+        ->prefix('jaminan-sosial')->group(function () {
+            Route::get('/', 'index');
+        });
+        
         Route::controller(DataPresisiPendidikanController::class)
         ->prefix('pendidikan')->group(function () {
             Route::get('/', 'pendidikan');
@@ -263,7 +269,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('data', [OpendkSynchronizeController::class, 'getData']);
             Route::get('/sync-penduduk-opendk', [PendudukController::class, 'syncPendudukOpenDk']);
             Route::get('laporan-penduduk', [LaporanPendudukController::class, 'index']);
-        });        
+        });
     });
 
     Route::middleware(['abilities:synchronize-opendk-create'])->group(function () {

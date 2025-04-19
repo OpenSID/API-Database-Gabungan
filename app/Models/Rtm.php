@@ -34,6 +34,16 @@ class Rtm extends BaseModel
     {
         return $this->hasOne(Penduduk::class, 'id', 'nik_kepala');
     }
+    /**
+     * Definisi dengan nama baru agar tidak menjalankan query yang tidak dibutuhkan karena pada
+     * model penduduk sudah ada variable $appends
+     *
+     * @return hasOne
+     */
+    public function kepalaKeluargaSaja()
+    {
+        return $this->hasOne(PendudukSaja::class, 'id', 'nik_kepala');
+    }
 
     /**
      * Define a one-to-one relationship.
@@ -109,7 +119,7 @@ class Rtm extends BaseModel
     {
         return $this->hasOne(Penduduk::class, 'id_rtm', 'no_kk')->status();
     }
-    
+
     /**
      * Scope query untuk bdt.
      *
