@@ -112,6 +112,10 @@ class Penduduk extends BaseModel
     {
         return $this->hasOne(DataPresisiSeniBudaya::class, 'anggota_id')->withDefault();
     }
+    public function dataPresisiPendidikan()
+    {
+        return $this->hasOne(DataPresisiPendidikan::class, 'anggota_id')->withDefault();
+    }
 
     /**
      * Define an inverse one-to-one or many relationship.
