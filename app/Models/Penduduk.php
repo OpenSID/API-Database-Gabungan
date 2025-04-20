@@ -108,7 +108,6 @@ class Penduduk extends BaseModel
         return $this->hasOne(DataPresisiKesehatan::class, 'anggota_id')->withDefault();
     }
 
-
     public function dataPresisiSeniBudaya()
     {
         return $this->hasOne(DataPresisiSeniBudaya::class, 'anggota_id')->withDefault();
@@ -118,6 +117,7 @@ class Penduduk extends BaseModel
     {
         return $this->hasOne(DataPresisiKetenagakerjaan::class, 'anggota_id')->withDefault();
     }
+
     public function dataPresisiPendidikan()
     {
         return $this->hasOne(DataPresisiPendidikan::class, 'anggota_id')->withDefault();

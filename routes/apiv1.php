@@ -109,7 +109,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/rtm', 'rtm');
         });
 
-
         Route::controller(DataPresisiSeniBudayaController::class)
         ->prefix('seni-budaya')->group(function () {
             Route::get('/', 'seniBudaya');
@@ -134,6 +133,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/', 'index');
         });
         
+        Route::controller(DataPresisiSeniBudayaController::class)
+        ->prefix('seni-budaya')->group(function () {
+            Route::get('/', 'seniBudaya');
+             Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+
         Route::controller(DataPresisiJaminanSosialController::class)
         ->prefix('jaminan-sosial')->group(function () {
             Route::get('/', 'index');
