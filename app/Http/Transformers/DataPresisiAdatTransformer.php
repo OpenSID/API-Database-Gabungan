@@ -39,6 +39,7 @@ class DataPresisiAdatTransformer extends TransformerAbstract
                 'id' => $item->id ?? null,
                 'nik' => $item->nik ?? null,
                 'nama' => $item->nama ?? null,
+                'keluarga' => $item->keluarga?->attributesToArray() ?? null,
             ];
         }, 'penduduk');
     }
