@@ -23,6 +23,8 @@ class DataPresisiJaminanSosialTransformer extends TransformerAbstract
             return [
                 'id' => $item->id ?? null,
                 'no_kk' => $item->no_kk ?? null,
+                'alamat' => $item->alamat ?? null,
+                'wilayah' => $item?->wilayah->attributesToArray() ?? null,
             ];
         },'keluarga');
     }
@@ -54,8 +56,16 @@ class DataPresisiJaminanSosialTransformer extends TransformerAbstract
         return $this->item($item->rtm, function ($item) {
             return [
                 'id' => $item->id ?? null,
+                'jumlah_kk' => $item->jumlah_kk ?? null,
                 'nik_kepala' => $item->nik_kepala ?? null,
                 'no_kk' => $item->no_kk ?? null,
+                'dtks' => $item->dtks ? [
+                    'id' => $item->dtks->id ?? null,
+                    'versi_kuisioner' => $item->dtks->versi_kuisioner ?? null,
+                    'created_at' => $item->dtks->created_at ?? null,
+                    'updated_at' => $item->dtks->updated_at ?? null,
+                ] : null,
+                'tgl_daftar' => $item->tgl_daftar ?? null,
                 'nama_kepala' => $item->kepalaKeluargaSaja?->nama ?? null,
             ];
         }, 'rtm');

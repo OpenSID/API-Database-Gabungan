@@ -163,4 +163,9 @@ class Rtm extends BaseModel
     {
         return $this->hasOne(Config::class, 'id', 'config_id');
     }
+
+    public function dtks()
+    {
+        return $this->hasOne(DTKS::class, 'id_rtm', 'id');
+    }
 }
