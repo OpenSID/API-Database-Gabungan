@@ -2,15 +2,13 @@
 
 namespace App\Http\Transformers;
 
-use App\Enums\AgamaEnum;
-use App\Enums\FrekwensiAktivitasKeagamaanEnum;
-use App\Models\DataPresisiAgama;
+use App\Models\SettingModul;
 use League\Fractal\TransformerAbstract;
 
 class SettingModulTransformer extends TransformerAbstract
 {
 
-    public function transform(DataPresisiAgama $item)
+    public function transform(SettingModul $item)
     {
         return $item->attributesToArray();
     }
