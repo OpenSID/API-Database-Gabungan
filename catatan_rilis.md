@@ -8,6 +8,8 @@ Di rilis ini, versi 2504.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 4. [#80](https://github.com/OpenSID/API-Database-Gabungan/issues/80) Penambahan API Presisi Agama.
 5. [#81](https://github.com/OpenSID/API-Database-Gabungan/issues/81) Penambahan API Presisi Adat.
 6. [#82](https://github.com/OpenSID/API-Database-Gabungan/issues/82) Penambahan API modul data presisi ketenagakerjaan.
+7. [#83](https://github.com/OpenSID/API-Database-Gabungan/issues/83) Penambahan API data presisi seni budaya dan membuat unit testing.
+
 
 ### Perbaikan Bug
 

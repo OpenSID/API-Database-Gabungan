@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\DataPresisiAdatController;
 use App\Http\Controllers\Api\DataPresisiAgamaController;
 use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
+use App\Http\Controllers\Api\DataPresisiSeniBudayaController;
 use App\Http\Controllers\Api\DataPresisiKetenagakerjaanController;
 use App\Http\Controllers\Api\DataPresisiPendidikanController;
 use App\Http\Controllers\Api\DataPresisiPanganController;
@@ -111,10 +112,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/rtm', 'rtm');
         });
 
+        Route::controller(DataPresisiSeniBudayaController::class)
+        ->prefix('seni-budaya')->group(function () {
+            Route::get('/', 'seniBudaya');
+            Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
+        });
+
         Route::controller(DataPresisiKetenagakerjaanController::class)
         ->prefix('ketenagakerjaan')->group(function () {
             Route::get('/', 'ketenagakerjaan');
-             Route::post('/update/{id}', 'update');
+            Route::post('/update/{id}', 'update');
             Route::get('/rtm', 'rtm');
         });
 
@@ -126,6 +134,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(DataPresisiAgamaController::class)
         ->prefix('agama')->group(function () {
             Route::get('/', 'index');
+        });
+        
+        Route::controller(DataPresisiSeniBudayaController::class)
+        ->prefix('seni-budaya')->group(function () {
+            Route::get('/', 'seniBudaya');
+             Route::post('/update/{id}', 'update');
+            Route::get('/rtm', 'rtm');
         });
 
         Route::controller(DataPresisiJaminanSosialController::class)
