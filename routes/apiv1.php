@@ -44,6 +44,7 @@ use App\Http\Controllers\Api\SandangController;
 use App\Http\Controllers\Api\SuplemenController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
+use App\Http\Controllers\Api\SettingModulController;
 use Illuminate\Http\Request;
 
 /*
@@ -86,6 +87,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', DasborController::class);
     });
 
+    Route::get('setting-modul', [SettingModulController::class, 'index']);
+
     Route::get('/pariwisata', PariwisataController::class);
     Route::get('/infrastruktur', [InfrastrukturController::class, 'data']);
 
@@ -122,12 +125,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/update/{id}', 'update');
             Route::get('/rtm', 'rtm');
         });
-        
+
         Route::controller(DataPresisiAdatController::class)
         ->prefix('adat')->group(function () {
             Route::get('/', 'index');
         });
-        
+
         Route::controller(DataPresisiAgamaController::class)
         ->prefix('agama')->group(function () {
             Route::get('/', 'index');
@@ -144,14 +147,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->prefix('jaminan-sosial')->group(function () {
             Route::get('/', 'index');
         });
-        
+
         Route::controller(DataPresisiPendidikanController::class)
         ->prefix('pendidikan')->group(function () {
             Route::get('/', 'pendidikan');
             Route::post('/update/{id}', 'update');
             Route::get('/rtm', 'rtm');
         });
-        
+
         Route::controller(DataPresisiPanganController::class)
         ->prefix('pangan')->group(function () {
             Route::get('/', 'pangan');

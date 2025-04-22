@@ -34,9 +34,9 @@ class DataPresisiAgamaRepository
 
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
-                        $query->where('penduduk.nama', 'like', "%{$value}%")
-                        ->orWhere('penduduk.nik', 'like', "%{$value}%")
-                        ->orWhere('keluarga.no_kk', 'like', "%{$value}%");
+                        $query->whereRelation('penduduk','nama', 'like', "%{$value}%")
+                        ->orWhereRelation('penduduk','nik', 'like', "%{$value}%")
+                        ->orWhereRelation('keluarga','no_kk', 'like', "%{$value}%");
                     });
                 }),
             ])->allowedFields('penduduk.nik', 'penduduk.nama', 'keluarga.no_kk')
@@ -48,7 +48,7 @@ class DataPresisiAgamaRepository
                 'listAnggota',
                 AllowedInclude::count('anggota'),
             ])
-            ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'anggota_id', 'config_id'])
+            ->allowedSorts(['id', 'rtm_id', 'keluarga_id', 'anggota_id', 'config_id', 'penduduk.nik', 'penduduk.nama'])
             ->jsonPaginate();
     }
 }
