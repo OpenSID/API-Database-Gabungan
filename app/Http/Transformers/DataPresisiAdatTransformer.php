@@ -17,7 +17,7 @@ class DataPresisiAdatTransformer extends TransformerAbstract
     {
         $item->id = $item->uuid;
         $item->frekwensi = FrekwensiAktivitasAdatEnum::getDescription($item->frekwensi_mengikuti_kegiatan_setahun) ?? null;
-        $item->status_keanggotaan = StatusKeanggotaanEnum::getDescription($item->status_keanggotaan) ?? null;
+        $item->status_keanggotaan = StatusKeanggotaanEnum::getDescription((int)$item->status_keanggotaan) ?? null;
         return $item->attributesToArray();
     }
 
