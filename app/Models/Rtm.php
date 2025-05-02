@@ -34,6 +34,76 @@ class Rtm extends BaseModel
     {
         return $this->hasOne(Penduduk::class, 'id', 'nik_kepala');
     }
+    /**
+     * Definisi dengan nama baru agar tidak menjalankan query yang tidak dibutuhkan karena pada
+     * model penduduk sudah ada variable $appends
+     *
+     * @return hasOne
+     */
+    public function kepalaKeluargaSaja()
+    {
+        return $this->hasOne(PendudukSaja::class, 'id', 'nik_kepala');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiKesehatans(): HasMany
+    {
+        return $this->hasMany(DataPresisiKesehatan::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiKesehatan(): hasOne
+    {
+        return $this->hasOne(DataPresisiKesehatan::class, 'rtm_id', 'id');
+    }
+
+     /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiPangans(): HasMany
+    {
+        return $this->hasMany(DataPresisiPangan::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiPangan(): hasOne
+    {
+        return $this->hasOne(DataPresisiPangan::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiPendidikans(): HasMany
+    {
+        return $this->hasMany(DataPresisiPendidikan::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiPendidikan(): hasOne
+    {
+        return $this->hasOne(DataPresisiPendidikan::class, 'rtm_id', 'id');
+    }
 
     /**
      * Define a one-to-one relationship.
@@ -69,7 +139,7 @@ class Rtm extends BaseModel
     {
         return $this->hasOne(Penduduk::class, 'id_rtm', 'no_kk')->status();
     }
-    
+
     /**
      * Scope query untuk bdt.
      *
@@ -112,5 +182,10 @@ class Rtm extends BaseModel
     public function config()
     {
         return $this->hasOne(Config::class, 'id', 'config_id');
+    }
+
+    public function dtks()
+    {
+        return $this->hasOne(DTKS::class, 'id_rtm', 'id');
     }
 }

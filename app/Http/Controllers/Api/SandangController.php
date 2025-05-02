@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Repository\SandangRepository;
 use App\Http\Transformers\RtmTransformer;
 use App\Http\Transformers\SandangTransformer;
