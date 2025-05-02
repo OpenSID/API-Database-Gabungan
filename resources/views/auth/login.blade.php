@@ -1,13 +1,13 @@
 @extends('adminlte::auth.auth-page', ['authType' => 'login'])
 
 @section('adminlte_css_pre')
-<!--
-    <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
--->
+    <!--
+                                <link rel="stylesheet" href="{{ asset('vendor/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+                            -->
 @stop
 
 @push('css')
-<link href="assets/fontawesome/css/all.css" rel="stylesheet" />
+    <link href="assets/fontawesome/css/all.css" rel="stylesheet" />
 @endpush
 
 @php
@@ -82,7 +82,8 @@
             </div>
 
             <div class="col-5">
-                <button type=submit class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
+                <button type=submit
+                    class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
                     <span class="fas fa-sign-in-alt"></span>
                     {{ __('adminlte::adminlte.sign_in') }}
                 </button>
@@ -92,17 +93,22 @@
 @stop
 
 @section('auth_footer')
-    {{-- Password reset link --}}
-    @if($passResetUrl)
-        <p class="my-0">
-            <a href="{{ $passResetUrl }}">
-                {{ __('adminlte::adminlte.i_forgot_my_password') }}
-            </a>
-        </p>
-    @endif
+    <div class="d-flex justify-content-between">
+        {{-- Password reset link --}}
+        @if ($passResetUrl)
+            <p class="my-0">
+                <a href="{{ $passResetUrl }}">
+                    {{ __('adminlte::adminlte.i_forgot_my_password') }}
+                </a>
+            </p>
+        @endif
+        <a href="https://github.com/OpenSID/API-Database-Gabungan" target="_blank">
+            Versi {{ app_version() }}
+        </a>
+    </div>
 
     {{-- Register link --}}
-    @if($registerUrl)
+    @if ($registerUrl)
         <p class="my-0">
             <a href="{{ $registerUrl }}">
                 {{ __('adminlte::adminlte.register_a_new_membership') }}
