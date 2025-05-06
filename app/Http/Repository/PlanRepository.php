@@ -32,9 +32,6 @@ class PlanRepository
                     $query->where('nama', 'LIKE', '%'.$value.'%');
                 }),
             ])
-            ->allowedIncludes([
-                'point',
-            ])
             ->allowedSorts([
                 'nama',
                 'enabled',

@@ -52,6 +52,9 @@ class PointRepository
                 }),
 
             ])
+            ->allowedIncludes([
+                'children',
+            ])
             ->allowedSorts([
                 'nama',
             ])->jsonPaginate();

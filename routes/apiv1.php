@@ -196,6 +196,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->prefix('keluarga')->group(function () {
             Route::get('/', 'keluarga');
             Route::get('/show', 'show');
+            Route::get('/summary', 'summary');
         });
 
     // Statistik
