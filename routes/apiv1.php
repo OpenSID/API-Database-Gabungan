@@ -196,6 +196,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->prefix('keluarga')->group(function () {
             Route::get('/', 'keluarga');
             Route::get('/show', 'show');
+            Route::get('/summary', 'summary');
         });
 
     // Statistik
@@ -370,6 +371,9 @@ Route::controller(StatistikController::class)
         Route::prefix('rtm')->group(function () {
             Route::get('/', 'rtm');
             Route::get('/tahun', 'refTahunRtm');
+        });
+        Route::prefix('posyandu')->group(function () {
+            Route::get('/', 'posyandu');
         });
         Route::get('/bantuan', 'bantuan');
         Route::get('/bantuan/tahun', [BantuanController::class, 'tahun']);

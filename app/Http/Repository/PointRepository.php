@@ -10,12 +10,18 @@ class PointRepository
 {
     public function listPoint()
     {
-        return  QueryBuilder::for(Point::class)
+        return  QueryBuilder::for(
+                Point::query()
+                    ->root() // panggil scope root di sini
+            )
+            ->with('children') // eager load relasi
             ->where('sumber', 'OpenKab')
             ->root()
             ->allowedFields('*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
+                AllowedFilter::exact('tipe'),
+                AllowedFilter::exact('parent'),
                 AllowedFilter::callback('status', function ($query, $value) {
                     $query->where('enabled', 'LIKE', '%'.$value.'%');
                 }),
@@ -45,6 +51,9 @@ class PointRepository
                     $query->where('nama', 'LIKE', '%'.$value.'%');
                 }),
 
+            ])
+            ->allowedIncludes([
+                'children',
             ])
             ->allowedSorts([
                 'nama',
