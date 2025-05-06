@@ -371,6 +371,9 @@ Route::controller(StatistikController::class)
             Route::get('/', 'rtm');
             Route::get('/tahun', 'refTahunRtm');
         });
+        Route::prefix('posyandu')->group(function () {
+            Route::get('/', 'posyandu');
+        });
         Route::get('/bantuan', 'bantuan');
         Route::get('/bantuan/tahun', [BantuanController::class, 'tahun']);
         Route::get('/get-list-coordinate', 'getListCoordinate');

@@ -8,6 +8,8 @@ use League\Fractal\TransformerAbstract;
 
 class PlanTransformer extends TransformerAbstract
 {
+    protected array $availableIncludes = ['point'];
+
     public function transform(Lokasi $plan)
     {
         return [
@@ -18,6 +20,11 @@ class PlanTransformer extends TransformerAbstract
             'kategori' => $plan->point->nama,
             'aksi' => $this->generateAksiColumn($plan),
         ];
+    }
+
+    public function includePoint(Lokasi $item)
+    {
+        return $this->item($item->point,'point');
     }
 
     /**
