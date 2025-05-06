@@ -1,51 +1,52 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\DasborController;
 use App\Http\Controllers\Api\ArtikelController;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\BantuanController;
-use App\Http\Controllers\Api\DokumenController;
-use App\Http\Controllers\Api\SummaryController;
-use App\Http\Controllers\Api\WebsiteController;
-use App\Http\Controllers\Api\WilayahController;
-use App\Http\Controllers\Api\KategoriController;
-use App\Http\Controllers\Api\KeluargaController;
-use App\Http\Controllers\Api\PendudukController;
-use App\Http\Controllers\Api\StatistikController;
-use App\Http\Controllers\Api\PengaturanController;
-use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
-use App\Http\Controllers\Api\KetenagakerjaanController;
-use App\Http\Controllers\Api\PendidikanController;
+use App\Http\Controllers\Api\DasborController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DataPresisiAdatController;
 use App\Http\Controllers\Api\DataPresisiAgamaController;
 use App\Http\Controllers\Api\DataPresisiJaminanSosialController;
 use App\Http\Controllers\Api\DataPresisiKesehatanController;
-use App\Http\Controllers\Api\DataPresisiSeniBudayaController;
 use App\Http\Controllers\Api\DataPresisiKetenagakerjaanController;
-use App\Http\Controllers\Api\DataPresisiPendidikanController;
 use App\Http\Controllers\Api\DataPresisiPanganController;
+use App\Http\Controllers\Api\DataPresisiPendidikanController;
+use App\Http\Controllers\Api\DataPresisiSeniBudayaController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
+use App\Http\Controllers\Api\DokumenController;
 use App\Http\Controllers\Api\DTKSController;
 use App\Http\Controllers\Api\InfrastrukturController;
+use App\Http\Controllers\Api\KategoriController;
+use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\KecamatanController;
 use App\Http\Controllers\Api\KelembagaanController;
-use App\Http\Controllers\Api\PapanPresisiController;
+use App\Http\Controllers\Api\KeluargaController;
+use App\Http\Controllers\Api\KesehatanWebsiteController;
+use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\LaporanPendudukController;
 use App\Http\Controllers\Api\OpendkSynchronizeController;
+use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
-use App\Http\Controllers\Api\PrasaranaSaranaController;
-use App\Http\Controllers\Api\SandangController;
-use App\Http\Controllers\Api\SuplemenController;
+use App\Http\Controllers\Api\PendidikanController;
+use App\Http\Controllers\Api\PendudukController;
+use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
+use App\Http\Controllers\Api\PrasaranaSaranaController;
+use App\Http\Controllers\Api\SandangController;
 use App\Http\Controllers\Api\SettingModulController;
+use App\Http\Controllers\Api\StatistikController;
+use App\Http\Controllers\Api\SummaryController;
+use App\Http\Controllers\Api\SuplemenController;
+use App\Http\Controllers\Api\WebsiteController;
+use App\Http\Controllers\Api\WilayahController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -96,71 +97,70 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/ketenagakerjaan', KetenagakerjaanController::class);
     Route::get('/pendidikan', PendidikanController::class);
 
-
     Route::prefix('data-presisi')->group(function () {
         Route::controller(SandangController::class)
-        ->prefix('sandang')->group(function () {
-            Route::get('/', 'sandang');
-            Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('sandang')->group(function () {
+                Route::get('/', 'sandang');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
 
         Route::controller(DataPresisiKesehatanController::class)
-        ->prefix('kesehatan')->group(function () {
-            Route::get('/', 'kesehatan');
-            Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('kesehatan')->group(function () {
+                Route::get('/', 'kesehatan');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
 
         Route::controller(DataPresisiSeniBudayaController::class)
-        ->prefix('seni-budaya')->group(function () {
-            Route::get('/', 'seniBudaya');
-            Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('seni-budaya')->group(function () {
+                Route::get('/', 'seniBudaya');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
 
         Route::controller(DataPresisiKetenagakerjaanController::class)
-        ->prefix('ketenagakerjaan')->group(function () {
-            Route::get('/', 'ketenagakerjaan');
-            Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('ketenagakerjaan')->group(function () {
+                Route::get('/', 'ketenagakerjaan');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
 
         Route::controller(DataPresisiAdatController::class)
-        ->prefix('adat')->group(function () {
-            Route::get('/', 'index');
-        });
+            ->prefix('adat')->group(function () {
+                Route::get('/', 'index');
+            });
 
         Route::controller(DataPresisiAgamaController::class)
-        ->prefix('agama')->group(function () {
-            Route::get('/', 'index');
-        });
-        
+            ->prefix('agama')->group(function () {
+                Route::get('/', 'index');
+            });
+
         Route::controller(DataPresisiSeniBudayaController::class)
-        ->prefix('seni-budaya')->group(function () {
-            Route::get('/', 'seniBudaya');
-             Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('seni-budaya')->group(function () {
+                Route::get('/', 'seniBudaya');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
 
         Route::controller(DataPresisiJaminanSosialController::class)
-        ->prefix('jaminan-sosial')->group(function () {
-            Route::get('/', 'index');
-        });
+            ->prefix('jaminan-sosial')->group(function () {
+                Route::get('/', 'index');
+            });
 
         Route::controller(DataPresisiPendidikanController::class)
-        ->prefix('pendidikan')->group(function () {
-            Route::get('/', 'pendidikan');
-            Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('pendidikan')->group(function () {
+                Route::get('/', 'pendidikan');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
 
         Route::controller(DataPresisiPanganController::class)
-        ->prefix('pangan')->group(function () {
-            Route::get('/', 'pangan');
-            Route::post('/update/{id}', 'update');
-            Route::get('/rtm', 'rtm');
-        });
+            ->prefix('pangan')->group(function () {
+                Route::get('/', 'pangan');
+                Route::post('/update/{id}', 'update');
+                Route::get('/rtm', 'rtm');
+            });
     });
 
     // Wilayah
@@ -261,7 +261,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/update', 'update');
         });
 
-     // Prodeskel
+    // Prodeskel
     Route::prefix('prodeskel')->group(function () {
         Route::prefix('ddk')->group(function () {
             Route::get('pangan', [DDKController::class, 'pangan']);
@@ -392,6 +392,7 @@ Route::prefix('wilayah')->group(function () {
 // Data utama website
 Route::get('data-website', WebsiteController::class);
 Route::get('data-summary', SummaryController::class);
+Route::get('data-kesehatan', KesehatanWebsiteController::class);
 // Desa teraktif
 Route::get('/desa-aktif', [KategoriDesaController::class, 'index']);
 
