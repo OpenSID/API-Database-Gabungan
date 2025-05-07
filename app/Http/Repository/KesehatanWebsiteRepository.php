@@ -8,6 +8,7 @@ use App\Models\Posyandu;
 use App\Models\SasaranPaud;
 use App\Services\RekapService;
 use App\Services\StuntingService;
+use Illuminate\Support\Facades\Log;
 
 class KesehatanWebsiteRepository
 {
@@ -74,7 +75,7 @@ class KesehatanWebsiteRepository
             ->whereYear('bulanan_anak.created_at', $tahun)
             ->selectRaw('bulanan_anak.kia_id as kia_id')
             ->get();
-
+        $dataNoKia = [];
         foreach ($JTRT_IbuHamil as $item_ibuHamil) {
             $dataNoKia[] = $item_ibuHamil;
 
@@ -85,8 +86,8 @@ class KesehatanWebsiteRepository
             }
         }
 
-        $ibuHamil = $rekap->getDataIbuHamil($filters['kuartal'] ?? null, $filters['tahun'] ?? null, $filters['posyandu'] ?? null, $filters['kabupaten'] ?? null, $filters['kode_kecamatan'] ?? null, $filters['desa'] ?? null);
-        $bulananAnak = $rekap->getDataBulananAnak($filters['kuartal'] ?? null, $filters['tahun'] ?? null, $filters['posyandu'] ?? null, $filters['kabupaten'] ?? null, $filters['kode_kecamatan'] ?? null, $filters['desa'] ?? null);
+        $ibuHamil = $rekap->getDataIbuHamil($filters);
+        $bulananAnak = $rekap->getDataBulananAnak($filters);
 
         // HITUNG KEK ATAU RISTI
         $jumlahKekRisti = 0;
@@ -245,13 +246,13 @@ class KesehatanWebsiteRepository
         $data['dataAnak0sd2Tahun'] = $dataAnak0sd2Tahun;
         $data['idPosyandu'] = $idPosyandu;
         $data['posyandu'] = Posyandu::filter($filters)->get();
-        $data['JTRT'] = count($dataNoKia);
+        $data['JTRT'] = count($dataNoKia ?? []);
         $data['jumlahKekRisti'] = $jumlahKekRisti;
         $data['jumlahGiziBukanNormal'] = $jumlahGiziBukanNormal;
         $data['tikar'] = $tikar;
         $data['ibu_hamil'] = $ibuHamil;
         $data['bulanan_anak'] = $bulananAnak;
-        $data['dataTahun'] = $data['ibu_hamil']['dataTahun'];
+        $data['dataTahun'] = !$ibuHamil['dataTahun']->isEmpty() ? $ibuHamil['dataTahun'] : $bulananAnak['dataTahun'];
         $data['kuartal'] = $kuartal;
         $data['_tahun'] = $tahun;
         $data['aktif'] = 'scorcard';
@@ -259,6 +260,13 @@ class KesehatanWebsiteRepository
         $data['chartStuntingUmurData'] = $stunting->chartStuntingUmurData();
         $data['chartStuntingPosyanduData'] = $stunting->chartPosyanduData();
         $data['id'] = 1;
+        // check if data has current year
+        if(!$data['dataTahun']->contains('tahun', date('Y'))) {
+            $data['dataTahun']->push([
+                'tahun' => date('Y'),
+            ]);
+        }
+        $data['dataTahun'] = $data['dataTahun']->sortByDesc('tahun');
         return collect([$data]);
     }
 

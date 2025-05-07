@@ -82,9 +82,6 @@ class StuntingService
             ->selectRaw('sum(case when umur_bulan between 12 and 23 then 1 else 0 end) as range_3')
             ->stuntingPendek()
             ->join('config', 'config.id', '=', 'bulanan_anak.config_id', 'left')
-            // ->whereMonth('created_at', '>=',$this->batasBulanBawah)
-            // ->whereMonth('created_at', '<=',$this->batasBulanAtas)
-            // ->whereYear('created_at', $this->tahun)
             ->groupBy(['status_tikar']);
 
         $stunting = $stuntingObj->get();
@@ -128,7 +125,7 @@ class StuntingService
         }
 
         $giziAnakObj->groupBy(['posyandu_id', 'status_gizi']);
-        $posyanduObj = Posyandu::query();
+        $posyanduObj = Posyandu::filter($filters);
         if ($this->idPosyandu) {
             $giziAnakObj->wherePosyanduId($this->idPosyandu);
             $posyanduObj->whereId($this->idPosyandu);

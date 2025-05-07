@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Models\Anak;
-use Illuminate\Support\Facades\DB;
+use App\Models\IbuHamil;
 
 class RekapService
 {
-    public function getDataIbuHamil($kuartal = null, $tahun = null, $id = null, $kabupaten = null, $kecamatan = null, $desa = null)
+    public function getDataIbuHamil($filters = [])
     {
+        $kuartal = $filters['kuartal'] ?? null;
+        $tahun = $filters['tahun'] ?? null;
         if ($kuartal == 1) {
             $batasBulanBawah = 1;
             $batasBulanAtas = 3;
@@ -25,14 +27,12 @@ class RekapService
             abort(404, 'Terjadi Kesalahan di kuartal!');
         }
 
-        $ibuHamil = DB::connection('openkab')->table('ibu_hamil')
+        $ibuHamil = IbuHamil::filter($filters)
             ->join('kia', 'ibu_hamil.kia_id', '=', 'kia.id')
             ->join('tweb_penduduk', 'kia.ibu_id', '=', 'tweb_penduduk.id')
-            ->join('config', 'config.id', '=', 'tweb_penduduk.config_id', 'left')
             ->where('status_kehamilan', '!=', null)
             ->whereMonth('ibu_hamil.created_at', '>=', $batasBulanBawah)
             ->whereMonth('ibu_hamil.created_at', '<=', $batasBulanAtas)
-            ->whereYear('ibu_hamil.created_at', $tahun)
             ->orderBy('ibu_hamil.created_at')
             ->select([
                 'ibu_hamil.*',
@@ -42,25 +42,11 @@ class RekapService
                 'tweb_penduduk.nama',
             ]);
 
-        if ($kabupaten) {
-            $ibuHamil->whereRaw('config.kode_kabupaten = '.$kabupaten);
-        }
-        if ($kecamatan) {
-            $ibuHamil->whereRaw('config.kode_kecamatan = '.$kecamatan);
-        }
-        if ($desa) {
-            $ibuHamil->whereRaw('config.kode_desa = '.$desa);
-        }
-
-        if ($id) {
-            $ibuHamil = $ibuHamil->where('posyandu_id', $id);
-        }
-
         $ibuHamil = $ibuHamil->get()->toArray();
-
-        $dataTahun = DB::connection('openkab')->table('ibu_hamil')
+        $filterTanpaTahun = $filters;
+        unset($filterTanpaTahun['tahun']);
+        $dataTahun = IbuHamil::filter($filterTanpaTahun)
             ->selectRaw('YEAR(created_at) as tahun')
-            ->where('config_id', ('id'))
             ->distinct()
             ->get();
 
@@ -310,8 +296,11 @@ class RekapService
         return $data;
     }
 
-    public function getDataBulananAnak($kuartal = null, $tahun = null, $id = null, $kabupaten = null, $kecamatan = null, $desa = null)
+    public function getDataBulananAnak($filters = [])
     {
+        $kuartal = $filters['kuartal'] ?? null;
+        $tahun = $filters['tahun'] ?? null;
+
         if ($kuartal == 1) {
             $batasBulanBawah = 1;
             $batasBulanAtas = 3;
@@ -328,14 +317,12 @@ class RekapService
             abort(404, 'Terjadi Kesalahan di kuartal!');
         }
 
-        $bulananAnak = DB::connection('openkab')->table('bulanan_anak')
+        $bulananAnak = Anak::filter($filters)
             ->join('kia', 'bulanan_anak.kia_id', '=', 'kia.id')
             ->join('tweb_penduduk', 'kia.anak_id', '=', 'tweb_penduduk.id')
             ->join('config', 'config.id', '=', 'tweb_penduduk.config_id', 'left')
-            ->where('bulanan_anak.config_id', ('id'))
             ->whereMonth('bulanan_anak.created_at', '>=', $batasBulanBawah)
             ->whereMonth('bulanan_anak.created_at', '<=', $batasBulanAtas)
-            ->whereYear('bulanan_anak.created_at', $tahun)
             ->orderBy('bulanan_anak.created_at')
             ->select([
                 'bulanan_anak.*',
@@ -346,22 +333,10 @@ class RekapService
                 'tweb_penduduk.sex',
             ]);
 
-        if ($kabupaten) {
-            $bulananAnak->whereRaw('config.kode_kabupaten = '.$kabupaten);
-        }
-        if ($kecamatan) {
-            $bulananAnak->whereRaw('config.kode_kecamatan = '.$kecamatan);
-        }
-        if ($desa) {
-            $bulananAnak->whereRaw('config.kode_desa = '.$desa);
-        }
-
-        if ($id) {
-            $bulananAnak = $bulananAnak->where('posyandu_id', $id);
-        }
-
         $bulananAnak = $bulananAnak->get()->toArray();
-        $dataTahun = DB::connection('openkab')->table('bulanan_anak')
+        $filterTanpaTahun = $filters;
+        unset($filterTanpaTahun['tahun']);
+        $dataTahun = Anak::filter($filterTanpaTahun)
             ->selectRaw('YEAR(created_at) as tahun')
             ->distinct()
             ->get();
@@ -434,13 +409,13 @@ class RekapService
                 }
 
                 // HITUNG PENIMBANGAN DALAM 1 TAHUN
-                $hitungPenimbangan = DB::connection('openkab')->table('bulanan_anak')
+                $hitungPenimbangan = Anak::filter($filters)
                     ->where('kia_id', $key)
                     ->where('pengukuran_berat_badan', '1')
                     ->count();
 
                 //HITUNG KONSELING DALAM 1 TAHUN
-                $KonselingGizi = DB::connection('openkab')->table('bulanan_anak')
+                $KonselingGizi = Anak::filter($filters)
                     ->where('kia_id', $key)
                     ->select(['konseling_gizi_ayah', 'konseling_gizi_ibu'])
                     ->get();
@@ -459,7 +434,7 @@ class RekapService
                 $JUMLAH_KG = $KGP;
 
                 //HITUNG PENGASUHAN DALAM 1 TAHUN
-                $hitungPengasuhan = DB::connection('openkab')->table('bulanan_anak')
+                $hitungPengasuhan = Anak::filter($filters)
                     ->where('kia_id', $key)
                     ->where('pengasuhan_paud', '1')
                     ->whereYear('bulanan_anak.created_at', $tahun)
@@ -519,7 +494,7 @@ class RekapService
                         $tinggiBadan = 'TS';
                     } else {
                         // CARI TINGGI BADAN DI DATABASE
-                        $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
+                        $hitungTinggiBadan = Anak::filter($filters)
                             ->where('kia_id', $key)
                             ->where('pengukuran_tinggi_badan', '1')
                             ->whereMonth('bulanan_anak.created_at', '2') // februari
@@ -534,8 +509,7 @@ class RekapService
                         $tinggiBadan = 'TS';
                     } else {
                         // CARI TINGGI BADAN DI DATABASE
-                        $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
-                            ->where('config_id', ('id'))
+                        $hitungTinggiBadan = Anak::filter($filters)
                             ->where('kia_id', $key)
                             ->where('pengukuran_tinggi_badan', '1')
                             ->whereMonth('bulanan_anak.created_at', '2') // februari
@@ -550,8 +524,7 @@ class RekapService
                         $tinggiBadan = 'TS';
                     } elseif ($umurAnak <= 8) {
                         // CARI TINGGI BADAN DI DATABASE
-                        $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
-                            ->where('config_id', ('id'))
+                        $hitungTinggiBadan = Anak::filter($filters)
                             ->where('kia_id', $key)
                             ->where('pengukuran_tinggi_badan', '1')
                             ->whereMonth('bulanan_anak.created_at', '8') // agustus
@@ -561,8 +534,7 @@ class RekapService
 
                         $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
                     } else {
-                        $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
-                            ->where('config_id', ('id'))
+                        $hitungTinggiBadan = Anak::filter($filters)
                             ->where('kia_id', $key)
                             ->whereMonth('bulanan_anak.created_at', '2') // februari
                             ->orWhereMonth('bulanan_anak.created_at', '8') // agustus
@@ -585,8 +557,7 @@ class RekapService
                         $tinggiBadan = 'TS';
                     } elseif ($umurAnak <= 11) {
                         // CARI TINGGI BADAN DI DATABASE
-                        $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
-                            ->where('config_id', ('id'))
+                        $hitungTinggiBadan = Anak::filter($filters)
                             ->where('kia_id', $key)
                             ->where('pengukuran_tinggi_badan', '1')
                             ->whereMonth('bulanan_anak.created_at', '8') // agustus
@@ -595,8 +566,7 @@ class RekapService
 
                         $tinggiBadan = $hitungTinggiBadan > 0 ? 'Y' : 'T';
                     } else {
-                        $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
-                            ->where('config_id', ('id'))
+                        $hitungTinggiBadan = Anak::filter($filters)
                             ->where('kia_id', $key)
                             ->whereMonth('bulanan_anak.created_at', '2') // februari
                             ->orWhereMonth('bulanan_anak.created_at', '8') // agustus
@@ -621,7 +591,7 @@ class RekapService
                 // START--------------------------------------------------------------------------------------------
                 //HAPUS KODE DI BAWAH INI JIKA PENGECEKAN TINGGI BADAN HANYA DILAKUKAN DI BULAN FEBRUARI DAN AGUSTUS
                 //INI CARINYA DI DALAM 1 KUARTAL MINIMAL 1X
-                $hitungTinggiBadan = DB::connection('openkab')->table('bulanan_anak')
+                $hitungTinggiBadan = Anak::filter($filters)
                     ->where('kia_id', $key)
                     ->where('pengukuran_tinggi_badan', '1')
                     ->whereMonth('bulanan_anak.created_at', '>=', $batasBulanBawah)

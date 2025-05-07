@@ -18,7 +18,7 @@ class KesehatanWebsiteController extends Controller
             'tahun' => request('tahun'),
             'kode_kecamatan' => request('kode_kecamatan'),
             'desa' => request('desa'),
-            'posyandu' => request('posyandu_id'),
+            'posyandu' => request('posyandu'),
             'kabupaten' => request('kabupaten'),
             'kuartal' => request('kuartal'),
         ];
