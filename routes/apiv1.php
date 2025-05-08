@@ -175,6 +175,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('rw', [WilayahController::class, 'rw']);
         Route::get('rt', [WilayahController::class, 'rt']);
         Route::get('id', [WilayahController::class, 'wilayahId']);
+        Route::post('store/dusun', [WilayahController::class, 'storeDusun']);
         // Route::get('id/{config_id}', [WilayahController::class, 'wilayahId']);
     });
 
