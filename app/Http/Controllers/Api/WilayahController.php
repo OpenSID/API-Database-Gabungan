@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Repository\WilayahRepository;
+use App\Http\Transformers\WilayahTransformer;
 
 class WilayahController extends Controller
 {
@@ -46,4 +47,10 @@ class WilayahController extends Controller
             return $wilayah->toArray();
         }, 'desa')->respond();
     }
+    
+    public function wilayahId()
+    {
+        return $this->fractal($this->wilayah->listWilayahId(), new WilayahTransformer, 'wilayah')->respond();
+    }
+    
 }

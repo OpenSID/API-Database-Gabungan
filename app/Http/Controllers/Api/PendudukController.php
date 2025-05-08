@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Repository\PendudukRepository;
+use App\Http\Requests\PendudukRequest;
 use App\Http\Requests\PindahRequest;
 use App\Http\Transformers\PendudukTransformer;
 use App\Models\LogKeluarga;
@@ -229,6 +230,26 @@ class PendudukController extends Controller
                 'success' => false,
                 'message' => 'data tidak ditemukn',
             ], Response::HTTP_ALREADY_REPORTED);
+        }
+    }
+
+    public function store(PendudukRequest $request)
+    {
+        try {
+            $data = $request->validated();
+            
+            $penduduk = Penduduk::create($data);
+
+            return response()->json([
+                'success' => true,
+                'data' => $penduduk
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

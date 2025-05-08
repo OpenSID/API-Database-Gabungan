@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
+use App\Http\Controllers\Api\ConfigController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
@@ -30,14 +31,17 @@ use App\Http\Controllers\Api\DataPresisiPanganController;
 use App\Http\Controllers\Api\DDKController;
 use App\Http\Controllers\Api\DesaController;
 use App\Http\Controllers\Api\DTKSController;
+use App\Http\Controllers\Api\GolonganDarahController;
 use App\Http\Controllers\Api\InfrastrukturController;
 use App\Http\Controllers\Api\KecamatanController;
+use App\Http\Controllers\Api\KelasSosialController;
 use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\LaporanPendudukController;
 use App\Http\Controllers\Api\OpendkSynchronizeController;
 use App\Http\Controllers\Api\PariwisataController;
+use App\Http\Controllers\Api\PekerjaanController;
 use App\Http\Controllers\Api\PembangunanController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
 use App\Http\Controllers\Api\SandangController;
@@ -45,6 +49,7 @@ use App\Http\Controllers\Api\SuplemenController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
 use App\Http\Controllers\Api\SettingModulController;
+use App\Http\Controllers\Api\StatusKawinController;
 use Illuminate\Http\Request;
 
 /*
@@ -169,10 +174,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('dusun', [WilayahController::class, 'dusun']);
         Route::get('rw', [WilayahController::class, 'rw']);
         Route::get('rt', [WilayahController::class, 'rt']);
+        Route::get('id', [WilayahController::class, 'wilayahId']);
+        // Route::get('id/{config_id}', [WilayahController::class, 'wilayahId']);
     });
 
     Route::prefix('penduduk')->middleware([])->group(function () {
         Route::get('/', [PendudukController::class, 'index']);
+        Route::post('/store', [PendudukController::class, 'store']);
 
         // Referensi
         Route::prefix('referensi')->group(function () {
@@ -352,6 +360,40 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/subpoint/{id}', [PointController::class, 'detail']);
     Route::get('/plan', [PlanController::class, 'index']);
+
+
+    // Status Kawin
+    Route::prefix('status-kawin')->group(function () {
+        Route::get('/count', [StatusKawinController::class, 'count']);
+    });
+
+    // Pekerjaan
+    Route::prefix('pekerjaan')->group(function () {
+        Route::get('/count', [PekerjaanController::class, 'count']);
+    });
+
+    // Pendidikan KK
+    Route::prefix('pendidikan-kk')->group(function () {
+        Route::get('/count', [PendidikanController::class, 'countPendidikanKK']);
+    });
+
+    // Golongan darah
+    Route::prefix('golongan-darah')->group(function () {
+        Route::get('/count', [GolonganDarahController::class, 'count']);
+    });
+    
+    // Kelas Sosial
+    Route::prefix('kelas-sosial')->group(function () {
+        Route::get('/count', [KelasSosialController::class, 'count']);
+    });
+    
+    // config
+    Route::prefix('config')->group(function () {
+        Route::get('/', [ConfigController::class, 'index']);
+    });
+
+    Route::get('/pendidikan/count', [PendidikanController::class, 'countPendidikan']);
+
 });
 
 Route::get('/plan/get-list-coordinate/{parrent?}/{id?}', [PlanController::class, 'getListCoordinate']);
