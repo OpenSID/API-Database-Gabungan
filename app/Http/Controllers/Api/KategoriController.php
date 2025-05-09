@@ -8,6 +8,7 @@ use App\Http\Transformers\ListKategoriTransformer;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\DB;
 
 class KategoriController extends Controller
 {
@@ -129,4 +130,32 @@ class KategoriController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    public function insertKategoriSeeder(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                '*.config_id' => 'nullable',
+                '*.kategori' => 'required',
+                '*.tipe' => 'required',
+                '*.urut' => 'required',
+                '*.enabled' => 'required',
+                '*.parrent' => 'nullable',
+                '*.slug' => 'required',
+            ]);
+
+            Kategori::insert($data);
+
+            return response()->json([
+                'success' => true,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

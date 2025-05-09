@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Repository\BantuanRepository;
 use App\Http\Repository\KeluargaRepository;
 use App\Http\Repository\PendudukRepository;
+use App\Http\Repository\PosyanduRepository;
 use App\Http\Repository\RtmRepository;
 use App\Http\Repository\StatistikRepository;
+use App\Http\Transformers\PosyanduTransformer;
 use App\Http\Transformers\StatistikTransformer;
 use App\Models\Bantuan;
 use App\Models\BantuanPeserta;
@@ -111,6 +113,11 @@ class StatistikController extends Controller
             'success' => true,
             'data' => $rtm->listTahun(),
         ], Response::HTTP_OK);
+    }
+
+    public function posyandu(PosyanduRepository $posyandu)
+    {
+        return $this->fractal($posyandu->listPosyandu($this->kategori), new PosyanduTransformer(), 'posyandu')->respond();
     }
 
     public function bantuan(BantuanRepository $bantuan)

@@ -4,6 +4,7 @@ namespace App\Http\Repository;
 
 use App\Models\ClusterDesa;
 use App\Models\Config;
+use App\Models\Wilayah;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -113,5 +114,15 @@ class WilayahRepository
             ])
             ->allowedSorts(['nama_desa'])
             ->jsonPaginate();
+    }
+
+    public function listWilayahId()
+    {
+        return QueryBuilder::for(Wilayah::class)
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('config_id'),
+            ])
+            ->get();
     }
 }

@@ -56,4 +56,9 @@ class Posyandu extends BaseModel
     // {
     //     return $query->where('status', $value);
     // }
+
+    public function config()
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
+    }
 }
