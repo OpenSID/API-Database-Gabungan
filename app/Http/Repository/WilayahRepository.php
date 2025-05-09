@@ -120,8 +120,8 @@ class WilayahRepository
     {
         return QueryBuilder::for(Wilayah::class)
             ->allowedFilters([
-                AllowedFilter::exact('config_id'),
                 AllowedFilter::exact('id'),
+                AllowedFilter::exact('config_id'),
             ])
             ->get();
     }

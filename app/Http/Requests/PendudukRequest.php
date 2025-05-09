@@ -27,7 +27,7 @@ class PendudukRequest extends FormRequest
             'config_id' => 'required',
             'nik' => 'required',
             'nama' => 'required',
-            'id_kk' => 'required',
+            // 'id_kk' => 'required',
             'kk_level' => 'required',
             'id_rtm' => 'required',
             'rtm_level' => 'required',

@@ -60,10 +60,10 @@ class WilayahController extends Controller
     {
         try {
             $data = $request->validate([
-                'config_id.*' => 'required',
-                'rt.*' => 'required',
-                'rw.*' => 'required',
-                'dusun.*' => 'required'
+                '*.config_id' => 'required',
+                '*.rt' => 'required',
+                '*.rw' => 'required',
+                '*.dusun' => 'required'
             ]);
             
             $wilayah = Wilayah::insert($data);
@@ -77,6 +77,7 @@ class WilayahController extends Controller
 
             return response()->json([
                 'success' => false,
+                'message' => $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

@@ -39,6 +39,7 @@ use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\LaporanPendudukController;
+use App\Http\Controllers\Api\LogController;
 use App\Http\Controllers\Api\OpendkSynchronizeController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PekerjaanController;
@@ -48,6 +49,7 @@ use App\Http\Controllers\Api\SandangController;
 use App\Http\Controllers\Api\SuplemenController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
+use App\Http\Controllers\Api\RtmController;
 use App\Http\Controllers\Api\SettingModulController;
 use App\Http\Controllers\Api\StatusKawinController;
 use Illuminate\Http\Request;
@@ -179,8 +181,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // Route::get('id/{config_id}', [WilayahController::class, 'wilayahId']);
     });
 
+    // RTM
+    Route::prefix('rtm')->middleware([])->group(function () {
+        Route::post('/store', [RtmController::class, 'store']);
+    });
+
+    // penduduk
     Route::prefix('penduduk')->middleware([])->group(function () {
         Route::get('/', [PendudukController::class, 'index']);
+        Route::get('/kepala-keluarga', [PendudukController::class, 'pendudukDemoSeeder']);
+        Route::post('/update-penduduk-by-kk-level', [PendudukController::class, 'updatePendudukByKkLevel']);
         Route::post('/store', [PendudukController::class, 'store']);
 
         // Referensi
@@ -200,12 +210,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', DokumenController::class);
     });
 
+    // Log
+    Route::controller(LogController::class)
+        ->prefix('log')->group(function () {
+            Route::get('/penduduk/{config_id}', 'generateLogPenduduk');
+            Route::get('/keluarga/{config_id}', 'generateLogKeluarga');
+        });
+
     // Keluarga
     Route::controller(KeluargaController::class)
         ->prefix('keluarga')->group(function () {
             Route::get('/', 'keluarga');
             Route::get('/show', 'show');
             Route::get('/summary', 'summary');
+            Route::post('/store', 'store');
         });
 
     // Statistik
@@ -246,6 +264,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/buat', 'store');
             Route::put('/perbarui/{id}', 'update');
             Route::post('/hapus', 'destroy');
+            Route::post('/store-seeder', 'insertKategoriSeeder');
         });
 
     // Master Data Bantuan
