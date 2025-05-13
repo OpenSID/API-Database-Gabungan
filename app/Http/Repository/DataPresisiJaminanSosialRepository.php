@@ -11,7 +11,7 @@ class DataPresisiJaminanSosialRepository
 {
     public function index()
     {
-        return QueryBuilder::for(DataPresisiJaminanSosial::tahunAktif())
+        return QueryBuilder::for(DataPresisiJaminanSosial::tahunAktif()->filterWilayah())
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('rtm_id'),
