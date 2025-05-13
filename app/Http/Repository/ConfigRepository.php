@@ -16,4 +16,9 @@ class ConfigRepository
     {
         return QueryBuilder::for(Config::class)->groupBy('kode_kecamatan')->get();
     }
+
+    public function kabupaten()
+    {
+        return QueryBuilder::for(Config::class)->select('nama_kabupaten', 'kode_kabupaten')->distinct()->get();
+    }
 }

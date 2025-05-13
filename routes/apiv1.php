@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\StatistikController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\KategoriDesaController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
+use App\Http\Controllers\Api\ConfigController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DataController;
@@ -169,6 +170,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('dusun', [WilayahController::class, 'dusun']);
         Route::get('rw', [WilayahController::class, 'rw']);
         Route::get('rt', [WilayahController::class, 'rt']);
+    });
+
+    // config
+    Route::prefix('config')->middleware([])->group(function () {
+        Route::get('kabupaten', [ConfigController::class, 'kabupaten']);
     });
 
     Route::prefix('penduduk')->middleware([])->group(function () {
