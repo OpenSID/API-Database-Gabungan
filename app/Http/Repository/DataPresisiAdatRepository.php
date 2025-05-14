@@ -11,7 +11,7 @@ class DataPresisiAdatRepository
 {
     public function index()
     {
-        return QueryBuilder::for(DataPresisiAdat::tahunAktif())
+        return QueryBuilder::for(DataPresisiAdat::tahunAktif()->filterWilayah())
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('rtm_id'),

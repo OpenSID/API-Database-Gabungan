@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Http\Repository\DataPresisiKesehatanRepository;
 use App\Http\Transformers\DataPresisiKesehatanTransformer;
 use App\Http\Transformers\RtmTransformer;
