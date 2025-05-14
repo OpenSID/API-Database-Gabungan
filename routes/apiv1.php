@@ -174,6 +174,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // config
     Route::prefix('config')->middleware([])->group(function () {
+        Route::get('desa', [ConfigController::class, 'index']);
+        Route::get('kecamatan', [ConfigController::class, 'kecamatan']);
         Route::get('kabupaten', [ConfigController::class, 'kabupaten']);
     });
 
