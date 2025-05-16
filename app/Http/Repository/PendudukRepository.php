@@ -58,6 +58,15 @@ class PendudukRepository
                 AllowedFilter::exact('clusterDesa.dusun'),
                 AllowedFilter::exact('clusterDesa.rw'),
                 AllowedFilter::exact('clusterDesa.rt'),
+                AllowedFilter::callback('status_rekam', function ($query, $value) {
+                    $where = "((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1))";
+                    $query->where('status_rekam', $value)->whereRaw($where);
+
+                }),
+                AllowedFilter::callback('status_covid', function ($query, $value) {
+
+                    $query->join('covid19_pemudik', 'covid19_pemudik.id_terdata' ,'=', 'tweb_penduduk.id')->where('covid19_pemudik.status_covid', $value);
+                }),
                 AllowedFilter::callback('umur', function ($query, $value) {
                     $tglPemilihan = Carbon::now()->format('d-m-Y');
                     $query->batasiUmur($tglPemilihan, $value);
