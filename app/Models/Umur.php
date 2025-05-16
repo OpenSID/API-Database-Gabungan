@@ -100,11 +100,12 @@ class Umur extends BaseModel
         $lk = JenisKelaminEnum::laki_laki;
         $pr = JenisKelaminEnum::perempuan;
         $newQuery = $query
-            ->select(['tweb_penduduk_umur.id', 'nama'])
+            ->select(['tweb_penduduk_umur.id', 'nama', 'tweb_penduduk_umur.dari', 'tweb_penduduk_umur.sampai'])
+            ->selectRaw("concat('{\"umur_dari\":',tweb_penduduk_umur.dari, ', \"umur_sampai\":', tweb_penduduk_umur.sampai, '}') as kriteria")
             ->selectRaw("sum(case when x.sex = $lk then x.total else 0 end) as laki_laki")
             ->selectRaw("sum(case when x.sex = $pr then x.total else 0 end) as perempuan")
             ->leftJoin(DB::raw("($subQuery) as x"), 'x.id', '=', 'tweb_penduduk_umur.id')
-            ->groupBy(['tweb_penduduk_umur.id', 'nama'])
+            ->groupBy(['tweb_penduduk_umur.id', 'nama', 'tweb_penduduk_umur.dari', 'tweb_penduduk_umur.sampai'])
             ->orderBy('tweb_penduduk_umur.dari');
         // ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk $joinLogStr WHERE tweb_penduduk.`sex` = '$lk' AND tweb_penduduk.`status_dasar` = 1 $where) as laki_laki")
         // ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk $joinLogStr WHERE tweb_penduduk.`sex` = '$pr' AND tweb_penduduk.`status_dasar` = 1 $where) as perempuan");

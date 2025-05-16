@@ -40,10 +40,28 @@ class PendudukRepository
                 AllowedFilter::exact('sex'),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('status_dasar'),
+                AllowedFilter::exact('pendidikan_kk_id'),
+                AllowedFilter::exact('pendidikan_sedang_id'),
+                AllowedFilter::exact('pekerjaan_id'),
+                AllowedFilter::exact('status_kawin'),
+                AllowedFilter::exact('agama_id'),
+                AllowedFilter::exact('cara_kb_id'),
+                AllowedFilter::exact('id_asuransi'),
+                AllowedFilter::exact('hamil'),
+                AllowedFilter::exact('suku'),
+                AllowedFilter::exact('golongan_darah_id'),
+                AllowedFilter::exact('cacat_id'),
+                AllowedFilter::exact('sakit_menahun_id'),
+                AllowedFilter::exact('kk_level'),
+                AllowedFilter::exact('warganegara_id'),
                 AllowedFilter::exact('keluarga.no_kk'),
                 AllowedFilter::exact('clusterDesa.dusun'),
                 AllowedFilter::exact('clusterDesa.rw'),
                 AllowedFilter::exact('clusterDesa.rt'),
+                AllowedFilter::callback('umur', function ($query, $value) {
+                    $tglPemilihan = Carbon::now()->format('d-m-Y');
+                    $query->batasiUmur($tglPemilihan, $value);
+                }),
                 AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
                     $query->whereHas('config', function ($query) use ($value) {
                         $query->where('kode_kabupaten', $value);
@@ -451,6 +469,7 @@ class PendudukRepository
 
         $sql = $query->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
+            ->selectRaw("concat('{\"{$idReferensi}\":',{$tabelReferensi}.id,'}') as kriteria")
             ->join('tweb_penduduk', "tweb_penduduk.{$idReferensi}", '=', "{$tabelReferensi}.id", 'left')
             ->where('tweb_penduduk.status_dasar', 1)
             ->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id')
