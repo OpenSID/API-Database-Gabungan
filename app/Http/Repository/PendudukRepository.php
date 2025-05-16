@@ -63,8 +63,15 @@ class PendudukRepository
                     $query->where('status_rekam', $value)->whereRaw($where);
 
                 }),
+                AllowedFilter::callback('tag_id_card', function ($query, $value) {
+                    $query->when($value == 0, static fn($q) => $q->whereNull('tag_id_card'))
+                        ->when($value == 1, static fn($q) => $q->whereNotNull('tag_id_card'));
+                }),
+                AllowedFilter::callback('id_kk', function ($query, $value) {
+                    $query->when($value == 0, static fn($q) => $q->whereNull('id_kk'))
+                        ->when($value == 1, static fn($q) => $q->whereNotNull('id_kk'));
+                }),
                 AllowedFilter::callback('status_covid', function ($query, $value) {
-
                     $query->join('covid19_pemudik', 'covid19_pemudik.id_terdata' ,'=', 'tweb_penduduk.id')->where('covid19_pemudik.status_covid', $value);
                 }),
                 AllowedFilter::callback('umur', function ($query, $value) {
