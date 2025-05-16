@@ -11,7 +11,7 @@ class KeluargaRepository
 {
     public function listKeluarga()
     {
-        return QueryBuilder::for(Keluarga::filterWilayah())
+        return QueryBuilder::for(Keluarga::with(['anggota'])->filterWilayah())
             ->allowedFields('*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
@@ -25,6 +25,15 @@ class KeluargaRepository
                     $query->whereHas('config', function ($query) use ($value) {
                         $query->where('kode_desa', $value);
                     });
+                }),
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->whereHas('config', static fn ($query) => $query->where('kode_kabupaten', $value));
+                }),
+                AllowedFilter::callback('sex', function ($query, $value) {
+                    $query->whereHas('kepalaKeluarga', static fn ($query) => $query->where('sex', $value));
+                }),
+                AllowedFilter::callback('status', function ($query, $value) {
+                    $query->whereHas('kepalaKeluarga', static fn ($query) => $query->where('status_dasar', $value));
                 }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
@@ -115,6 +124,24 @@ class KeluargaRepository
 
     public function summary()
     {
-        return QueryBuilder::for(Keluarga::class)->count();
+        return QueryBuilder::for(Keluarga::status())
+            ->allowedFilters([
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kabupaten', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kecamatan', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_desa', $value);
+                    });
+                }),
+            ])
+            ->count();
     }
 }

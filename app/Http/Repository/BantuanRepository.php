@@ -266,6 +266,24 @@ class BantuanRepository
 
     public function summary()
     {
-        return QueryBuilder::for(Bantuan::class)->count();
+        return QueryBuilder::for(Bantuan::class)
+            ->allowedFilters([
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kabupaten', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kecamatan', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_desa', $value);
+                    });
+                }),
+            ])
+            ->count();
     }
 }

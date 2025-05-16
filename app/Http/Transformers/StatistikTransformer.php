@@ -17,6 +17,7 @@ class StatistikTransformer extends TransformerAbstract
             'persentase_laki_laki' => $statistik['persentase_laki_laki'],
             'perempuan' => (int) $statistik['perempuan'],
             'persentase_perempuan' => $statistik['persentase_perempuan'],
+            'kriteria' => $statistik['kriteria'] ?? '{}',
         ];
     }
 }

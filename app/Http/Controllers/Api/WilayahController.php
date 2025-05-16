@@ -46,4 +46,12 @@ class WilayahController extends Controller
             return $wilayah->toArray();
         }, 'desa')->respond();
     }
+
+    public function kecamatan()
+    {
+        return $this->fractal($this->wilayah->listTotalPendudukKecamatan(), function ($wilayah) {
+            $wilayah->penduduk_count = angka_lokal($wilayah->penduduk_count);
+            return $wilayah->toArray();
+        }, 'kecamatan')->respond();
+    }
 }

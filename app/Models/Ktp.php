@@ -25,6 +25,7 @@ class Ktp extends BaseModel
         return $query
             ->select('id', 'nama', 'status_rekam AS isi_status_rekam')
             ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk WHERE tweb_penduduk.`sex` = '1' AND tweb_penduduk.`status_dasar` = 1 AND $where) as laki_laki")
-            ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk WHERE tweb_penduduk.`sex` = '2' AND tweb_penduduk.`status_dasar` = 1 AND $where) as perempuan");
+            ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk WHERE tweb_penduduk.`sex` = '2' AND tweb_penduduk.`status_dasar` = 1 AND $where) as perempuan")
+            ->selectRaw("concat('{\"status_rekam\":\"',status_rekam,'\"}') as kriteria");
     }
 }
