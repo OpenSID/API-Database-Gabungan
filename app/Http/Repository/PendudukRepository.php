@@ -31,6 +31,26 @@ class PendudukRepository
             ->jsonPaginate();
     }
 
+    public function listPendudukDemoSeeder()
+    {
+        return QueryBuilder::for(Penduduk::select([
+            'id',
+            'config_id',
+            'id_kk',
+            'id_rtm',
+            'rtm_level',
+            'kk_level',
+            'created_at',
+        ]))
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('id_kk'),
+                AllowedFilter::exact('config_id'),
+                AllowedFilter::exact('kk_level'),
+            ])
+            ->get();
+    }
+
     public function listPenduduk()
     {
         return QueryBuilder::for(Penduduk::withRef()->filterWilayah())
@@ -54,6 +74,7 @@ class PendudukRepository
                 AllowedFilter::exact('sakit_menahun_id'),
                 AllowedFilter::exact('kk_level'),
                 AllowedFilter::exact('warganegara_id'),
+                AllowedFilter::exact('config_id'),
                 AllowedFilter::exact('keluarga.no_kk'),
                 AllowedFilter::exact('clusterDesa.dusun'),
                 AllowedFilter::exact('clusterDesa.rw'),

@@ -51,9 +51,7 @@ class Penduduk extends BaseModel
     protected $table = 'tweb_penduduk';
 
     /** {@inheritdoc} */
-    protected $fillable = [
-        'email',
-    ];
+    protected $guarded = [];
 
     /** {@inheritdoc} */
     protected $appends = [
