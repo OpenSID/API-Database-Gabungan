@@ -5,6 +5,24 @@ namespace App\Models\Traits;
 trait FilterWilayahTrait
 {
     /**
+     * Scope query untuk filter Kabupaten.
+     *
+     * @param Builder $query
+     *
+     * @return Builder
+     */
+    public function scopeFilterKabupaten($query)
+    {
+        if (request('kode_kabupaten')) {
+            return $query->whereIn('config_id', function ($kabupaten) {
+                return $kabupaten->selectRaw('c.id from config as c where c.kode_kabupaten = '.request('kode_kabupaten'));
+            });
+        }
+
+        return $query;
+    }
+
+    /**
      * Scope query untuk filter Kecamatan.
      *
      * @param Builder $query
@@ -46,8 +64,15 @@ trait FilterWilayahTrait
      *
      * @return Builder
      */
+    // public function scopeFilterWilayah($query)
+    // {
+    //     return $query->filterDesa($this->scopeFilterKecamatan($query));
+    // }
     public function scopeFilterWilayah($query)
     {
-        return $query->filterDesa($this->scopeFilterKecamatan($query));
+        return $query
+            ->filterKabupaten()
+            ->filterKecamatan()
+            ->filterDesa();
     }
 }
