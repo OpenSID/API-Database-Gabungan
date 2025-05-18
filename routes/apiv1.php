@@ -37,6 +37,7 @@ use App\Http\Controllers\Api\KelembagaanController;
 use App\Http\Controllers\Api\PapanPresisiController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\LaporanPendudukController;
+use App\Http\Controllers\Api\LaporanPerkembanganPendudukBulananController;
 use App\Http\Controllers\Api\OpendkSynchronizeController;
 use App\Http\Controllers\Api\PariwisataController;
 use App\Http\Controllers\Api\PembangunanController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\Api\SandangController;
 use App\Http\Controllers\Api\SuplemenController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
+use App\Http\Controllers\Api\SettingAplikasiController;
 use App\Http\Controllers\Api\SettingModulController;
 use Illuminate\Http\Request;
 
@@ -88,6 +90,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', DasborController::class);
     });
 
+    Route::get('setting-aplikasi', [SettingAplikasiController::class, 'index']);
+    
     Route::get('setting-modul', [SettingModulController::class, 'index']);
 
     Route::get('/pariwisata', PariwisataController::class);
@@ -224,6 +228,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
             });
             Route::get('/bantuan', 'bantuan');
             Route::get('/bantuan/tahun', [BantuanController::class, 'tahun']);
+
+            // laporan bulanan
+            Route::prefix('laporan-bulanan')
+            ->controller(LaporanPerkembanganPendudukBulananController::class)
+            ->group(function () {
+                Route::get('/{tahun}/{bulan}/{kode_kabupaten}','index');
+                Route::get('/log-penduduk','logPenduduk');
+                Route::get('/sumber-data/{rincian}/{tipe}/{tahunku}/{bulanku}/{kode_kabupaten}','sumberData');
+                Route::post('/kependudukan','penduduk');
+            });
         });
 
     // Bantuan
