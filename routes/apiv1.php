@@ -5,8 +5,6 @@ use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\BantuanController;
 use App\Http\Controllers\Api\BantuanKabupatenController;
 use App\Http\Controllers\Api\ConfigController;
-use App\Http\Controllers\Api\KetenagakerjaanController;
-use App\Http\Controllers\Api\PendidikanController;
 use App\Http\Controllers\Api\DasborController;
 use App\Http\Controllers\Api\DataController;
 use App\Http\Controllers\Api\DataPresisiAdatController;
