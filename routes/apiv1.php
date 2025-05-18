@@ -139,9 +139,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             });
 
         Route::controller(DataPresisiAgamaController::class)
-            ->prefix('agama')->group(function () {
-                Route::get('/', 'index');
-            });
+        ->prefix('agama')->group(function () {
+            Route::get('/', 'index');
+        });
 
         Route::controller(DataPresisiSeniBudayaController::class)
             ->prefix('seni-budaya')->group(function () {
@@ -459,6 +459,7 @@ Route::controller(StatistikController::class)
 // Wilayah
 Route::prefix('wilayah')->group(function () {
     Route::get('penduduk', [WilayahController::class, 'penduduk']);
+    Route::get('penduduk-kecamatan', [WilayahController::class, 'kecamatan']);
 });
 
 // Bantuan
