@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\SakitMenahunEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
@@ -573,5 +574,27 @@ class Penduduk extends BaseModel
         }
 
         return $this->alamat_sekarang . ' RT ' . $this->wilayah?->rt . ' / RW ' . $this->wilayah?->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah?->dusun);
+    }
+
+    public static function awalBulan($tahun, $bulan)
+    {
+        $akhirBulanKemarin = Carbon::createFromDate($tahun, (int) $bulan)->subMonth()->endOfMonth()->format('Y-m-d');
+        
+        // penduduk yang masih hidup sampai dengan akhir bulan kemarin
+        $listKodePeristiwa = array_diff(array_keys(LogPenduduk::kodePeristiwa()), [LogPenduduk::MATI, LogPenduduk::PINDAH_KELUAR, LogPenduduk::HILANG]);
+
+        return Penduduk::filterWilayah()->select(['status', 'nama', 'nik', 'tanggallahir', 'tempatlahir', 'nama_ayah', 'nama_ibu', 'id_kk', 'kk_level', 'sex', 'warganegara_id'])->withOnly([])->whereHas('log', static function ($q) use ($akhirBulanKemarin, $listKodePeristiwa) {
+            $q->peristiwaSampaiDengan($akhirBulanKemarin)->whereIn('kode_peristiwa', $listKodePeristiwa);
+        });
+    }
+
+    /**
+     * Define a one-to-many relationship.
+     *
+     * @return HasMany
+     */
+    public function log()
+    {
+        return $this->hasMany(LogPenduduk::class, 'id_pend');
     }
 }
