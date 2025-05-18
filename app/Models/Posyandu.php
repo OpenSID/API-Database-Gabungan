@@ -58,6 +58,32 @@ class Posyandu extends BaseModel
             }
         }
 
+    /*
+     * Define a one-to-many relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    // public function peserta()
+    // {
+    //     return $this->hasMany(BantuanPeserta::class, 'program_id');
+    // }
+
+    /*
+     * Scope query untuk status bantuan
+     *
+     * @param Builder $query
+     * @param mixed   $value
+     *
+     * @return Builder
+     */
+    // public function scopeStatus($query, $value = 1)
+    // {
+    //     return $query->where('status', $value);
+    // }
+
+    public function config()
+    {
+        return $this->hasOne(Config::class, 'id', 'config_id');
         return $query;
     }
 }

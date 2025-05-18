@@ -14,6 +14,7 @@ class PointTransformer extends TransformerAbstract
             'nama' => $point->nama,
             'enabled' => $point->enabled == '1' ? 'Ya' : 'Tidak',
             'path_simbol' => '<img src="'.asset('assets/img/gis/lokasi/point/'.$point->simbol).'" />', // Menggunakan asset()
+            'children' => $point?->children,
             'aksi' => $this->generateAksiColumn($point),
         ];
     }

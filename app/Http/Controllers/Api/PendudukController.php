@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Repository\PendudukRepository;
+use App\Http\Requests\PendudukRequest;
 use App\Http\Requests\PindahRequest;
 use App\Http\Transformers\PendudukTransformer;
 use App\Models\LogKeluarga;
@@ -26,6 +27,13 @@ class PendudukController extends Controller
     public function index()
     {
         return $this->fractal($this->penduduk->listPenduduk(), new PendudukTransformer, 'penduduk')->respond();
+    }
+
+    public function pendudukDemoSeeder()
+    {
+        return $this->fractal($this->penduduk->listPendudukDemoSeeder(), function($item){
+            return $item->toArray();
+        }, 'penduduk')->respond();
     }
 
     public function pendudukStatus()
@@ -231,4 +239,67 @@ class PendudukController extends Controller
             ], Response::HTTP_ALREADY_REPORTED);
         }
     }
+
+    public function store(PendudukRequest $request)
+    {
+        try {
+            $data = $request->validated();
+
+            $penduduk = Penduduk::create($data);
+
+            return response()->json([
+                'success' => true,
+                'data' => $penduduk
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function updatePendudukByKkLevel(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'config_id' => 'required',
+                'id_kk' => 'nullable',
+                'id_rtm' => 'required',
+                'rtm_level' => 'required',
+                'kk_level' => 'nullable', // tidak wajib
+                'hanya_kepala' => 'nullable|boolean', // tidak wajib
+            ]);
+
+            $query = Penduduk::where('config_id', $data['config_id'])
+                            ->where('id_kk', $data['id_kk']);
+
+            // Jika parameter 'hanya_kepala' dikirim, terapkan filter
+            if (array_key_exists('hanya_kepala', $data) && isset($data['kk_level'])) {
+                if ($data['hanya_kepala']) {
+                    $query->where('kk_level', $data['kk_level']);
+                } else {
+                    $query->where('kk_level', '!=', $data['kk_level']);
+                }
+            }
+
+            $query->update([
+                'id_rtm' => $data['id_rtm'],
+                'rtm_level' => $data['rtm_level'],
+            ]);
+
+            return response()->json(['success' => true], Response::HTTP_OK);
+
+        } catch (\Exception $e) {
+            report($e);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
