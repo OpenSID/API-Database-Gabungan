@@ -4,6 +4,7 @@ namespace App\Http\Repository;
 
 use App\Models\Config;
 use App\Models\Covid;
+use App\Models\Enums\StatusDasarEnum;
 use App\Models\Ktp;
 use App\Models\LogPenduduk;
 use App\Models\Penduduk;
@@ -16,6 +17,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class PendudukRepository
 {
     private $kodeDesa;
+    private $kategoriStatistik;
     public function pendudukReferensi(string $class)
     {
         return QueryBuilder::for($class)
@@ -53,13 +55,13 @@ class PendudukRepository
 
     public function listPenduduk()
     {
+        $defaultConfigId = 1;
         return QueryBuilder::for(Penduduk::withRef()->filterWilayah())
             ->allowedFields('*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('sex'),
                 AllowedFilter::exact('status'),
-                AllowedFilter::exact('status_dasar'),
                 AllowedFilter::exact('pendidikan_kk_id'),
                 AllowedFilter::exact('pendidikan_sedang_id'),
                 AllowedFilter::exact('pekerjaan_id'),
@@ -79,6 +81,89 @@ class PendudukRepository
                 AllowedFilter::exact('clusterDesa.dusun'),
                 AllowedFilter::exact('clusterDesa.rw'),
                 AllowedFilter::exact('clusterDesa.rt'),
+                AllowedFilter::callback('jumlah', function ($query, $value) use($defaultConfigId) {
+                    $referensi = $this->tabelReferensi($value);
+                    switch ($value) {
+                        case 'rentang-umur':
+                            $batasUmur = DB::connection('openkab')->table('tweb_penduduk_umur')
+                                ->selectRaw('min(dari) as dari, max(sampai) as sampai')
+                                ->where('config_id', $defaultConfigId)
+                                ->where('status', Umur::RENTANG)
+                                ->first();
+                            $umurObj = [
+                                'min' => $batasUmur->dari,
+                                'max' => $batasUmur->sampai,
+                                'satuan' => 'tahun',
+                            ];
+                            $query->batasiUmur(date('d-m-Y'), $umurObj);
+                            break;
+                        case 'kategori-umur':
+                            $batasUmur = DB::connection('openkab')->table('tweb_penduduk_umur')
+                                ->selectRaw('min(dari) as dari, max(sampai) as sampai')
+                                ->where('config_id', $defaultConfigId)
+                                ->where('status', Umur::KATEGORI)
+                                ->first();
+                            $umurObj = [
+                                'min' => $batasUmur->dari,
+                                'max' => $batasUmur->sampai,
+                                'satuan' => 'tahun',
+                            ];
+                            $query->batasiUmur(date('d-m-Y'), $umurObj);
+                            break;
+                        case 'bpjs-ketenagakerjaan':
+                            $query->whereNotNull('bpjs_ketenagakerjaan')
+                                ->where('bpjs_ketenagakerjaan', '!=', '');
+                            break;
+                        default:
+                            $query->whereNotNull($referensi['idReferensi']);
+                            break;
+                    }
+                }),
+                AllowedFilter::callback('belum_mengisi', function ($query, $value)use($defaultConfigId) {
+                    $referensi = $this->tabelReferensi($value);
+                    switch ($value) {
+                        case 'rentang-umur':
+                            $batasUmur = DB::connection('openkab')->table('tweb_penduduk_umur')
+                                ->selectRaw('min(dari) as dari, max(sampai) as sampai')
+                                ->where('config_id', $defaultConfigId)
+                                ->where('status', Umur::RENTANG)
+                                ->first();
+
+                            $umurMin = $batasUmur->dari;
+                            $umurMax = $batasUmur->sampai;
+
+                            $query->whereRaw(DB::raw("TIMESTAMPDIFF(YEAR, tanggallahir, STR_TO_DATE(date('d-m-Y'),'%d-%m-%Y')) not between {$umurMin} and {$umurMax}"));
+                            break;
+                        case 'kategori-umur':
+                            $batasUmur = DB::connection('openkab')->table('tweb_penduduk_umur')
+                                ->selectRaw('min(dari) as dari, max(sampai) as sampai')
+                                ->where('config_id', $defaultConfigId)
+                                ->where('status', Umur::KATEGORI)
+                                ->first();
+                            $umurMin = $batasUmur->dari;
+                            $umurMax = $batasUmur->sampai;
+
+                            $query->whereRaw(DB::raw("TIMESTAMPDIFF(YEAR, tanggallahir, STR_TO_DATE(date('d-m-Y'),'%d-%m-%Y')) not between {$umurMin} and {$umurMax}"));
+                            break;
+                        case 'bpjs-ketenagakerjaan':
+                            $query->whereNull('bpjs_ketenagakerjaan')
+                                ->orWhere('bpjs_ketenagakerjaan', '=', '');
+                            break;
+                        default:
+                            $query->whereNull($referensi['idReferensi']);
+                            break;
+                    }
+                }),
+                AllowedFilter::callback('status_dasar', function ($query, $value) {
+                    $tanggalPeristiwa = null;
+                    $configDesa = null;
+                    if($value != StatusDasarEnum::MATI) {
+                        $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
+                        $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
+                    } else {
+                        $query->where('status_dasar', $value);
+                    }
+                }),
                 AllowedFilter::callback('status_rekam', function ($query, $value) {
                     $where = "((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1))";
                     $query->where('status_rekam', $value)->whereRaw($where);
@@ -230,6 +315,7 @@ class PendudukRepository
     public function listStatistik($kategori, $kodeDesa): array|object
     {
         $this->setKodeDesa($kodeDesa);
+        $this->setKategoriStatistik($kategori);
         if($this->getKodeDesa()) {
             $configDesa = Config::where('kode_desa', $this->getKodeDesa())->first()->id;
             request()->merge(['config_desa' => $configDesa]);
@@ -251,7 +337,7 @@ class PendudukRepository
         return LogPenduduk::tahun()->first();
     }
 
-    private function tabelReferensi($kategori): array|object
+    private function tabelReferensi($kategori): array|object|null
     {
         return match ($kategori) {
             'status-kehamilan' => [
@@ -383,12 +469,14 @@ class PendudukRepository
                 'jumlah' => $jumlah,
                 'laki_laki' => $jumlah_laki_laki,
                 'perempuan' => $jumlah_perempuan,
+                'kriteria' => json_encode(['jumlah' => $this->getKategoriStatistik()]),
             ],
             [
                 'nama' => 'Belum Mengisi',
                 'jumlah' => $total - $jumlah,
                 'laki_laki' => $total_laki_laki - $jumlah_laki_laki,
                 'perempuan' => $total_perempuan - $jumlah_perempuan,
+                'kriteria' => json_encode(['belum mengisi' => $this->getKategoriStatistik()]),
             ],
             [
                 'nama' => 'Total',
@@ -678,5 +766,25 @@ class PendudukRepository
     protected function getKodeDesa()
     {
         return $this->kodeDesa;
+    }
+
+    /**
+     * Get the value of kategoriStatistik
+     */
+    public function getKategoriStatistik()
+    {
+        return $this->kategoriStatistik;
+    }
+
+    /**
+     * Set the value of kategoriStatistik
+     *
+     * @return  self
+     */
+    public function setKategoriStatistik($kategoriStatistik)
+    {
+        $this->kategoriStatistik = $kategoriStatistik;
+
+        return $this;
     }
 }
