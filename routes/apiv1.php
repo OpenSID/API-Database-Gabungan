@@ -346,7 +346,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('', [PointController::class, 'index']);
         Route::get('status', [PointController::class, 'status']);
         Route::delete('hapus/{id}', [PointController::class, 'destroy'])->name('point.hapus');
+        Route::post('store', [PointController::class, 'store'])->name('point.store');
         Route::post('multiple-delete', [PointController::class, 'delete_multiple'])->name('point.delete-multiple');
+        Route::put('/update/{id}', [PointController::class, 'update']);
+        Route::put('/lock/{id}', [PointController::class, 'lock']);
         Route::post('', [PointController::class, 'store']);
     });
 
