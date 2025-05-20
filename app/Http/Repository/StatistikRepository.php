@@ -114,6 +114,7 @@ class StatistikRepository
                 'nama' => $dataFooter[2]['nama'],
                 'laki_laki' => $dataFooter[2]['laki_laki'],
                 'perempuan' => $dataFooter[2]['perempuan'],
+                'kriteria' => $dataFooter[2]['kriteria'] ?? '{}',
             ], $dataFooter[2]['jumlah']),
         ];
     }

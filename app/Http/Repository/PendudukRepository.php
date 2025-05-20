@@ -114,6 +114,26 @@ class PendudukRepository
                             $query->whereNotNull('bpjs_ketenagakerjaan')
                                 ->where('bpjs_ketenagakerjaan', '!=', '');
                             break;
+                        case 'akta-kelahiran':
+                            $query->whereNotNull('akta_lahir')
+                                ->whereIn('akta_lahir', ['', '-']);
+                            break;
+                        case 'akta-nikah':
+                            $query->whereNotNull('akta_perkawinan')
+                                ->whereIn('akta_perkawinan', ['', '-']);
+                            break;
+                        case 'status-covid':
+                            $query->join('covid19_pemudik', 'covid19_pemudik.id_terdata' ,'=', 'tweb_penduduk.id')
+                                ->where('covid19_pemudik.status_covid', '!=', '');
+                            break;
+                        case 'suku':
+                            $query->whereNotNull('suku')
+                                ->where('suku', '!=', '');
+                            break;
+                        case 'ktp':
+                            $query->ktp()->whereNotNull('status_rekam')
+                                ->where('status_rekam', '!=', '');
+                            break;
                         default:
                             $query->whereNotNull($referensi['idReferensi']);
                             break;
@@ -149,9 +169,39 @@ class PendudukRepository
                             $query->whereNull('bpjs_ketenagakerjaan')
                                 ->orWhere('bpjs_ketenagakerjaan', '=', '');
                             break;
+                        case 'akta-kelahiran':
+                            $query->whereNull('akta_lahir')
+                                ->orWhereIn('akta_lahir', ['', '-']);
+                            break;
+                        case 'akta-nikah':
+                            $query->whereNull('akta_perkawinan')
+                                ->orWhereIn('akta_perkawinan', ['', '-']);
+                            break;
+                        case 'status-covid':
+                            $query->whereNotIn(
+                                'tweb_penduduk.id',
+                                function ($query) {
+                                    $query->select('covid19_pemudik.id_terdata')
+                                        ->from('covid19_pemudik');
+                                }
+                            );
+                            break;
+                        case 'suku':
+                            $query->whereNull('suku')
+                                ->orWhere('suku', '');
+                            break;
+                        case 'ktp':
+                            $query->ktp()->whereNull('status_rekam')
+                                ->orWhere('status_rekam', '');
+                            break;
                         default:
                             $query->whereNull($referensi['idReferensi']);
                             break;
+                    }
+                }),
+                AllowedFilter::callback('ktp', function ($query, $value) {
+                    if($value){
+                        $query->ktp();
                     }
                 }),
                 AllowedFilter::callback('status_dasar', function ($query, $value) {
@@ -483,6 +533,7 @@ class PendudukRepository
                 'jumlah' => $total,
                 'laki_laki' => $total_laki_laki,
                 'perempuan' => $total_perempuan,
+                'kriteria' => json_encode(['total' => $this->getKategoriStatistik()]),
             ],
         ];
     }
@@ -543,7 +594,7 @@ class PendudukRepository
         ];
     }
 
-    private function countStatistikPendudukHidup(string $whereHeader = null): array|object
+    private function countStatistikPendudukHidup(string $where = null): array|object
     {
         $tanggalPeristiwa = null;
         $configDesa = null;
@@ -559,6 +610,10 @@ class PendudukRepository
         $penduduk = Penduduk::countStatistik()->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
         if (! isset(request('filter')['tahun']) && ! isset(request('filter')['bulan'])) {
             $penduduk->status();
+        }
+
+        if($where) {
+            $penduduk->whereRaw($where);
         }
 
         if ($configDesa) {
