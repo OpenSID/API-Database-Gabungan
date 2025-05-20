@@ -199,6 +199,15 @@ class PendudukRepository
                             break;
                     }
                 }),
+                AllowedFilter::callback('total', function ($query, $value) {
+                    switch ($value) {
+                        case 'ktp':
+                            $query->ktp();
+                            break;
+                        default:
+                            break;
+                    }
+                }),
                 AllowedFilter::callback('ktp', function ($query, $value) {
                     if($value){
                         $query->ktp();
