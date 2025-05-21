@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Config;
 use App\Models\Potensi;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -34,12 +35,28 @@ class SummaryController extends Controller
     {
         $result = [];
         $userRequest = [];
+        $filter = $request->get('filter');
+        if ($filter) {
+            if($filter['kode_desa']) {
+                $configDesa = Config::where('kode_desa', $filter['kode_desa'])->first();
+                request()->merge(['config_desa' => $configDesa->id]);
+            }else {
+                if($filter['kode_kecamatan']) {
+                    request()->merge(['kode_kecamatan' => $filter['kode_kecamatan']]);
+                }else{
+                    if($filter['kode_kabupaten']) {
+                        request()->merge(['kode_kabupaten' => $filter['kode_kabupaten']]);
+                    }
+                }
+            }
+        }
+
         if ($request->get('search')) {
             $userRequest = array_intersect($request->get('search'), $this->defaultRequest);
         } else {
             $userRequest = $this->defaultRequest;
         }
-        $tahunTerakhir = Potensi::max('tahun');
+        $tahunTerakhir = Potensi::filterWilayah()->max('tahun');
         if (isset($userRequest['luas_wilayah'])) {
             $result['luas_wilayah'] = $this->getLuasWilayah($tahunTerakhir);
         }
@@ -62,7 +79,7 @@ class SummaryController extends Controller
     private function getLuasWilayah($tahun)
     {
         $total = 0;
-        $batasWilayah = Potensi::where('kategori', 'batas-wilayah')->where('tahun', $tahun)->get();
+        $batasWilayah = Potensi::filterWilayah()->where('kategori', 'batas-wilayah')->where('tahun', $tahun)->get();
         if (! $batasWilayah->isEmpty()) {
             $batasWilayah->groupBy('config_id')->each(function ($item) use (&$total) {
                 $luas = $item->sortByDesc('bulan')->first()->data['luas_desa'];
@@ -98,7 +115,7 @@ class SummaryController extends Controller
 
             return angka_lokal($total);
         }
-        $batasWilayah = Potensi::where('kategori', 'jenis-lahan')->where('tahun', $tahun)->get();
+        $batasWilayah = Potensi::filterWilayah()->where('kategori', 'jenis-lahan')->where('tahun', $tahun)->get();
         if (! $batasWilayah->isEmpty()) {
             $batasWilayah->groupBy('config_id')->each(function ($item) use (&$total) {
                 $luas = $item->sortByDesc('bulan')->first()->data['luas_tanah_perkebunan'];
@@ -118,7 +135,7 @@ class SummaryController extends Controller
 
             return angka_lokal($total);
         }
-        $batasWilayah = Potensi::where('kategori', 'kepemilikan-lahan-hutan')->where('tahun', $tahun)->get();
+        $batasWilayah = Potensi::filterWilayah()->where('kategori', 'kepemilikan-lahan-hutan')->where('tahun', $tahun)->get();
         if (! $batasWilayah->isEmpty()) {
             $batasWilayah->groupBy('config_id')->each(function ($item) use (&$total) {
                 $luas = $item->sortByDesc('bulan')->first()->data['jumlah_luas_hutan'];
@@ -138,7 +155,7 @@ class SummaryController extends Controller
 
             return angka_lokal($total);
         }
-        $batasWilayah = Potensi::where('kategori', 'lahan-dan-pakan-ternak')->where('tahun', $tahun)->get();
+        $batasWilayah = Potensi::filterWilayah()->where('kategori', 'lahan-dan-pakan-ternak')->where('tahun', $tahun)->get();
         if (! $batasWilayah->isEmpty()) {
             $batasWilayah->groupBy('config_id')->each(function ($item) use (&$total) {
                 $luas = $item->sortByDesc('bulan')->first()->data['luas_lahan_gembalan'];
