@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\LabelStatistikEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -167,5 +168,33 @@ class Rtm extends BaseModel
     public function dtks()
     {
         return $this->hasOne(DTKS::class, 'id_rtm', 'id');
+    }
+
+    public function scopeJudulStatistik($query, $tipe = 0, $nomor = 1, $sex = 0)
+    {
+        if ($nomor == LabelStatistikEnum::Jumlah) {
+            $judul = ['nama' => 'JUMLAH'];
+        } elseif ($nomor == LabelStatistikEnum::BelumMengisi) {
+            $judul = ['nama' => 'BELUM MENGISI'];
+        } elseif ($nomor == LabelStatistikEnum::Total) {
+            $judul = ['nama' => 'TOTAL'];
+        } else {
+            switch ($tipe) {
+                case 'kelas_sosial':
+                    $judul = KelasSosial::find($nomor)->toArray();
+                    break;
+
+                default:
+                    $judul = Bantuan::find($nomor)->toArray();
+                    break;
+            }
+        }
+        if ($sex == 1) {
+            $judul['nama'] .= ' - LAKI-LAKI';
+        } elseif ($sex == 2) {
+            $judul['nama'] .= ' - PEREMPUAN';
+        }
+
+        return $judul;
     }
 }

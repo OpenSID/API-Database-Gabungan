@@ -9,11 +9,13 @@ use App\Http\Repository\PosyanduRepository;
 use App\Http\Repository\RtmRepository;
 use App\Http\Repository\StatistikRepository;
 use App\Http\Transformers\PosyanduTransformer;
+use App\Http\Transformers\StatistikDetailTransformer;
 use App\Http\Transformers\StatistikTransformer;
 use App\Models\Bantuan;
 use App\Models\BantuanPeserta;
 use App\Models\Config;
 use Illuminate\Http\Response;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class StatistikController extends Controller
 {
@@ -104,7 +106,22 @@ class StatistikController extends Controller
 
     public function rtm(RtmRepository $rtm)
     {
-        return $this->fractal($this->statistik->getStatistik($rtm->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-rtm')->respond();
+        if(request()->has('nomor') && request()->has('sex')){
+            
+            $hasil = $this->fractal(
+                $rtm->detailRtm(request()->filter['id'], request()->nomor, request()->sex)['data'],
+                new StatistikDetailTransformer(),
+                'statistik-rtm'
+            )->toArray();
+
+            $hasil['judul'] = $rtm->detailRtm(request()->filter['id'], request()->nomor, request()->sex)['judul'];
+
+            return response()->json($hasil);
+
+        }else{
+            return $this->fractal($this->statistik->getStatistik($rtm->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-rtm')->respond();
+        }
+
     }
 
     public function refTahunRtm(RtmRepository $rtm)
