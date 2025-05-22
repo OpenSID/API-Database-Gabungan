@@ -4,7 +4,6 @@ namespace App\Http\Repository;
 
 use App\Models\Config;
 use App\Models\Covid;
-use App\Models\Enums\StatusDasarEnum;
 use App\Models\Ktp;
 use App\Models\LogPenduduk;
 use App\Models\Penduduk;
@@ -214,14 +213,7 @@ class PendudukRepository
                     }
                 }),
                 AllowedFilter::callback('status_dasar', function ($query, $value) {
-                    $tanggalPeristiwa = null;
-                    $configDesa = null;
-                    if($value != StatusDasarEnum::MATI) {
-                        $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
-                        $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
-                    } else {
-                        $query->where('status_dasar', $value);
-                    }
+                    $query->status($value);
                 }),
                 AllowedFilter::callback('status_rekam', function ($query, $value) {
                     $where = "((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1))";
@@ -615,8 +607,9 @@ class PendudukRepository
             $periode = [request('filter')['tahun'] ?? date('Y'), request('filter')['bulan'] ?? '12', '01'];
             $tanggalPeristiwa = Carbon::parse(implode('-', $periode))->endOfMonth()->format('Y-m-d');
         }
-        $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
-        $penduduk = Penduduk::countStatistik()->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
+        // $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
+        // $penduduk = Penduduk::countStatistik()->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
+        $penduduk = Penduduk::countStatistik();
         if (! isset(request('filter')['tahun']) && ! isset(request('filter')['bulan'])) {
             $penduduk->status();
         }

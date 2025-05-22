@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\SakitMenahunEnum;
+use App\Models\Enums\StatusDasarEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -467,9 +468,14 @@ class Penduduk extends BaseModel
      *
      * @return Builder
      */
-    public function scopeStatus($query, $value = 1)
+    public function scopeStatus($query, $value = 1, $tanggalPeristiwa = null, $configDesa = null)
     {
+        if($value != StatusDasarEnum::MATI) {
+            $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
+            return $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
+        }
         return $query->where('status_dasar', $value);
+
     }
 
     /**
@@ -602,5 +608,4 @@ class Penduduk extends BaseModel
     {
         return $query->whereRaw("((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1)) ");
     }
-
 }

@@ -11,7 +11,7 @@ class DasborRepository
 {
     public function listDasbor()
     {
-        $penduduk = Penduduk::countStatistik()->filterWilayah()->first();
+        $penduduk = Penduduk::status()->countStatistik()->filterWilayah()->first();
 
         return [
             'jumlah_penduduk_laki_laki' => $penduduk->laki_laki,
