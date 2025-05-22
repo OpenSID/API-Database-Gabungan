@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\StatusPendudukEnum;
 use App\Models\Enums\JenisKelaminEnum;
+use App\Models\Enums\StatusDasarEnum;
 use App\Models\Traits\ConfigIdTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -84,8 +86,10 @@ class Umur extends BaseModel
             $tanggalPeristiwa = Carbon::parse(implode('-', $periode))->endOfMonth()->format('Y-m-d');
         }
         $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
-        $queryPenduduk = Penduduk::selectRaw("config_id, sex, (DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)),'%Y') + 0) as umur")
+        $queryPenduduk = Penduduk::selectRaw("config_id, sex, TIMESTAMPDIFF (YEAR, tanggallahir, date(now())) as umur")
                 ->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id')
+                ->where('tweb_penduduk.status', StatusPendudukEnum::TETAP)
+                ->where('tweb_penduduk.status_dasar', StatusDasarEnum::HIDUP)
                 ->when($configDesa, function ($q) use ($configDesa) {
                     return $q->where(['config_id' => $configDesa]);
                 })->when($type == 'akta', function ($q) {
@@ -107,8 +111,6 @@ class Umur extends BaseModel
             ->leftJoin(DB::raw("($subQuery) as x"), 'x.id', '=', 'tweb_penduduk_umur.id')
             ->groupBy(['tweb_penduduk_umur.id', 'nama', 'tweb_penduduk_umur.dari', 'tweb_penduduk_umur.sampai'])
             ->orderBy('tweb_penduduk_umur.dari');
-        // ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk $joinLogStr WHERE tweb_penduduk.`sex` = '$lk' AND tweb_penduduk.`status_dasar` = 1 $where) as laki_laki")
-        // ->selectRaw("(SELECT COUNT(tweb_penduduk.id) FROM tweb_penduduk $joinLogStr WHERE tweb_penduduk.`sex` = '$pr' AND tweb_penduduk.`status_dasar` = 1 $where) as perempuan");
 
         return $newQuery;
     }

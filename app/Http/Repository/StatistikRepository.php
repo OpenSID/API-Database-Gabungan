@@ -100,18 +100,21 @@ class StatistikRepository
                 'nama' => $dataFooter[0]['nama'],
                 'laki_laki' => $dataFooter[0]['laki_laki'],
                 'perempuan' => $dataFooter[0]['perempuan'],
+                'kriteria' => $dataFooter[0]['kriteria'] ?? '{}',
             ], $dataFooter[2]['jumlah']),
             $this->getPresentase([
                 'id' => LabelStatistikEnum::BelumMengisi,
                 'nama' => $dataFooter[1]['nama'],
                 'laki_laki' => $dataFooter[1]['laki_laki'] ?? $dataFooter[2]['laki_laki'] - $dataFooter[0]['laki_laki'],
                 'perempuan' => $dataFooter[1]['perempuan'] ?? $dataFooter[2]['perempuan'] - $dataFooter[0]['perempuan'],
+                'kriteria' => $dataFooter[1]['kriteria'] ?? '{}',
             ], $dataFooter[2]['jumlah']),
             $this->getPresentase([
                 'id' => LabelStatistikEnum::Total,
                 'nama' => $dataFooter[2]['nama'],
                 'laki_laki' => $dataFooter[2]['laki_laki'],
                 'perempuan' => $dataFooter[2]['perempuan'],
+                'kriteria' => $dataFooter[2]['kriteria'] ?? '{}',
             ], $dataFooter[2]['jumlah']),
         ];
     }
