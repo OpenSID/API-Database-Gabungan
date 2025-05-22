@@ -608,4 +608,9 @@ class Penduduk extends BaseModel
     {
         return $query->whereRaw("((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1)) ");
     }
+
+    protected function scopeHidupPada($query, $tanggalPeristiwa = null, $configDesa = null)
+    {
+        return $query->status(StatusDasarEnum::HIDUP, $tanggalPeristiwa, $configDesa);
+    }
 }

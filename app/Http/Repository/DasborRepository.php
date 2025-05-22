@@ -3,9 +3,12 @@
 namespace App\Http\Repository;
 
 use App\Models\Bantuan;
+use App\Models\Enums\StatusDasarEnum;
 use App\Models\Keluarga;
 use App\Models\Penduduk;
 use App\Models\Rtm;
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\DB;
 
 class DasborRepository
 {
@@ -24,41 +27,34 @@ class DasborRepository
         ];
     }
 
+    // cara ini kemungkinan besar akan menyebabkan lemot, solusi lain adalah membuat tabel baru  untuk menyimpan data statistik penduduk
+    // dan melakukan update setiap bulan
     private function grafikPenduduk()
     {
-        $batas_bawah = 12;
-
-        $penduduk = Penduduk::selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
-            ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
-            ->selectRaw('MONTH(tweb_penduduk.created_at) as bulan')
-            ->selectRaw('YEAR(tweb_penduduk.created_at) as tahun')
-            ->status()
-            ->filterWilayah()
-            ->groupBy('tahun', 'bulan')
-            ->orderBy('tahun', 'asc')
-            ->orderBy('bulan', 'asc')
-            ->get()
-            ->map(function ($item) {
-                return [
-                    'tahun' => (int) $item->tahun,
-                    'bulan' => (int) $item->bulan,
-                    'laki_laki' => (int) $item->laki_laki,
-                    'perempuan' => (int) $item->perempuan,
-                ];
-            });
-
+        // interval bulan
+        $akhir = now()->format('Y-m');
+        $awal = now()->subYear()->format('Y-m');
+        $periods = CarbonPeriod::create($awal , '1 month', $akhir);
         $data = [];
-        for ($i = 0; $i < $batas_bawah; $i++) {
-            $tahun = (int) now()->subMonths($i)->format('Y');
-            $bulan = (int) now()->subMonths($i)->format('m');
-
-            $laki_laki = $penduduk->filter(function ($item) use ($tahun, $bulan) {
-                return $item['tahun'] < $tahun || ($item['tahun'] == $tahun && $item['bulan'] <= $bulan);
-            })->sum('laki_laki');
-
-            $perempuan = $penduduk->filter(function ($item) use ($tahun, $bulan) {
-                return $item['tahun'] < $tahun || ($item['tahun'] == $tahun && $item['bulan'] <= $bulan);
-            })->sum('perempuan');
+        $pendudukSql= [];
+        foreach ($periods as $period) {
+            $akhirBulan = $period->endOfMonth()->format('Y-m-d');
+            $bulan = $period->format('m');
+            $tahun = $period->format('Y');
+            $pendudukSql[] = Penduduk::selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
+                ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
+                ->selectRaw("'$bulan' AS bulan")
+                ->selectRaw("'$tahun' AS tahun")
+                ->hidupPada($akhirBulan)
+                ->filterWilayah()
+                ->toBoundSql();
+        }
+        $pendudukResult = DB::connection('openkab')->select(implode(' UNION ALL ', $pendudukSql));
+        foreach ($pendudukResult as $result) {
+            $bulan = $result->bulan;
+            $tahun = $result->tahun;
+            $laki_laki = (int) $result->laki_laki;
+            $perempuan = (int) $result->perempuan;
 
             $data[] = [
                 'kategori' => bulan($bulan).' '.$tahun,
@@ -68,8 +64,7 @@ class DasborRepository
                 'perempuan' => $perempuan,
             ];
         }
-
-        $data = collect($data)->reverse();
+        $data = collect($data);
 
         return [
             'kategori' => $data->pluck('kategori'),
