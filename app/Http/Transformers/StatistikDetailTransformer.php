@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 
 class StatistikDetailTransformer extends TransformerAbstract
 {
-    public function transform(Rtm $item)
+    public function transform($item)
     {
         return $item->toArray();
     }

@@ -31,6 +31,10 @@ class StatistikController extends Controller
 
     protected $desa;
 
+    protected $nomor;
+    
+    protected $sex;
+
     public function __construct(StatistikRepository $statistik)
     {
         $this->statistik = $statistik;
@@ -39,6 +43,8 @@ class StatistikController extends Controller
         $this->kecamatan = request()->input('filter')['kecamatan'] ?? null;
         $this->kabupaten = request()->input('filter')['kabupaten'] ?? null;
         $this->desa = request()->input('filter')['desa'] ?? null;
+        $this->nomor = request()->input('filter')['nomor'] ?? null;
+        $this->sex = request()->input('filter')['sex'] ?? null;
     }
 
     public function kategoriStatistik()
@@ -106,15 +112,14 @@ class StatistikController extends Controller
 
     public function rtm(RtmRepository $rtm)
     {
-        if(request()->has('nomor') && request()->has('sex')){
-            
+        if($this->nomor !== null && $this->sex !== null){
             $hasil = $this->fractal(
-                $rtm->detailRtm(request()->filter['id'], request()->nomor, request()->sex)['data'],
+                $rtm->detailRtm()['data'],
                 new StatistikDetailTransformer(),
                 'statistik-rtm'
             )->toArray();
 
-            $hasil['judul'] = $rtm->detailRtm(request()->filter['id'], request()->nomor, request()->sex)['judul'];
+            $hasil['judul'] = $rtm->detailRtm()['judul'];
 
             return response()->json($hasil);
 
@@ -139,14 +144,44 @@ class StatistikController extends Controller
 
     public function bantuan(BantuanRepository $bantuan)
     {
-        if ($this->kategori) {
-            return $this->fractal($this->statistik->getStatistik($bantuan->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-bantuan')->respond();
-        }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Kategori tidak ditemukan',
-        ], Response::HTTP_NOT_FOUND);
+        if($this->nomor !== null && $this->sex !== null){
+
+            $hasil = $this->fractal(
+                $bantuan->detailBantuan()['data'],
+                new StatistikDetailTransformer()
+                // function($item){
+                //     return [
+                //         'id' => $item->id,
+                //         'urlFoto' => $item->urlFoto,
+                //         'nik' => $item->nik ?? 'TIDAK TAHU',
+                //         'nama' => $item->penduduk->nama ?? 'TIDAK TAHU',
+                //         'no_kk' => $item->no_kk ?? 'TIDAK TAHU',
+                //         'nama_ayah' => $item->penduduk->nama_ayah ?? 'TIDAK TAHU',
+                //         'nama_ibu' => $item->penduduk->nama_ibu ?? 'TIDAK TAHU',
+                //         'id_rtm' => $item->penduduk->id_rtm ?? 'TIDAK TAHU',
+                //         'alamat' => $item->kartu_alamat ?? 'TIDAK TAHU',
+                //     ];
+                // }
+                ,
+                'statistik-bantuan'
+            )->toArray();
+
+            $hasil['judul'] = $bantuan->detailBantuan()['judul'];
+
+            return response()->json($hasil);
+            
+        }else{
+
+            if ($this->kategori) {
+                return $this->fractal($this->statistik->getStatistik($bantuan->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-bantuan')->respond();
+            }
+    
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori tidak ditemukan',
+            ], Response::HTTP_NOT_FOUND);
+        }
     }
     public function getListProgram()
     {

@@ -3,11 +3,15 @@
 namespace App\Http\Repository;
 
 use App\Models\Bantuan;
+use App\Models\BantuanPeserta;
 use App\Models\BantuanSaja;
 use App\Models\Config;
+use App\Models\Enums\HubunganRTMEnum;
+use App\Models\Enums\SasaranEnum;
 use App\Models\Kelompok;
 use App\Models\Keluarga;
 use App\Models\Rtm;
+use Carbon\Carbon;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -109,6 +113,7 @@ class BantuanRepository
                         return $q->where('kode_kecamatan', $kodeKecamatan);
                     }))->when($tahun, static fn($q) => $q->whereYear('sdate', $tahun))
                     ->get();
+
         $footer = $this->countStatistikKategoriPenduduk();
 
         return [
@@ -285,5 +290,38 @@ class BantuanRepository
                 }),
             ])
             ->count();
+    }
+
+    public function detailBantuan()
+    {
+        $judulStatistik = '';
+        $kategori = '';
+        $result = [];
+
+        $tahun = request()->input('filter')['tahun'] ?? null;
+        $bulan = request()->input('filter')['bulan'] ?? null;
+        $dusun = request()->input('filter')['dusun'] ?? null;
+        $tipe = request()->input('filter')['id'] ?? null;
+        $nomor = request()->input('filter')['nomor'] ?? null;
+        $sex = request()->input('filter')['sex'] ?? null;
+        
+
+        $result = QueryBuilder::for(BantuanPeserta::with('penduduk'))
+            ->when($sex, static fn ($q) => $q->whereRelation('penduduk', 'sex', $sex))
+            ->allowedFields('*')
+            ->jsonPaginate();
+
+        if ($sex == 1) {
+            $judulStatistik = 'Penerimaan Bantuan Penduduk - LAKI-LAKI';
+        } elseif ($sex == 2) {
+            $judulStatistik = 'Penerimaan Bantuan Penduduk - PEREMPUAN';
+        }else{
+            $judulStatistik = 'Penerimaan Bantuan Penduduk - JUMLAH';
+        }
+
+        return [
+            'judul' => $judulStatistik,
+            'data' => $result
+        ];
     }
 }
