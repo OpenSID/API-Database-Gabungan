@@ -57,7 +57,7 @@ class Posyandu extends BaseModel
                 }
             }
         }
-
+    }
     /*
      * Define a one-to-many relationship.
      *
