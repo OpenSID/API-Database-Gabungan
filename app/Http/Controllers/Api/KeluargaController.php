@@ -6,6 +6,7 @@ use App\Http\Repository\KeluargaRepository;
 use App\Http\Transformers\RincianKeluargaTransformer;
 use App\Models\Keluarga;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class KeluargaController extends Controller
@@ -36,5 +37,35 @@ class KeluargaController extends Controller
     public function summary()
     {
         return QueryBuilder::for(Keluarga::class)->count();
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'config_id' => 'required',
+            'nik_kepala' => 'required',
+            'no_kk' => 'required',
+            'tgl_daftar' => 'nullable',
+            'kelas_sosial' => 'nullable',
+            'alamat' => 'nullable',
+            'id_cluster' => 'nullable',
+            'updated_by' => 'nullable',
+        ]);
+
+        try {
+            $rtm = Keluarga::create($data);
+
+            return response()->json([
+                'success' => true,
+                'data' => $rtm,
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            report($e);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

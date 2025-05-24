@@ -31,6 +31,26 @@ class PendudukRepository
             ->jsonPaginate();
     }
 
+    public function listPendudukDemoSeeder()
+    {
+        return QueryBuilder::for(Penduduk::select([
+            'id',
+            'config_id',
+            'id_kk',
+            'id_rtm',
+            'rtm_level',
+            'kk_level',
+            'created_at',
+        ]))
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('id_kk'),
+                AllowedFilter::exact('config_id'),
+                AllowedFilter::exact('kk_level'),
+            ])
+            ->get();
+    }
+
     public function listPenduduk()
     {
         return QueryBuilder::for(Penduduk::withRef()->filterWilayah())
@@ -40,10 +60,60 @@ class PendudukRepository
                 AllowedFilter::exact('sex'),
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('status_dasar'),
+                AllowedFilter::exact('pendidikan_kk_id'),
+                AllowedFilter::exact('pendidikan_sedang_id'),
+                AllowedFilter::exact('pekerjaan_id'),
+                AllowedFilter::exact('status_kawin'),
+                AllowedFilter::exact('agama_id'),
+                AllowedFilter::exact('cara_kb_id'),
+                AllowedFilter::exact('id_asuransi'),
+                AllowedFilter::exact('hamil'),
+                AllowedFilter::exact('suku'),
+                AllowedFilter::exact('golongan_darah_id'),
+                AllowedFilter::exact('cacat_id'),
+                AllowedFilter::exact('sakit_menahun_id'),
+                AllowedFilter::exact('kk_level'),
+                AllowedFilter::exact('warganegara_id'),
+                AllowedFilter::exact('config_id'),
                 AllowedFilter::exact('keluarga.no_kk'),
                 AllowedFilter::exact('clusterDesa.dusun'),
                 AllowedFilter::exact('clusterDesa.rw'),
                 AllowedFilter::exact('clusterDesa.rt'),
+                AllowedFilter::callback('status_rekam', function ($query, $value) {
+                    $where = "((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1))";
+                    $query->where('status_rekam', $value)->whereRaw($where);
+
+                }),
+                AllowedFilter::callback('tag_id_card', function ($query, $value) {
+                    $query->when($value == 0, static fn($q) => $q->whereNull('tag_id_card'))
+                        ->when($value == 1, static fn($q) => $q->whereNotNull('tag_id_card'));
+                }),
+                AllowedFilter::callback('id_kk', function ($query, $value) {
+                    $query->when($value == 0, static fn($q) => $q->whereNull('id_kk'))
+                        ->when($value == 1, static fn($q) => $q->whereNotNull('id_kk'));
+                }),
+                AllowedFilter::callback('status_covid', function ($query, $value) {
+                    $query->join('covid19_pemudik', 'covid19_pemudik.id_terdata' ,'=', 'tweb_penduduk.id')->where('covid19_pemudik.status_covid', $value);
+                }),
+                AllowedFilter::callback('umur', function ($query, $value) {
+                    $tglPemilihan = Carbon::now()->format('d-m-Y');
+                    $query->batasiUmur($tglPemilihan, $value);
+                }),
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kabupaten', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kecamatan', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_desa', $value);
+                    });
+                }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
                         $query->where('nama', 'like', "%{$value}%")
@@ -436,6 +506,7 @@ class PendudukRepository
 
         $sql = $query->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
+            ->selectRaw("concat('{\"{$idReferensi}\":',{$tabelReferensi}.id,'}') as kriteria")
             ->join('tweb_penduduk', "tweb_penduduk.{$idReferensi}", '=', "{$tabelReferensi}.id", 'left')
             ->where('tweb_penduduk.status_dasar', 1)
             ->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id')
@@ -480,7 +551,25 @@ class PendudukRepository
 
     public function summary()
     {
-        return QueryBuilder::for(Penduduk::class)->count();
+        return QueryBuilder::for(Penduduk::status())
+            ->allowedFilters([
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kabupaten', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_kecamatan', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_desa', $value);
+                    });
+                }),
+            ])
+            ->count();
     }
 
     public function listPendudukPendidikan()

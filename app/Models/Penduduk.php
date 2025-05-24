@@ -7,6 +7,7 @@ use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -50,9 +51,7 @@ class Penduduk extends BaseModel
     protected $table = 'tweb_penduduk';
 
     /** {@inheritdoc} */
-    protected $fillable = [
-        'email',
-    ];
+    protected $guarded = [];
 
     /** {@inheritdoc} */
     protected $appends = [
@@ -510,6 +509,7 @@ class Penduduk extends BaseModel
             ->select(['suku AS id', 'suku AS nama'])
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
+            ->selectRaw("concat('{\"suku\":\"',suku,'\"}') as kriteria")
             ->where('tweb_penduduk.status_dasar', 1)
             ->groupBy('suku')
             ->whereNotNull('suku')
@@ -573,5 +573,28 @@ class Penduduk extends BaseModel
         }
 
         return $this->alamat_sekarang . ' RT ' . $this->wilayah?->rt . ' / RW ' . $this->wilayah?->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah?->dusun);
+    }
+
+    protected function scopeBatasiUmur($query, $tglPemilihan, $umurObj = [])
+    {
+        if (empty($umurObj) || ! isset($umurObj['min']) || ! isset($umurObj['max'])) {
+            return $query;
+        }
+
+        if (isset($umurObj['min'], $umurObj['max'])  ) {
+            if ($umurObj['min'] == '' && $umurObj['max'] == '') {
+                return $query;
+            }
+        }
+
+        $satuan  = $umurObj['satuan'] == 'tahun' ? 'YEAR' : 'MONTH';
+        $umurMin = empty($umurObj['min']) ? 0 : $umurObj['min'];
+        $umurMax = empty($umurObj['max']) && $umurObj['max'] != 0 ? 1000 : $umurObj['max'];
+
+        if ($umurMax == '') {
+            $umurMax = 1000;
+        }
+
+        return $query->whereRaw(DB::raw("TIMESTAMPDIFF({$satuan}, tanggallahir, STR_TO_DATE('{$tglPemilihan}','%d-%m-%Y')) between {$umurMin} and {$umurMax}"));
     }
 }
