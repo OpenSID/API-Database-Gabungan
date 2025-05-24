@@ -4,6 +4,7 @@ Di rilis ini, versi 2505.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 
 1. [#101](https://github.com/OpenSID/API-Database-Gabungan/issues/101) Penambahan api data kesehatan OpenKab.
 2. [#103](https://github.com/OpenSID/API-Database-Gabungan/issues/103) Penyesuaian API untuk dasbor OpenKab.
+3. [#108](https://github.com/OpenSID/API-Database-Gabungan/issues/108) Penambahan response api poin.
 
 ### Perbaikan Bug
 
