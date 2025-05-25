@@ -4,6 +4,7 @@ Di rilis ini, versi 2505.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 
 1. [#101](https://github.com/OpenSID/API-Database-Gabungan/issues/101) Penambahan api data kesehatan OpenKab.
 2. [#103](https://github.com/OpenSID/API-Database-Gabungan/issues/103) Penyesuaian API untuk dasbor OpenKab.
+3. [#108](https://github.com/OpenSID/API-Database-Gabungan/issues/108) Penambahan response api poin.
 
 ### Perbaikan Bug
 
@@ -13,3 +14,4 @@ Di rilis ini, versi 2505.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 
 1. [#97](https://github.com/OpenSID/API-Database-Gabungan/issues/97) Penyesuaian API MenuListener OpenKab.
 2. [#102](https://github.com/OpenSID/API-Database-Gabungan/issues/102) Penyesuaian ConfigDemoSeeder, KategoriDemoSeeder, KeluargaDemoSeeder, RTMDemoSeeder, WilayahDemoSeeder.
+3. [#110](https://github.com/OpenSID/API-Database-Gabungan/issues/110) Penyesuaian detail penduduk statistik. 
