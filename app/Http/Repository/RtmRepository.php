@@ -136,62 +136,6 @@ class RtmRepository
         ];
     }
 
-    public function detailRtm()
-    {
-        $judulStatistik = '';
-        $kategori = '';
-        $result = [];
-
-        $tipe = request()->input('filter')['id'] ?? '0';
-        $nomor = request()->input('filter')['nomor'] ?? 0;
-        $sex = request()->input('filter')['sex'] ?? null;
-
-        switch ($tipe) {
-            case 'bdt':
-                $kategori = 'KLASIFIKASI BDT :';
-                $result = QueryBuilder::for(Rtm::class)
-                    ->when($sex, static fn ($q) => $q->whereHas('kepalaKeluarga', static fn ($r) => $r
-                        ->whereSex($sex)
-                        ->where('rtm_level', HubunganRTMEnum::KEPALA_RUMAH_TANGGA)))
-                    ->when(in_array($nomor, [LabelStatistikEnum::BelumMengisi, LabelStatistikEnum::Jumlah]),
-                        static fn ($q) => $nomor == LabelStatistikEnum::BelumMengisi ? $q->whereNull('bdt') : $q->whereNotNull('bdt'))
-                    ->with(['kepalaKeluarga' => static fn ($q) => $q->withOnly(['keluarga'])])
-                    ->withCount('anggota')
-                    ->allowedFields('*')
-                    ->allowedSorts(['nama'])
-                    ->jsonPaginate();
-                break;
-
-            case $tipe > 50:
-                $program_id = preg_replace('/^50/', '', $tipe);
-                session()->put('program_bantuan', $program_id);
-
-                $nama = Bantuan::find($program_id)?->nama ?? 'Program Tidak Diketahui';
-
-                if (! in_array($nomor, [LabelStatistikEnum::BelumMengisi, LabelStatistikEnum::Total])) {
-                    session()->put('status_dasar', null);
-                    $nomor = $program_id;
-                }
-
-                $kategori = $nama . ' : ';
-                $tipe = 'penerima_bantuan';
-
-                break;
-
-            default:
-                $kategori = '';
-                break;
-        }
-
-        $judul = Rtm::judulStatistik($tipe, $nomor, $sex);
-        $judulStatistik = ($judul['nama'] ?? false) ? $kategori . $judul['nama'] : '';
-
-        return [
-            'judul' => $judulStatistik,
-            'data' => $result
-        ];
-    }
-
     /**
      * Get the value of kategoriStatistik
      */
