@@ -157,14 +157,23 @@ class PointController extends Controller
         }
     }
 
-    public function lock($id, $val = 1)
+    public function lock(Request $request, $id)
     {
+        $this->validate($request, [
+            'enabled' => 'required|integer'
+        ]);
+
+
         try {
-            Point::findOrFail($id)->update(['enabled' => $val]);
+            $point = Point::findOrFail($id);
+            
+            $point->update(['enabled' => $request->enabled]);
 
             return response()->json([
                 'success' => true,
+                'data' => $point,
             ], Response::HTTP_OK);
+
         } catch (\Exception $e) {
             report($e);
 

@@ -18,7 +18,9 @@ class ConfigTransformer extends TransformerAbstract
             'id' => $config->id,
             'kode_desa' => $config->kode_desa,
             'nama_desa' => $config->nama_desa,
+            'kode_desa' => $config->kode_desa,
             'nama_kecamatan' => $config->nama_kecamatan,
+            'kode_kecamatan' => $config->kode_kecamatan,
         ];
     }
 }
