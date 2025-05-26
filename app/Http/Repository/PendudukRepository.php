@@ -2,14 +2,17 @@
 
 namespace App\Http\Repository;
 
+use App\Models\Bantuan;
 use App\Models\Config;
 use App\Models\Covid;
+use App\Models\Enums\StatusEnum;
 use App\Models\Ktp;
 use App\Models\LogPenduduk;
 use App\Models\Penduduk;
 use App\Models\Umur;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -122,7 +125,7 @@ class PendudukRepository
                                 ->whereIn('akta_perkawinan', ['', '-']);
                             break;
                         case 'status-covid':
-                            $query->join('covid19_pemudik', 'covid19_pemudik.id_terdata' ,'=', 'tweb_penduduk.id')
+                        $query->join('covid19_pemudik', 'covid19_pemudik.id_terdata' ,'=', 'tweb_penduduk.id')
                                 ->where('covid19_pemudik.status_covid', '!=', '');
                             break;
                         case 'suku':
@@ -132,6 +135,15 @@ class PendudukRepository
                         case 'ktp':
                             $query->ktp()->whereNotNull('status_rekam')
                                 ->where('status_rekam', '!=', '');
+                            break;
+                        case 'penduduk':
+                            // bantuan-penduduk
+                            $query->whereIn('id', function($q) use($value){
+                                $q->select('kartu_id_pend')
+                                ->from('program_peserta as ps')
+                                ->join('program', 'program.id', 'ps.program_id')
+                                ->where('program.sasaran', Bantuan::SASARAN_PENDUDUK);
+                            });
                             break;
                         default:
                             $query->whereNotNull($referensi['idReferensi']);
@@ -193,6 +205,16 @@ class PendudukRepository
                             $query->ktp()->whereNull('status_rekam')
                                 ->orWhere('status_rekam', '');
                             break;
+                        case 'penduduk':
+                            // bantuan-penduduk
+                            $query->whereNotIn('id', function($q) use($value){
+                                $q->select('kartu_id_pend')
+                                ->from('program_peserta as ps')
+                                ->join('program', 'program.id', 'ps.program_id')
+                                ->where('sasaran', Bantuan::SASARAN_PENDUDUK);
+                            });
+
+                            break;
                         default:
                             $query->whereNull($referensi['idReferensi']);
                             break;
@@ -210,6 +232,16 @@ class PendudukRepository
                 AllowedFilter::callback('ktp', function ($query, $value) {
                     if($value){
                         $query->ktp();
+                    }
+                }),
+                AllowedFilter::callback('bantuan-penduduk', function ($query, $value) {
+                    if($value == StatusEnum::YA){
+                        $query->whereIn('id', function($q){
+                            $q->select('kartu_id_pend')
+                            ->from('program_peserta as ps')
+                            ->join('program as p', 'p.id', 'ps.program_id')
+                            ->where('p.sasaran', Bantuan::SASARAN_PENDUDUK);
+                        });
                     }
                 }),
                 AllowedFilter::callback('status_dasar', function ($query, $value) {
