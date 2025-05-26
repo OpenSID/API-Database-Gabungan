@@ -136,11 +136,15 @@ class RtmRepository
         ];
     }
 
-    public function detailRtm($tipe = '0', $nomor = 0, $sex = null)
+    public function detailRtm()
     {
         $judulStatistik = '';
         $kategori = '';
         $result = [];
+
+        $tipe = request()->input('filter')['id'] ?? '0';
+        $nomor = request()->input('filter')['nomor'] ?? 0;
+        $sex = request()->input('filter')['sex'] ?? null;
 
         switch ($tipe) {
             case 'bdt':

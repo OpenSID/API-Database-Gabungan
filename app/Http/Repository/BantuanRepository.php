@@ -3,11 +3,15 @@
 namespace App\Http\Repository;
 
 use App\Models\Bantuan;
+use App\Models\BantuanPeserta;
 use App\Models\BantuanSaja;
 use App\Models\Config;
+use App\Models\Enums\HubunganRTMEnum;
+use App\Models\Enums\SasaranEnum;
 use App\Models\Kelompok;
 use App\Models\Keluarga;
 use App\Models\Rtm;
+use Carbon\Carbon;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -112,6 +116,7 @@ class BantuanRepository
                         return $q->where('kode_kecamatan', $kodeKecamatan);
                     }))->when($tahun, static fn($q) => $q->whereYear('sdate', $tahun))
                     ->get();
+
         $footer = $this->countStatistikKategoriPenduduk();
 
         return [
