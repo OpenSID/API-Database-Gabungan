@@ -471,6 +471,7 @@ class Penduduk extends BaseModel
     public function scopeStatus($query, $value = 1, $tanggalPeristiwa = null, $configDesa = null)
     {
         if($value != StatusDasarEnum::MATI) {
+            // kalau log_penduduk lengkap, seharusnya tidak perlu join dengan log_penduduk terakhir, jika tanggal_peristiwa null
             $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
             return $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
         }
