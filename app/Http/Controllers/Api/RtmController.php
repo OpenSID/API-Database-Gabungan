@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Repository\RtmRepository;
+use App\Http\Transformers\RtmTransformer;
 use App\Models\Rtm;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,7 +16,7 @@ class RtmController extends Controller
 
     public function index()
     {
-        // return $this->fractal($this->rtm->listRtm(), new RtmTransformer(), 'rtm')->respond();
+        return $this->fractal($this->rtm->listRtm(), new RtmTransformer(), 'rtm')->respond();
     }
 
     public function store(Request $request)

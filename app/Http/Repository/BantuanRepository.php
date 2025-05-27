@@ -3,16 +3,22 @@
 namespace App\Http\Repository;
 
 use App\Models\Bantuan;
+use App\Models\BantuanPeserta;
 use App\Models\BantuanSaja;
 use App\Models\Config;
+use App\Models\Enums\HubunganRTMEnum;
+use App\Models\Enums\SasaranEnum;
 use App\Models\Kelompok;
 use App\Models\Keluarga;
 use App\Models\Rtm;
+use Carbon\Carbon;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class BantuanRepository
 {
+    private $kategoriStatistik;
+
     public function listBantuan()
     {
         return  QueryBuilder::for(Bantuan::filterWilayah())
@@ -57,6 +63,7 @@ class BantuanRepository
 
     public function listStatistik($kategori): array
     {
+        $this->setKategoriStatistik($kategori);
         return collect(match ($kategori) {
             'penduduk' => $this->caseKategoriPenduduk(),
             'keluarga' => $this->caseKategoriKeluarga(),
@@ -109,6 +116,7 @@ class BantuanRepository
                         return $q->where('kode_kecamatan', $kodeKecamatan);
                     }))->when($tahun, static fn($q) => $q->whereYear('sdate', $tahun))
                     ->get();
+
         $footer = $this->countStatistikKategoriPenduduk();
 
         return [
@@ -216,15 +224,18 @@ class BantuanRepository
                 'jumlah' => $jumlah,
                 'laki_laki' => $jumlahLakiLaki,
                 'perempuan' => $jumlahPerempuan,
+                'kriteria' => json_encode(['jumlah' => $this->getKategoriStatistik()]),
             ],
             [
                 'nama' => 'Bukan Peserta',
+                'kriteria' => json_encode(['belum_mengisi' => $this->getKategoriStatistik()]),
             ],
             [
                 'nama' => 'Total',
                 'jumlah' => $total,
                 'laki_laki' => $totalLakiLaki,
                 'perempuan' => $totalPerempuan,
+                'kriteria' => json_encode(['total' => $this->getKategoriStatistik()]),
             ],
         ];
     }
@@ -285,5 +296,25 @@ class BantuanRepository
                 }),
             ])
             ->count();
+    }
+
+     /**
+     * Get the value of kategoriStatistik
+     */
+    public function getKategoriStatistik()
+    {
+        return $this->kategoriStatistik;
+    }
+
+    /**
+     * Set the value of kategoriStatistik
+     *
+     * @return  self
+     */
+    public function setKategoriStatistik($kategoriStatistik)
+    {
+        $this->kategoriStatistik = $kategoriStatistik;
+
+        return $this;
     }
 }

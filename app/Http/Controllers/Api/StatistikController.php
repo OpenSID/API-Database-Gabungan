@@ -31,6 +31,10 @@ class StatistikController extends Controller
 
     protected $desa;
 
+    protected $nomor;
+    
+    protected $sex;
+
     public function __construct(StatistikRepository $statistik)
     {
         $this->statistik = $statistik;
@@ -39,6 +43,8 @@ class StatistikController extends Controller
         $this->kecamatan = request()->input('filter')['kecamatan'] ?? null;
         $this->kabupaten = request()->input('filter')['kabupaten'] ?? null;
         $this->desa = request()->input('filter')['desa'] ?? null;
+        $this->nomor = request()->input('filter')['nomor'] ?? null;
+        $this->sex = request()->input('filter')['sex'] ?? null;
     }
 
     public function kategoriStatistik()
@@ -106,22 +112,7 @@ class StatistikController extends Controller
 
     public function rtm(RtmRepository $rtm)
     {
-        if(request()->has('nomor') && request()->has('sex')){
-            
-            $hasil = $this->fractal(
-                $rtm->detailRtm(request()->filter['id'], request()->nomor, request()->sex)['data'],
-                new StatistikDetailTransformer(),
-                'statistik-rtm'
-            )->toArray();
-
-            $hasil['judul'] = $rtm->detailRtm(request()->filter['id'], request()->nomor, request()->sex)['judul'];
-
-            return response()->json($hasil);
-
-        }else{
-            return $this->fractal($this->statistik->getStatistik($rtm->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-rtm')->respond();
-        }
-
+        return $this->fractal($this->statistik->getStatistik($rtm->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-rtm')->respond();
     }
 
     public function refTahunRtm(RtmRepository $rtm)

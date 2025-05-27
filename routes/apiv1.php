@@ -183,6 +183,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // RTM
     Route::prefix('rtm')->middleware([])->group(function () {
+        Route::get('/', [RtmController::class, 'index']);
         Route::post('/store', [RtmController::class, 'store']);
     });
 
