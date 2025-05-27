@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Enums\SakitMenahunEnum;
+use App\Models\Enums\StatusDasarEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -469,9 +471,23 @@ class Penduduk extends BaseModel
      *
      * @return Builder
      */
-    public function scopeStatus($query, $value = 1)
+    // public function scopeStatus($query, $value = 1)
+    // {
+    //     return $query->where('status_dasar', $value);
+    // }
+
+    public function scopeStatus($query, $value = 1, $tanggalPeristiwa = null, $configDesa = null)
     {
-        return $query->where('status_dasar', $value);
+        if($value != StatusDasarEnum::MATI) {
+            // kalau log_penduduk lengkap, seharusnya tidak perlu join dengan log_penduduk terakhir, jika tanggal_peristiwa null
+            $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
+            return $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
+        }
+    }
+
+    protected function scopeHidupPada($query, $tanggalPeristiwa = null, $configDesa = null)
+    {
+        return $query->status(StatusDasarEnum::HIDUP, $tanggalPeristiwa, $configDesa);
     }
 
     /**

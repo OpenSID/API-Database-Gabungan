@@ -120,13 +120,13 @@ class LogPenduduk extends BaseModel
 
     public function scopePeristiwaSampaiDengan($query, string $tanggal)
     {
-        $configId = session()->get('config_id', 0);
-        // $configId = identitas('id');
+        // $configId = session()->get('config_id', 0);
+        $configId = identitas('id');
 
         // Subquery: dapatkan ID log terakhir per penduduk
         $logMaxSub = DB::connection('openkab')->table('log_penduduk as lp1')
             ->select(DB::raw('MAX(lp1.id) as id'))
-            ->where('lp1.config_id', $configId)
+            // ->where('lp1.config_id', $configId)
             ->where('lp1.tgl_lapor', '<=', $tanggal . ' 23:59:59')
             ->groupBy('lp1.id_pend');
 

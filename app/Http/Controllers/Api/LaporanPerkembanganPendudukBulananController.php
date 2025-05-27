@@ -22,17 +22,40 @@ class LaporanPerkembanganPendudukBulananController extends Controller
 {
     use QueryBuilderTrait;
 
+    protected $rincian;
+
+    protected $tipe;
+
+    protected $tahun;
+
+    protected $bulan;
+
+    protected $kode_kabupaten;
+
+    protected $kode_kecamatan;
+
+    protected $kode_desa;
+
     public function __construct(
         protected LaporanPerkembanganPendudukBulananRepository $penduduk
     ) {
+
+        $this->rincian = request()->input('filter')['rincian'] ?? null;
+        $this->tipe = request()->input('filter')['tipe'] ?? null;
+        $this->tahun = request()->input('filter')['tahun'] ?? null;
+        $this->bulan = request()->input('filter')['bulan'] ?? null;
+        $this->kode_kecamatan = request()->input('filter')['kode_kecamatan'] ?? null;
+        $this->kode_kabupaten = request()->input('filter')['kode_kabupaten'] ?? null;
+        $this->kode_desa = request()->input('filter')['kode_desa'] ?? null;
+
     }
 
-    public function index($tahun, $bulan, $kode_kabupaten)
-    // public function index($tahun, $bulan, $kode_kabupaten)
+    public function index()
     {
-        Session::put('config_id', Config::where('kode_kabupaten', $kode_kabupaten)->first()->id);
-        $bulanDepan        = Carbon::create($tahun, $bulan)->addMonth();
-        $bulanFix          = str_pad($bulan, 2, '0', STR_PAD_LEFT);
+        Session::put('config_id', Config::where('kode_kabupaten', $this->kode_kabupaten)->first()->id);
+        $bulanDepan        = Carbon::create($this->tahun, $this->bulan)->addMonth();
+
+        $bulanFix          = str_pad($this->bulan, 2, '0', STR_PAD_LEFT);
         $pendudukAwalBulan = Penduduk::awalBulan($bulanDepan->format('Y'), $bulanFix)->filterWilayah()->get();
 
         $pendudukAwal      = [
@@ -45,9 +68,9 @@ class LaporanPerkembanganPendudukBulananController extends Controller
             'KK_P' => $pendudukAwalBulan->where('sex', JenisKelaminEnum::perempuan)->where('kk_level', SHDKEnum::KEPALA_KELUARGA)->whereNotNull('id_kk')->count(),
         ];
 
-        $mutasiPenduduk = LogPenduduk::filterWilayah()->with(['penduduk' => static fn ($q) => $q->withOnly([])])->whereYear('tgl_lapor', $tahun)->whereMonth('tgl_lapor', $bulan)->get();
+        $mutasiPenduduk = LogPenduduk::filterWilayah()->with(['penduduk' => static fn ($q) => $q->withOnly([])])->whereYear('tgl_lapor', $this->tahun)->whereMonth('tgl_lapor', $this->bulan)->get();
         // KELUARGA_BARU_DATANG
-        $keluargaPenduduk = LogKeluarga::filterWilayah()->with(['keluarga.kepalaKeluarga' => static fn ($q) => $q->withOnly([])])->whereYear('tgl_peristiwa', $tahun)->whereMonth('tgl_peristiwa', $bulan)->get();
+        $keluargaPenduduk = LogKeluarga::filterWilayah()->with(['keluarga.kepalaKeluarga' => static fn ($q) => $q->withOnly([])])->whereYear('tgl_peristiwa', $this->tahun)->whereMonth('tgl_peristiwa', $this->bulan)->get();
 
         $kelahiran = [
             'WNI_L' => $mutasiPenduduk->where('kode_peristiwa', LogPenduduk::BARU_LAHIR)->where('penduduk.sex', JenisKelaminEnum::laki_laki)->where('penduduk.warganegara_id', WargaNegaraEnum::WNI)->count(),
@@ -159,48 +182,52 @@ class LaporanPerkembanganPendudukBulananController extends Controller
 
     }
 
-    public function sumberData($rincian, $tipe, $tahun = null, $bulan = null, $kode_kabupaten)
+    public function sumberData()
     {
+        $rincian = $this->rincian;
+        $tipe = $this->tipe;
+        $bulan = $this->bulan;
+        $tahun = $this->tahun;
+        $kode_kabupaten = $this->kode_kabupaten;
+        $kode_kecamatan = $this->kode_kecamatan;
+        $kode_desa = $this->kode_desa;
+
         $data         = [];
         $keluarga     = ['kk', 'kk_l', 'kk_p'];
-        $titlePeriode = strtoupper(bulan($bulan)) . ' ' . $tahun;
+        $titlePeriode = strtoupper(bulan($this->bulan)) . ' ' . $this->tahun;
         $filter       = [];
 
-        switch($tipe) {
+        $filter['warganegara_id'] = null;
+        $filter['kk_level'] = null;
+        $filter['sex']      = null;
+
+        switch($this->tipe) {
             case 'wni_l':
-                $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex']            = JenisKelaminEnum::laki_laki;
                 $filter['warganegara_id'] = [WargaNegaraEnum::WNI];
                 break;
 
             case 'wni_p':
-                $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex']            = JenisKelaminEnum::perempuan;
                 $filter['warganegara_id'] = [WargaNegaraEnum::WNI];
                 break;
 
             case 'wna_l':
-                $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex']            = JenisKelaminEnum::laki_laki;
                 $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
                 break;
 
             case 'wna_p':
-                $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex']            = JenisKelaminEnum::perempuan;
                 $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
                 break;
 
             case 'jml_l':
-                $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex'] = JenisKelaminEnum::laki_laki;
-                $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
                 break;
 
             case 'jml_p':
-                $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex'] = JenisKelaminEnum::perempuan;
-                $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
                 break;
 
             case 'jml':
@@ -211,20 +238,16 @@ class LaporanPerkembanganPendudukBulananController extends Controller
 
             case 'kk':
                 $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
-                $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
-                $filter['sex']      = JenisKelaminEnum::laki_laki;
                 break;
 
             case 'kk_l':
                 $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex']      = JenisKelaminEnum::laki_laki;
-                $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
                 break;
 
             case 'kk_p':
                 $filter['kk_level'] = SHDKEnum::KEPALA_KELUARGA;
                 $filter['sex']      = JenisKelaminEnum::perempuan;
-                $filter['warganegara_id'] = [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN];
                 break;
         }
 
@@ -234,6 +257,7 @@ class LaporanPerkembanganPendudukBulananController extends Controller
                     'title' => 'PENDUDUK/KELUARGA AWAL BULAN ' . $titlePeriode,
                     'main'  => Penduduk::awalBulan($tahun, $bulan)->filterWilayah()->when($filter['kk_level'], static fn ($q) => $q->where('kk_level', $filter['kk_level'])->whereNotNull('id_kk'))->when($filter['warganegara_id'], static fn ($q) => $q->whereIn('warganegara_id', $filter['warganegara_id']))->when($filter['sex'], static fn ($q) => $q->whereSex($filter['sex']))->get(),
                 ];
+
                 break;
 
             case 'lahir':

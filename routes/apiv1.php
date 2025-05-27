@@ -233,9 +233,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::prefix('laporan-bulanan')
             ->controller(LaporanPerkembanganPendudukBulananController::class)
             ->group(function () {
-                Route::get('/{tahun}/{bulan}/{kode_kabupaten}','index');
+                Route::get('/','index');
                 Route::get('/log-penduduk','logPenduduk');
-                Route::get('/sumber-data/{rincian}/{tipe}/{tahunku}/{bulanku}/{kode_kabupaten}','sumberData');
+                Route::get('/sumber-data','sumberData');
                 Route::post('/kependudukan','penduduk');
             });
         });
