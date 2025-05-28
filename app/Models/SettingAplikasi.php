@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\FilterWilayahTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SettingAplikasi extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, FilterWilayahTrait;
 
     /**
      * The table associated with the model.
