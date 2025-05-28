@@ -4,6 +4,8 @@ namespace App\Http\Repository;
 
 use App\Models\ClusterDesa;
 use App\Models\Config;
+use App\Models\Kecamatan;
+use App\Models\Wilayah;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -105,6 +107,15 @@ class WilayahRepository
     {
         return QueryBuilder::for(Config::withCount(['penduduk' => static fn ($q) => $q->status()]))
             ->allowedFilters([
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->where('kode_kabupaten', $value);
+                }),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->where('kode_kecamatan', $value);
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->where('kode_desa', $value);
+                }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
                         $query->where('nama_desa', 'like', "%{$value}%");
@@ -113,5 +124,36 @@ class WilayahRepository
             ])
             ->allowedSorts(['nama_desa'])
             ->jsonPaginate();
+    }
+
+    public function listTotalPendudukKecamatan()
+    {   $query = Kecamatan::select(['nama_kecamatan', 'kode_kecamatan', 'kode_kecamatan as id'])->groupBy(['kode_kecamatan','nama_kecamatan']);
+        $result = QueryBuilder::for($query->withCount(['penduduk' => static fn ($q) => $q->status()]))
+            ->allowedFilters([
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->where('kode_kabupaten', $value);
+                }),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->where('kode_kecamatan', $value);
+                }),
+                AllowedFilter::callback('search', function ($query, $value) {
+                    $query->where(function ($query) use ($value) {
+                        $query->where('nama_kecamatan', 'like', "%{$value}%");
+                    });
+                }),
+            ])->distinct()
+            ->allowedSorts(['nama_kecamatan'])
+            ->jsonPaginate();
+        //$result->total = 11;
+        return $result;
+    }
+    public function listWilayahId()
+    {
+        return QueryBuilder::for(Wilayah::class)
+            ->allowedFilters([
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('config_id'),
+            ])
+            ->get();
     }
 }
