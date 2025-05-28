@@ -66,9 +66,10 @@ trait FilterWilayahTrait
      */
     public function scopeFilterWilayah($query)
     {
-        return $query
-            ->filterKabupaten()
-            ->filterKecamatan()
-            ->filterDesa();
+        return $query->filterDesa($this->scopeFilterKecamatan($this->scopeFilterKabupaten($query)));
+        // return $query
+        //     ->filterKabupaten()
+        //     ->filterKecamatan()
+        //     ->filterDesa();
     }
 }

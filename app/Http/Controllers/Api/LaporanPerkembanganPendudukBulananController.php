@@ -46,13 +46,13 @@ class LaporanPerkembanganPendudukBulananController extends Controller
         $this->bulan = request()->input('filter')['bulan'] ?? null;
         $this->kode_kecamatan = request()->input('filter')['kode_kecamatan'] ?? null;
         $this->kode_kabupaten = request()->input('filter')['kode_kabupaten'] ?? null;
-        $this->kode_desa = request()->input('filter')['kode_desa'] ?? null;
+        $this->kode_desa = request()->input('filter')['config_desa'] ?? null;
 
     }
 
     public function index()
     {
-        Session::put('config_id', Config::where('kode_kabupaten', $this->kode_kabupaten)->first()->id);
+        // Session::put('config_id', Config::where('kode_kabupaten', $this->kode_kabupaten)->first()->id);
         $bulanDepan        = Carbon::create($this->tahun, $this->bulan)->addMonth();
 
         $bulanFix          = str_pad($this->bulan, 2, '0', STR_PAD_LEFT);
@@ -181,6 +181,13 @@ class LaporanPerkembanganPendudukBulananController extends Controller
         return $data;
 
     }
+
+    // public function sumberData()
+    // {
+    //     return $this->fractal($this->penduduk->sumberData(), function($item){
+    //         dd($item);
+    //     }, 'laporan bulanan')->respond();
+    // }
 
     public function sumberData()
     {

@@ -10,6 +10,8 @@ use App\Models\LogKeluarga;
 use App\Models\LogPenduduk;
 use App\Models\Penduduk;
 use Carbon\Carbon;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class LaporanPerkembanganPendudukBulananRepository
 {
@@ -134,5 +136,95 @@ class LaporanPerkembanganPendudukBulananRepository
         $data['TOTAL_KK_P'] = $data['DESA_KK_P'] + $data['KEC_KK_P'] + $data['KAB_KK_P'] + $data['PROV_KK_P'];
 
         return $data;
+    }
+
+    public function sumberData()
+    {
+        return QueryBuilder::for(Penduduk::awalBulan(request()->input('filter')['tahun'], request()->input('filter')['bulan'])->filterWilayah())
+            ->allowedFilters([
+                AllowedFilter::exact('*'),
+                AllowedFilter::exact('config_id'),
+                AllowedFilter::callback('rincian', function($query, $value){
+                    // switch (strtolower($value)) {
+                    //     case 'awal':
+                            
+                    //         break;
+                    // }
+                }),
+                AllowedFilter::callback('tipe', function($query, $value){
+                    switch($value){
+                        case 'wni_l';
+                            $query->whereIn('warganegara_id', [WargaNegaraEnum::WNI])
+                            ->whereSex(JenisKelaminEnum::laki_laki);
+                            break;
+                        case 'wni_p';
+                            $query->whereIn('warganegara_id', [WargaNegaraEnum::WNI])
+                            ->whereSex(JenisKelaminEnum::perempuan);
+                            break;
+                        case 'wna_l';
+                            $query->whereIn('warganegara_id',  [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN])
+                            ->whereSex(JenisKelaminEnum::laki_laki);
+                            break;
+                        case 'wna_p';
+                            $query->whereIn('warganegara_id',  [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN])
+                            ->whereSex(JenisKelaminEnum::perempuan);
+                            break;
+                        case 'jml_l';
+                            $query->whereSex(JenisKelaminEnum::laki_laki);
+                            break;
+                        case 'jml_p';
+                            $query->whereSex(JenisKelaminEnum::perempuan);
+                            break;
+                        case 'jml';
+                            $query->where('kk_level', SHDKEnum::KEPALA_KELUARGA)
+                            ->whereNotNull('id_kk')
+                            ->whereIn('warganegara_id',  [WargaNegaraEnum::WNA, WargaNegaraEnum::DUAKEWARGANEGARAAN])
+                            ->whereSex(JenisKelaminEnum::perempuan);
+                            break;
+                        case 'kk';
+                            $query->where('kk_level', SHDKEnum::KEPALA_KELUARGA)
+                            ->whereNotNull('id_kk');
+                            break;
+                        case 'kk_l';
+                            $query->where('kk_level', SHDKEnum::KEPALA_KELUARGA)
+                            ->whereNotNull('id_kk')
+                            ->whereSex(JenisKelaminEnum::laki_laki);
+                            break;
+                        case 'kk_p';
+                            $query->where('kk_level', SHDKEnum::KEPALA_KELUARGA)
+                            ->whereNotNull('id_kk')
+                            ->whereSex(JenisKelaminEnum::perempuan);
+                            break;
+                        
+                    }
+                }),
+                AllowedFilter::callback('tahun', function($query, $value){
+                    
+                }),
+                AllowedFilter::callback('bulan', function($query, $value){
+                    
+                }),
+                AllowedFilter::callback('kode_kecamatan', function($query, $value){
+                    
+                })
+                // AllowedFilter::callback('search', function ($query, $value) {
+                //     $query->where(function ($query) use ($value) {
+                //         $query->where('template_uuid', 'like', "%{$value}%");
+                //         $query->orWhere('keuangan_template.uraian', 'like', "%{$value}%");
+                //         $query->orWhere('tahun', 'like', "{$value}%");
+                //         $query->orWhere('config.nama_desa', 'like', "%{$value}%");
+                //     });
+                // }),
+            ])
+            // ->allowedSorts([
+            //     'config_id',
+            //     'tahun',
+            //     'anggaran',
+            //     'realisasi',
+            //     'template_uuid',
+            //     'keuangan_template.uraian',
+            //     'config.nama_desa',
+            // ])
+            ->jsonPaginate();
     }
 }
