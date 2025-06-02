@@ -5,7 +5,7 @@ namespace App\Models\Traits;
 trait FilterWilayahTrait
 {
     /**
-     * Scope query untuk filter Kabupaten.
+     * Scope query untuk filter Kecamatan.
      *
      * @param Builder $query
      *
@@ -64,15 +64,12 @@ trait FilterWilayahTrait
      *
      * @return Builder
      */
-    // public function scopeFilterWilayah($query)
-    // {
-    //     return $query->filterDesa($this->scopeFilterKecamatan($query));
-    // }
     public function scopeFilterWilayah($query)
     {
-        return $query
-            ->filterKabupaten()
-            ->filterKecamatan()
-            ->filterDesa();
+        return $query->filterDesa($this->scopeFilterKecamatan($this->scopeFilterKabupaten($query)));
+        // return $query
+        //     ->filterKabupaten()
+        //     ->filterKecamatan()
+        //     ->filterDesa();
     }
 }
