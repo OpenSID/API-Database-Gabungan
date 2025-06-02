@@ -1,4 +1,4 @@
-Di rilis ini, versi 2505.0.0 berisi penambahan API untuk OpenKab dan perbaikan lain yang diminta pengguna.
+Di rilis ini, versi 2506.0.0 berisi penambahan API untuk OpenKab dan perbaikan lain yang diminta pengguna.
 
 #### Penambahan Fitur
 
