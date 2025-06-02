@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Repository\PendudukRepository;
 use App\Http\Requests\PendudukRequest;
 use App\Http\Requests\PindahRequest;
+use App\Http\Transformers\PendudukChartTransformer;
 use App\Http\Transformers\PendudukTransformer;
 use App\Models\LogKeluarga;
 use App\Models\LogPenduduk;
@@ -26,7 +27,19 @@ class PendudukController extends Controller
 
     public function index()
     {
+        $query = $this->penduduk->listPenduduk();
+        $all = $this->penduduk->listPenduduk(true);
+
+        if(request()->input('chart-view')){
+            return $this->fractal($query, new PendudukTransformer, 'penduduk')
+            ->addMeta([
+                'all_data' => $all->map(fn ($item) => (new PendudukChartTransformer)->transform($item)),
+            ])
+            ->respond();
+        }
+
         return $this->fractal($this->penduduk->listPenduduk(), new PendudukTransformer, 'penduduk')->respond();
+
     }
 
     public function pendudukDemoSeeder()
