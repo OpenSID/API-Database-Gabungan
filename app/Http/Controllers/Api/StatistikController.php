@@ -5,13 +5,17 @@ namespace App\Http\Controllers\Api;
 use App\Http\Repository\BantuanRepository;
 use App\Http\Repository\KeluargaRepository;
 use App\Http\Repository\PendudukRepository;
+use App\Http\Repository\PosyanduRepository;
 use App\Http\Repository\RtmRepository;
 use App\Http\Repository\StatistikRepository;
+use App\Http\Transformers\PosyanduTransformer;
+use App\Http\Transformers\StatistikDetailTransformer;
 use App\Http\Transformers\StatistikTransformer;
 use App\Models\Bantuan;
 use App\Models\BantuanPeserta;
 use App\Models\Config;
 use Illuminate\Http\Response;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class StatistikController extends Controller
 {
@@ -27,6 +31,10 @@ class StatistikController extends Controller
 
     protected $desa;
 
+    protected $nomor;
+    
+    protected $sex;
+
     public function __construct(StatistikRepository $statistik)
     {
         $this->statistik = $statistik;
@@ -35,6 +43,8 @@ class StatistikController extends Controller
         $this->kecamatan = request()->input('filter')['kecamatan'] ?? null;
         $this->kabupaten = request()->input('filter')['kabupaten'] ?? null;
         $this->desa = request()->input('filter')['desa'] ?? null;
+        $this->nomor = request()->input('filter')['nomor'] ?? null;
+        $this->sex = request()->input('filter')['sex'] ?? null;
     }
 
     public function kategoriStatistik()
@@ -111,6 +121,11 @@ class StatistikController extends Controller
             'success' => true,
             'data' => $rtm->listTahun(),
         ], Response::HTTP_OK);
+    }
+
+    public function posyandu(PosyanduRepository $posyandu)
+    {
+        return $this->fractal($posyandu->listPosyandu($this->kategori), new PosyanduTransformer(), 'posyandu')->respond();
     }
 
     public function bantuan(BantuanRepository $bantuan)

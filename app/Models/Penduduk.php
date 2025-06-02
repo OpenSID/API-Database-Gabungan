@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Enums\SakitMenahunEnum;
+use App\Models\Enums\StatusDasarEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -50,9 +52,7 @@ class Penduduk extends BaseModel
     protected $table = 'tweb_penduduk';
 
     /** {@inheritdoc} */
-    protected $fillable = [
-        'email',
-    ];
+    protected $guarded = [];
 
     /** {@inheritdoc} */
     protected $appends = [
@@ -468,9 +468,15 @@ class Penduduk extends BaseModel
      *
      * @return Builder
      */
-    public function scopeStatus($query, $value = 1)
+    public function scopeStatus($query, $value = 1, $tanggalPeristiwa = null, $configDesa = null)
     {
+        if($value != StatusDasarEnum::MATI) {
+            // kalau log_penduduk lengkap, seharusnya tidak perlu join dengan log_penduduk terakhir, jika tanggal_peristiwa null
+            $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
+            return $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
+        }
         return $query->where('status_dasar', $value);
+
     }
 
     /**
@@ -510,6 +516,7 @@ class Penduduk extends BaseModel
             ->select(['suku AS id', 'suku AS nama'])
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
+            ->selectRaw("concat('{\"suku\":\"',suku,'\"}') as kriteria")
             ->where('tweb_penduduk.status_dasar', 1)
             ->groupBy('suku')
             ->whereNotNull('suku')
@@ -573,5 +580,38 @@ class Penduduk extends BaseModel
         }
 
         return $this->alamat_sekarang . ' RT ' . $this->wilayah?->rt . ' / RW ' . $this->wilayah?->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah?->dusun);
+    }
+
+    protected function scopeBatasiUmur($query, $tglPemilihan, $umurObj = [])
+    {
+        if (empty($umurObj) || ! isset($umurObj['min']) || ! isset($umurObj['max'])) {
+            return $query;
+        }
+
+        if (isset($umurObj['min'], $umurObj['max'])  ) {
+            if ($umurObj['min'] == '' && $umurObj['max'] == '') {
+                return $query;
+            }
+        }
+
+        $satuan  = $umurObj['satuan'] == 'tahun' ? 'YEAR' : 'MONTH';
+        $umurMin = empty($umurObj['min']) ? 0 : $umurObj['min'];
+        $umurMax = empty($umurObj['max']) && $umurObj['max'] != 0 ? 1000 : $umurObj['max'];
+
+        if ($umurMax == '') {
+            $umurMax = 1000;
+        }
+
+        return $query->whereRaw(DB::raw("TIMESTAMPDIFF({$satuan}, tanggallahir, STR_TO_DATE('{$tglPemilihan}','%d-%m-%Y')) between {$umurMin} and {$umurMax}"));
+    }
+
+    protected function scopeKtp($query)
+    {
+        return $query->whereRaw("((DATE_FORMAT(FROM_DAYS(TO_DAYS(NOW()) - TO_DAYS(tanggallahir)), '%Y')+0)>=17 OR (status_kawin IS NOT NULL AND status_kawin <> 1)) ");
+    }
+
+    protected function scopeHidupPada($query, $tanggalPeristiwa = null, $configDesa = null)
+    {
+        return $query->status(StatusDasarEnum::HIDUP, $tanggalPeristiwa, $configDesa);
     }
 }

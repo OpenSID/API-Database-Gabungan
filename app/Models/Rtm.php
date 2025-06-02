@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Enums\LabelStatistikEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -106,26 +107,6 @@ class Rtm extends BaseModel
     }
 
     /**
-     * Define a one-to-one relationship.
-     *
-     * @return hasMany
-     */
-    public function dataPresisiKesehatans(): HasMany
-    {
-        return $this->hasMany(DataPresisiKesehatan::class, 'rtm_id', 'id');
-    }
-
-    /**
-     * Define a one-to-one relationship.
-     *
-     * @return hasOne
-     */
-    public function dataPresisiKesehatan(): hasOne
-    {
-        return $this->hasOne(DataPresisiKesehatan::class, 'rtm_id', 'id');
-    }
-
-    /**
      * Define a one-to-many relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
@@ -159,6 +140,7 @@ class Rtm extends BaseModel
         return $this->scopeConfigId($query)
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 1 THEN tweb_penduduk.id END) AS laki_laki')
             ->selectRaw('COUNT(CASE WHEN tweb_penduduk.sex = 2 THEN tweb_penduduk.id END) AS perempuan')
+            ->selectRaw("concat('{\"bdt\":\"',bdt,'\"}') as kriteria")
             ->join('tweb_penduduk', 'tweb_penduduk.id', '=', 'tweb_rtm.nik_kepala')
             ->where('tweb_penduduk.status_dasar', 1)
             ->groupBy('tweb_rtm.id');
@@ -187,5 +169,33 @@ class Rtm extends BaseModel
     public function dtks()
     {
         return $this->hasOne(DTKS::class, 'id_rtm', 'id');
+    }
+
+    public function scopeJudulStatistik($query, $tipe = 0, $nomor = 1, $sex = 0)
+    {
+        if ($nomor == LabelStatistikEnum::Jumlah) {
+            $judul = ['nama' => 'JUMLAH'];
+        } elseif ($nomor == LabelStatistikEnum::BelumMengisi) {
+            $judul = ['nama' => 'BELUM MENGISI'];
+        } elseif ($nomor == LabelStatistikEnum::Total) {
+            $judul = ['nama' => 'TOTAL'];
+        } else {
+            switch ($tipe) {
+                case 'kelas_sosial':
+                    $judul = KelasSosial::find($nomor)->toArray();
+                    break;
+
+                default:
+                    $judul = Bantuan::find($nomor)->toArray();
+                    break;
+            }
+        }
+        if ($sex == 1) {
+            $judul['nama'] .= ' - LAKI-LAKI';
+        } elseif ($sex == 2) {
+            $judul['nama'] .= ' - PEREMPUAN';
+        }
+
+        return $judul;
     }
 }

@@ -1,21 +1,20 @@
-Di rilis ini, versi 2505.0.0 berisi penambahan API untuk OpenKab dan perbaikan lain yang diminta pengguna.
+Di rilis ini, versi 2506.0.0 berisi penambahan API untuk OpenKab dan perbaikan lain yang diminta pengguna.
 
 #### Penambahan Fitur
 
-1. [#78](https://github.com/OpenSID/API-Database-Gabungan/issues/78) Penambahan API data presisi pangan dan membuat unit testing.
-2. [#79](https://github.com/OpenSID/API-Database-Gabungan/issues/79) Penambahan API data presisi pendidikan dan membuat unit testing.
-3. [#72](https://github.com/OpenSID/API-Database-Gabungan/issues/72) Penambahan API jaminan sosial bersumber dari modul Data Presis.
-4. [#80](https://github.com/OpenSID/API-Database-Gabungan/issues/80) Penambahan API Presisi Agama.
-5. [#81](https://github.com/OpenSID/API-Database-Gabungan/issues/81) Penambahan API Presisi Adat.
-6. [#82](https://github.com/OpenSID/API-Database-Gabungan/issues/82) Penambahan API modul data presisi ketenagakerjaan.
-7. [#83](https://github.com/OpenSID/API-Database-Gabungan/issues/83) Penambahan API data presisi seni budaya dan membuat unit testing.
-
+1. [#101](https://github.com/OpenSID/API-Database-Gabungan/issues/101) Penambahan API data kesehatan OpenKab.
+2. [#103](https://github.com/OpenSID/API-Database-Gabungan/issues/103) Penambahan API untuk dasbor OpenKab.
+3. [#108](https://github.com/OpenSID/API-Database-Gabungan/issues/108) Penambahan response api poin.
+4. [#111](https://github.com/OpenSID/API-Database-Gabungan/issues/111) Penambahan API untuk detail statistik rtm. 
+5. [#114](https://github.com/OpenSID/API-Database-Gabungan/issues/114) Penambahan API Statistik bantuan penduduk
 
 ### Perbaikan Bug
 
-1. [#54](https://github.com/OpenSID/API-Database-Gabungan/issues/54) Perbaikan error halaman presisi dan dasbor OpenKab.
+1. [#89](https://github.com/OpenSID/API-Database-Gabungan/issues/89) Perbaikan Duplikasi fungsi Rtm::dataPresisiKesehatans().
 
 ### Perubahan Teknis
 
-1. [#47](https://github.com/OpenSID/API-Database-Gabungan/issues/47) Penambahan informasi data json collection postman untuk API database gabungan.
-2. [#68](https://github.com/OpenSID/API-Database-Gabungan/issues/68) Penambahan config format date. 
+1. [#97](https://github.com/OpenSID/API-Database-Gabungan/issues/97) Penyesuaian API MenuListener OpenKab.
+2. [#102](https://github.com/OpenSID/API-Database-Gabungan/issues/102) Penyesuaian ConfigDemoSeeder, KategoriDemoSeeder, KeluargaDemoSeeder, RTMDemoSeeder, WilayahDemoSeeder.
+3. [#110](https://github.com/OpenSID/API-Database-Gabungan/issues/110) Penyesuaian detail penduduk statistik. 
+4. [#113](https://github.com/OpenSID/API-Database-Gabungan/issues/113) Penyesuaian api config untuk MenuListener desa dan Kabupaten , Kecamatan middleware di OpenKab. 
