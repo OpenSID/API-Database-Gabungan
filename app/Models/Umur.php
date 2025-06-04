@@ -6,12 +6,13 @@ use App\Enums\StatusPendudukEnum;
 use App\Models\Enums\JenisKelaminEnum;
 use App\Models\Enums\StatusDasarEnum;
 use App\Models\Traits\ConfigIdTrait;
+use App\Models\Traits\FilterWilayahTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class Umur extends BaseModel
 {
-    use ConfigIdTrait;
+    use ConfigIdTrait, FilterWilayahTrait;
 
     public const RENTANG = 1;
 
