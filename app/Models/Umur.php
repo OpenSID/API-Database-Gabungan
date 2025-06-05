@@ -91,9 +91,11 @@ class Umur extends BaseModel
                 ->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id')
                 ->where('tweb_penduduk.status', StatusPendudukEnum::TETAP)
                 ->where('tweb_penduduk.status_dasar', StatusDasarEnum::HIDUP)
-                ->when($configDesa, function ($q) use ($configDesa) {
-                    return $q->where(['config_id' => $configDesa]);
-                })->when($type == 'akta', function ($q) {
+                ->filterWilayah()
+                // ->when($configDesa, function ($q) use ($configDesa) {
+                //     return $q->where(['config_id' => $configDesa]);
+                // })
+                ->when($type == 'akta', function ($q) {
                     return $q->whereNotNull('akta_lahir');
                 })->when($type == 'akta-nikah', function ($q) {
                     return $q->where(function($r){ return $r->where('status_kawin', 2)->whereNotNull('akta_perkawinan')->orWhereNotIn('akta_perkawinan',[' ','-']);});
