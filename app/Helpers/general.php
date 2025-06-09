@@ -24,7 +24,7 @@ if (! function_exists('app_version')) {
      */
     function app_version()
     {
-        return 'v2505.0.0';
+        return 'v2506.0.0';
     }
 }
 

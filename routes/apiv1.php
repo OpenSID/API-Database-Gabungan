@@ -199,6 +199,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('kabupaten', [ConfigController::class, 'kabupaten']);
         Route::get('kabupaten-by-kode/{kode_kabupaten}', [ConfigController::class, 'kabupatenByKode']);
         Route::get('kecamatan-by-kode/{kode_kecamatan}', [ConfigController::class, 'kecamatanByKode']);
+        Route::get('desa-by-kode/{kode_desa}', [ConfigController::class, 'desaByKode']);
     });
 
     Route::prefix('penduduk')->middleware([])->group(function () {

@@ -47,4 +47,11 @@ class ConfigController extends Controller
             'data' => Config::where('kode_kecamatan', $kode_kecamatan)->first()
         ]);
     }
+
+    public function desaByKode($kode_desa)
+    {
+        return response()->json([
+            'data' => Config::where('kode_desa', $kode_desa)->first()
+        ]);
+    }
 }
