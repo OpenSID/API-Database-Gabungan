@@ -2,6 +2,7 @@ Di rilis ini, versi 2506.0.0 berisi penambahan API untuk OpenKab dan perbaikan l
 
 #### Penambahan Fitur
 
+1. [#120](https://github.com/OpenSID/API-Database-Gabungan/issues/120) Penambahan API Laporan Bulanan Kependudukan.
 
 ### Perbaikan Bug
 

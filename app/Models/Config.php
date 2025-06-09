@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class Config extends BaseModel
 {
@@ -71,4 +73,19 @@ class Config extends BaseModel
     {
         return $this->hasOne(SettingAplikasi::class, 'config_id', 'id')->where('key', 'sebutan_desa');
     }
+
+    // public function scopeAppKey($query, $appKey = null)
+    // {
+    //     return $query->where('app_key', $appKey ?? get_app_key());
+    // }
+
+    public function scopeAppKey($query)
+    {
+        if (Schema::hasColumn($this->table, 'app_key')) {
+            $query->where('app_key', get_app_key());
+        }
+
+        return $query;
+    }
+
 }

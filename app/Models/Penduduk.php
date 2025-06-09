@@ -6,6 +6,7 @@ use App\Enums\SakitMenahunEnum;
 use App\Models\Enums\StatusDasarEnum;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
@@ -468,6 +469,7 @@ class Penduduk extends BaseModel
      *
      * @return Builder
      */
+
     public function scopeStatus($query, $value = 1, $tanggalPeristiwa = null, $configDesa = null)
     {
         if(!$tanggalPeristiwa){
@@ -478,7 +480,6 @@ class Penduduk extends BaseModel
             $logPenduduk = LogPenduduk::select(['log_penduduk.id_pend'])->peristiwaTerakhir($tanggalPeristiwa, $configDesa)->tidakMati()->toBoundSql();
             return $query->where('status_dasar', $value)->join(DB::raw("($logPenduduk) as log"), 'log.id_pend', '=', 'tweb_penduduk.id');
         }
-        return $query->where('status_dasar', $value);
 
     }
 
@@ -583,6 +584,29 @@ class Penduduk extends BaseModel
         }
 
         return $this->alamat_sekarang . ' RT ' . $this->wilayah?->rt . ' / RW ' . $this->wilayah?->rw . ' ' . ucwords(setting('sebutan_dusun') . ' ' . $this->wilayah?->dusun);
+    }
+
+    public static function awalBulan($tahun, $bulan)
+    {
+        $akhirBulanKemarin = Carbon::createFromDate($tahun, (int) $bulan)->subMonth()->endOfMonth()->format('Y-m-d');
+        
+        // penduduk yang masih hidup sampai dengan akhir bulan kemarin
+        $listKodePeristiwa = array_diff(array_keys(LogPenduduk::kodePeristiwa()), [LogPenduduk::MATI, LogPenduduk::PINDAH_KELUAR, LogPenduduk::HILANG]);
+
+        return Penduduk::filterWilayah()->select(['status', 'nama', 'nik', 'tanggallahir', 'tempatlahir', 'nama_ayah', 'nama_ibu', 'id_kk', 'kk_level', 'sex', 'warganegara_id'])->withOnly([])->whereHas('log', static function ($q) use ($akhirBulanKemarin, $listKodePeristiwa) {
+            $q->peristiwaSampaiDengan($akhirBulanKemarin)->whereIn('kode_peristiwa', $listKodePeristiwa);
+        });
+    }
+
+    /**
+     * Define a one-to-many relationship.
+     *
+     * @return HasMany
+     */
+    public function log()
+    {
+        return $this->hasMany(LogPenduduk::class, 'id_pend');
+
     }
 
     protected function scopeBatasiUmur($query, $tglPemilihan, $umurObj = [])

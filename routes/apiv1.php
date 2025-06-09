@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\KesehatanWebsiteController;
 use App\Http\Controllers\Api\KetenagakerjaanController;
 use App\Http\Controllers\Api\KeuanganController;
 use App\Http\Controllers\Api\LaporanPendudukController;
+use App\Http\Controllers\Api\LaporanPerkembanganPendudukBulananController;
 use App\Http\Controllers\Api\LogController;
 use App\Http\Controllers\Api\OpendkSynchronizeController;
 use App\Http\Controllers\Api\PapanPresisiController;
@@ -42,6 +43,7 @@ use App\Http\Controllers\Api\PendudukController;
 use App\Http\Controllers\Api\PengaturanController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\PointController;
+use App\Http\Controllers\Api\SettingAplikasiController;
 use App\Http\Controllers\Api\RtmController;
 use App\Http\Controllers\Api\StatusKawinController;
 use App\Http\Controllers\Api\PrasaranaSaranaController;
@@ -95,6 +97,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', DasborController::class);
     });
 
+    Route::get('setting-aplikasi', [SettingAplikasiController::class, 'index']);
+    
     Route::get('setting-modul', [SettingModulController::class, 'index']);
 
     Route::get('/pariwisata', PariwisataController::class);
@@ -255,6 +259,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
             });
             Route::get('/bantuan', 'bantuan');
             Route::get('/bantuan/tahun', [BantuanController::class, 'tahun']);
+
+            // laporan bulanan
+            Route::prefix('laporan-bulanan')
+            ->controller(LaporanPerkembanganPendudukBulananController::class)
+            ->group(function () {
+                Route::get('/','index');
+                Route::get('/log-penduduk','logPenduduk');
+                Route::get('/sumber-data','sumberData');
+                Route::post('/kependudukan','penduduk');
+            });
         });
 
     // Bantuan

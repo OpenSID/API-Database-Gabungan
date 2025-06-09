@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\FilterWilayahTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
 class LogKeluarga extends BaseModel
 {
-    use HasFactory;
+    use HasFactory, FilterWilayahTrait;
 
     /**
      * {@inheritdoc}
@@ -40,4 +41,9 @@ class LogKeluarga extends BaseModel
     const KELUARGA_HAPUS = 13;
 
     const KEPALA_KELUARGA_KEMBALI_HIDUP = 14;
+
+    public function Keluarga()
+    {
+        return $this->belongsTo(Keluarga::class, 'id_kk', 'id')->withoutGlobalScope(\App\Scopes\ConfigIdScope::class);
+    }
 }
