@@ -6,15 +6,13 @@ use App\Models\Config;
 use App\Models\Rtm;
 use App\Models\Sandang;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class SandangControllerApiTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -65,10 +63,6 @@ class SandangControllerApiTest extends TestCase
                 ],
             ]);
     }
-
-    
-
-
 
     /**
      * A basic feature test example.
@@ -130,7 +124,7 @@ class SandangControllerApiTest extends TestCase
         $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
 
         $url = '/api/v1/data-presisi/sandang?'.http_build_query([
-            'filter[kode_kecamatan]' => $kodeKecamatan
+            'filter[kode_kecamatan]' => $kodeKecamatan,
         ]);
 
         $response = $this->getJson($url);
@@ -186,7 +180,7 @@ class SandangControllerApiTest extends TestCase
         $idRtm = Rtm::inRandomOrder()->first()->id;
 
         $url = '/api/v1/data-presisi/sandang?'.http_build_query([
-            'filter[rtm_id]' => $idRtm
+            'filter[rtm_id]' => $idRtm,
         ]);
 
         $response = $this->getJson($url);
@@ -240,7 +234,9 @@ class SandangControllerApiTest extends TestCase
     public function test_updates_data_presisi_sandang_successfully()
     {
         $sandang = Sandang::inRandomOrder()->first();
-
+        if (!$sandang) {
+            $this->markTestSkipped('No Sandang data available for testing.');
+        }
         // Act: Kirim request update
         $response = $this->postJson("/api/v1/data-presisi/sandang/update/{$sandang->rtm_id}", [
             'form' => [
@@ -254,19 +250,16 @@ class SandangControllerApiTest extends TestCase
                     'jml_pakaian_sembahyang' => '1 Stel',
                     'jml_pakaian_seragam' => '1 Stel',
                     'jml_pakaian_yg_dimiliki' => '3 Stel',
-                    'tmpt_cuci_pakaian' => 'Cuci Sendiri'
-                ]
-            ]
+                    'tmpt_cuci_pakaian' => 'Cuci Sendiri',
+                ],
+            ],
         ]);
-        
 
         // Assert: Periksa response sukses
         $response->assertStatus(200)
             ->assertJson([
                 'success' => true,
-                'message' => 'Berhasil Ubah Data'
+                'message' => 'Berhasil Ubah Data',
             ]);
     }
-
-
 }

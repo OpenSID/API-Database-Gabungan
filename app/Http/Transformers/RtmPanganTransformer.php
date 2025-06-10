@@ -10,7 +10,7 @@ class RtmPanganTransformer extends TransformerAbstract
 {
     public function transform(Rtm $item)
     {
-        $statuses = $item->dataPresisiKesehatans->pluck('status_pengisian');
+        $statuses = optional($item->dataPresisiKesehatans)->pluck('status_pengisian') ?? collect();
         $status = $statuses->every(fn ($s) => $s === 'lengkap') ? 'Sudah Diisi' : 'Belum Diisi';
 
         $tanggal = optional($item->dataPresisiKesehatan)->tanggal_pengisian;

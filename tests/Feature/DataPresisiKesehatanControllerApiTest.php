@@ -64,7 +64,7 @@ class DataPresisiKesehatanControllerApiTest extends TestCase
             ]);
     }
 
-    
+
 
 
 
@@ -238,7 +238,9 @@ class DataPresisiKesehatanControllerApiTest extends TestCase
     public function test_updates_data_presisi_kesehatan_successfully()
     {
         $kesehatan = DataPresisiKesehatan::inRandomOrder()->first();
-
+        if (!$kesehatan) {
+            $this->markTestSkipped('Tidak ada data kesehatan yang tersedia untuk pengujian.');
+        }
         // Act: Kirim request update
         $response = $this->postJson("/api/v1/data-presisi/kesehatan/update/{$kesehatan->rtm_id}", [
             'form' => [
@@ -256,7 +258,7 @@ class DataPresisiKesehatanControllerApiTest extends TestCase
                 ]
             ]
         ]);
-        
+
 
         // Assert: Periksa response sukses
         $response->assertStatus(200)

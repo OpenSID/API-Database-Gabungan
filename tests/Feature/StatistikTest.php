@@ -3,15 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class StatistikTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -59,11 +57,9 @@ class StatistikTest extends TestCase
             'filter[bulan]' => '',
         ]);
 
-        $res = $this->getJson($url); 
+        $res = $this->getJson($url);
 
         $res->assertStatus(Response::HTTP_OK);
 
     }
-
-    
 }

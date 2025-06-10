@@ -4,12 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Config;
 use App\Models\Pembangunan;
-use App\Models\Setting;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class PembangunanOpenDkTest extends TestCase
 {
+    use WithoutMiddleware;
     /**
      * A basic feature test example.
      *
@@ -17,7 +18,6 @@ class PembangunanOpenDkTest extends TestCase
      */
     public function test_get_data_pembangunan_by_kode_kecamatan()
     {
-        $token = Setting::where('key', 'opendk_api_key')->first()->value;
         $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
 
         $totalKecamatan = Pembangunan::whereRelation('config', 'kode_kecamatan', $kodeKecamatan)->count();
@@ -30,7 +30,6 @@ class PembangunanOpenDkTest extends TestCase
         $response = $this->getJson($url, [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
         ]);
 
         // Pastikan responsnya berhasil

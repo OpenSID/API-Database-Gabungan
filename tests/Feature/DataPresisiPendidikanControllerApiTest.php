@@ -222,7 +222,9 @@ class DataPresisiPendidikanControllerApiTest extends TestCase
     public function test_updates_data_presisi_pendidikan_successfully()
     {
         $pendidikan = DataPresisiPendidikan::inRandomOrder()->first();
-
+        if(!$pendidikan) {
+            $this->markTestSkipped('Tidak ada data pendidikan yang tersedia untuk pengujian.');
+        }
         // Act: Kirim request update
         $response = $this->postJson("/api/v1/data-presisi/pendidikan/update/{$pendidikan->rtm_id}", [
             'form' => [
@@ -236,7 +238,7 @@ class DataPresisiPendidikanControllerApiTest extends TestCase
                 ]
             ]
         ]);
-        
+
 
         // Assert: Periksa response sukses
         $response->assertStatus(200)

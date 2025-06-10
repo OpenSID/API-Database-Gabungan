@@ -535,6 +535,9 @@ class AgamaPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
+        if(!DataPresisiAgama::distinct('config_id')->exists()) {
+            $this->markTestSkipped('Tidak ada data presisi agama yang tersedia');
+        }
         $kodeKecamatan = DataPresisiAgama::distinct('config_id')->inRandomOrder()->first()->config->kode_kecamatan;
         $url = '/api/v1/data-presisi/agama?'.http_build_query([
             'filter[kepala_rtm]' => true,
@@ -560,6 +563,9 @@ class AgamaPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
+        if(!DataPresisiAgama::distinct('config_id')->exists()) {
+            $this->markTestSkipped('Tidak ada data presisi agama yang tersedia');
+        }
         $kodeDesa = DataPresisiAgama::distinct('config_id')->inRandomOrder()->first()->config->kode_desa;
         $url = '/api/v1/data-presisi/agama?'.http_build_query([
             'filter[kepala_rtm]' => true,
