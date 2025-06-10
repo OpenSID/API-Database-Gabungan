@@ -26,6 +26,17 @@ class BantuanRepository
             ->allowedFilters([
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('sasaran'),
+                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                    $query->whereHas('config', static fn ($query) => $query->where('kode_kecamatan', $value));
+                }),
+                AllowedFilter::callback('kode_desa', function ($query, $value) {
+                    $query->whereHas('config', function ($query) use ($value) {
+                        $query->where('kode_desa', $value);
+                    });
+                }),
+                AllowedFilter::callback('kode_kabupaten', function ($query, $value) {
+                    $query->whereHas('config', static fn ($query) => $query->where('kode_kabupaten', $value));
+                }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where('nama', 'LIKE', '%'.$value.'%')
                         ->orWhere('asaldana', 'LIKE', '%'.$value.'%');
