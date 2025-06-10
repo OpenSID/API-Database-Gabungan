@@ -15,7 +15,7 @@ return new class extends Migration
         if (! Schema::connection('openkab')->hasTable('data_presisi_papan')) {
             Schema::connection('openkab')->create('data_presisi_papan', static function (Blueprint $table) {
                 $table->uuid()->primary();
-                $table->configId();
+                $table->integer('config_id');
                 $table->integer('rtm_id')->nullable();
                 $table->integer('keluarga_id')->nullable();
                 $table->timesWithUserstamps();

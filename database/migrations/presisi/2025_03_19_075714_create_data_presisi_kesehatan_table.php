@@ -14,7 +14,7 @@ return new class extends Migration
         if (! Schema::connection('openkab')->hasTable('data_presisi_kesehatan')) {
             Schema::connection('openkab')->create('data_presisi_kesehatan', static function (Blueprint $table) {
                 $table->uuid()->primary();
-                $table->configId();
+                $table->integer('config_id');
                 $table->integer('rtm_id')->nullable()->index('FK_data_presisi_kesehatan_rtm');
                 $table->integer('keluarga_id')->nullable()->index('FK_data_presisi_kesehatan_keluarga');
                 $table->integer('anggota_id')->nullable()->index('FK_data_presisi_kesehatan_anggota');
