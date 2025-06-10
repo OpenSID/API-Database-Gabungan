@@ -22,7 +22,10 @@ return new class extends Migration
                 $table->string('jns_bantuan', 30)->nullable();
                 $table->string('jns_gangguan_mental', 50)->nullable();
                 $table->string('terapi_gangguan_mental', 50)->nullable();
-                $table->timesWithUserstamps();
+                $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->integer('created_by')->nullable();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->integer('updated_by')->nullable();
 
                 // Add foreign key constraints
                 $table->foreign('rtm_id')->references('id')->on('tweb_rtm')->onUpdate('cascade')->onDelete('cascade');

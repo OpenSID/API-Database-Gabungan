@@ -18,7 +18,10 @@ return new class extends Migration
                 $table->integer('config_id');
                 $table->integer('rtm_id')->nullable();
                 $table->integer('keluarga_id')->nullable();
-                $table->timesWithUserstamps();
+                $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->integer('created_by')->nullable();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->integer('updated_by')->nullable();
                 $table->string('kd_stat_bangunan_tinggal', 2)->nullable();
                 $table->integer('luas_lahan_pekarangan')->nullable();
                 $table->integer('jumlah_kamar_tidur')->nullable();

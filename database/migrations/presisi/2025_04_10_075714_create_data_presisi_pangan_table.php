@@ -36,7 +36,10 @@ return new class extends Migration
 
                 $table->date('tanggal_pengisian')->nullable();
                 $table->string('status_pengisian')->nullable();
-                $table->timesWithUserstamps();
+                $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->integer('created_by')->nullable();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->integer('updated_by')->nullable();
 
                 // Add foreign key constraints
                 $table->foreign('rtm_id')->references('id')->on('tweb_rtm')->onUpdate('cascade')->onDelete('cascade');

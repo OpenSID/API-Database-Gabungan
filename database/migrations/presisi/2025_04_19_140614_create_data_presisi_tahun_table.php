@@ -21,7 +21,10 @@ return new class extends Migration
                 $table->integer('config_id');
                 $table->string('tahun', 4);
                 $table->boolean('status')->default(true);
-                $table->timesWithUserstamps();
+                $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->integer('created_by')->nullable();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->integer('updated_by')->nullable();
                 $table->unique(['tahun', 'config_id'], 'tahun_config_id_unique');
             });
         }

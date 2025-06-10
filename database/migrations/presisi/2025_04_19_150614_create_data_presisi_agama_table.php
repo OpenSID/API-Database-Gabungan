@@ -21,7 +21,10 @@ return new class extends Migration
                 $table->integer('anggota_id')->nullable()->index('FK_data_presisi_aktivitas_agama_anggota');
                 $table->tinyInteger('agama_id', false, true)->nullable();
                 $table->tinyInteger('frekwensi_mengikuti_kegiatan_setahun')->nullable();
-                $table->timesWithUserstamps();
+                $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->integer('created_by')->nullable();
+            $table->timestamp('updated_at')->useCurrentOnUpdate()->nullable()->useCurrent();
+            $table->integer('updated_by')->nullable();
 
                 // Add foreign key constraints
                 $table->foreign('rtm_id')->references('id')->on('tweb_rtm')->onUpdate('cascade')->onDelete('cascade');
