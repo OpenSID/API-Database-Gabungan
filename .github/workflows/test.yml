@@ -66,4 +66,5 @@ jobs:
         OPENKAB_DB_DATABASE: testing_db
         OPENKAB_DB_USERNAME: root
         OPENKAB_DB_PASSWORD: secret
-      run: php artisan migrate && php artisan test
+      run: |
+        php artisan migrate && php artisan migrate --path=database/migrations/presisi && php artisan test
