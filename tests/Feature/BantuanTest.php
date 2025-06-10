@@ -26,22 +26,22 @@ class BantuanTest extends TestCase
     public function test_get_program_bantuan(): void
     {
         $url = '/api/v1/bantuan';
-        $response = $this->getJson($url);        
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
                     'attributes' => [
-                        'nama',                        
-                        'sasaran',                        
-                        'nama_sasaran',                        
-                        'jumlah_peserta',                        
-                        'ndesc',                        
-                        'sdate',                        
-                        'edate',                        
-                        'status',                        
-                        'nama_status',                        
-                        'asaldana',                        
+                        'nama',
+                        'sasaran',
+                        'nama_sasaran',
+                        'jumlah_peserta',
+                        'ndesc',
+                        'sdate',
+                        'edate',
+                        'status',
+                        'nama_status',
+                        'asaldana',
                     ],
                 ],
             ],
@@ -64,8 +64,10 @@ class BantuanTest extends TestCase
 
     public function test_get_peserta_bantuan(): void
     {
-        $url = '/api/v1/bantuan/peserta';
-        $response = $this->getJson($url);        
+        $url = '/api/v1/bantuan/peserta?'.http_build_query([
+            'page[size]' => 5,
+        ]);
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
@@ -106,7 +108,7 @@ class BantuanTest extends TestCase
     public function test_get_sasaran_bantuan(): void
     {
         $url = '/api/v1/bantuan/sasaran';
-        $response = $this->getJson($url);        
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'success',
@@ -118,11 +120,11 @@ class BantuanTest extends TestCase
             ],
         ]);
     }
-    
+
     public function test_get_tahun_bantuan(): void
     {
         $url = '/api/v1/bantuan/tahun';
-        $response = $this->getJson($url);        
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'success',

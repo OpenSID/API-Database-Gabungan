@@ -46,7 +46,7 @@ class StatistikControllerApiTest extends TestCase
 
     public function test_get_data_list_program()
     {
-        $url = '/api/v1/statistik-web/get-list-program?'.http_build_query([]);
+        $url = '/api/v1/statistik-web/get-list-program';
         $total = Bantuan::count();
         $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
