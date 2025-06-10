@@ -56,6 +56,8 @@ jobs:
           mysql -h 127.0.0.1 -P 3306 -u root -psecret testing_db < ./database/database_test.sql
           mysql -h 127.0.0.1 -P 3306 -u root -psecret -e "CREATE DATABASE api_gabungan"
           mysql -h 127.0.0.1 -P 3306 -u root -psecret api_gabungan < ./database/database_api.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -psecret -e "GRANT ALL PRIVILEGES ON testing_db.* TO 'root'@'%';FLUSH PRIVILEGES;"
+
 
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:

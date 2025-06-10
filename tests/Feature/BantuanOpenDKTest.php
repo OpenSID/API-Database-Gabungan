@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\BantuanSaja;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -30,25 +31,25 @@ class BantuanOpenDKTest extends TestCase
     public function test_get_bantuan_opendk(): void
     {
         $url = '/api/v1/opendk/bantuan';
-        $response = $this->getJson($url); 
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
-                    'attributes' => [                        
+                    'attributes' => [
                         'nama',
                         'sasaran',
-                        'nama_sasaran',                        
-                        'jumlah_peserta',                        
-                        'ndesc',                        
-                        'sdate',                        
-                        'edate',                        
-                        'status',                        
-                        'nama_status',                        
-                        'asaldana',                        
-                        'masa_berlaku',                        
-                        'desa',                        
-                        'kode_desa',                        
+                        'nama_sasaran',
+                        'jumlah_peserta',
+                        'ndesc',
+                        'sdate',
+                        'edate',
+                        'status',
+                        'nama_status',
+                        'asaldana',
+                        'masa_berlaku',
+                        'desa',
+                        'kode_desa',
                     ],
                 ],
             ],
@@ -59,7 +60,7 @@ class BantuanOpenDKTest extends TestCase
     {
 
         $url = '/api/v1/opendk/bantuan';
-        $response = $this->getJson($url); 
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
 
         $bantuan = $response->json();
@@ -79,24 +80,24 @@ class BantuanOpenDKTest extends TestCase
             $this->fail('Response Bantuan kosong.');
         }
 
-        $response = $this->getJson($url); 
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
-                'attributes' => [                        
+                'attributes' => [
                     'nama',
                     'sasaran',
-                    'nama_sasaran',                        
-                    'jumlah_peserta',                        
-                    'ndesc',                        
-                    'sdate',                        
-                    'edate',                        
-                    'status',                        
-                    'nama_status',                        
-                    'asaldana',                        
-                    'masa_berlaku',                        
-                    'desa',                        
-                    'kode_desa',                        
+                    'nama_sasaran',
+                    'jumlah_peserta',
+                    'ndesc',
+                    'sdate',
+                    'edate',
+                    'status',
+                    'nama_status',
+                    'asaldana',
+                    'masa_berlaku',
+                    'desa',
+                    'kode_desa',
                 ],
             ],
         ]);
@@ -104,27 +105,32 @@ class BantuanOpenDKTest extends TestCase
 
     public function test_get_bantuan_peserta(): void
     {
-        $url = '/api/v1/opendk/bantuan-peserta';
-        $response = $this->getJson($url); 
+        $kodeKecamatan = BantuanSaja::distinct('config_id')->inRandomOrder()->first()->config->kode_kecamatan;
+        $url = '/api/v1/opendk/bantuan-peserta?'.http_build_query([
+            'filter[kode_kecamatan]' => $kodeKecamatan,
+            'page[size]' => 5,
+        ]);
+
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
-                    'attributes' => [                        
+                    'attributes' => [
                         'peserta',
                         'nama',
-                        'nik',                        
-                        'no_kk',                        
-                        'program_id',                        
-                        'program' => [],                        
-                        'no_id_kartu',                        
-                        'kartu_nama',                        
-                        'kartu_nik',                        
-                        'kartu_tempat_lahir',                        
-                        'kartu_tanggal_lahir',                        
-                        'kartu_alamat',                        
-                        'jenis_kelamin',                        
-                        'keterangan',                        
+                        'nik',
+                        'no_kk',
+                        'program_id',
+                        'program' => [],
+                        'no_id_kartu',
+                        'kartu_nama',
+                        'kartu_nik',
+                        'kartu_tempat_lahir',
+                        'kartu_tanggal_lahir',
+                        'kartu_alamat',
+                        'jenis_kelamin',
+                        'keterangan',
                     ],
                 ],
             ],
@@ -135,7 +141,7 @@ class BantuanOpenDKTest extends TestCase
     {
 
         $url = '/api/v1/opendk/bantuan';
-        $response = $this->getJson($url); 
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
 
         $bantuan = $response->json();
@@ -156,7 +162,7 @@ class BantuanOpenDKTest extends TestCase
             $this->fail('Response Bantuan kosong.');
         }
 
-        $response = $this->getJson($url); 
+        $response = $this->getJson($url);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'data',
@@ -175,7 +181,7 @@ class BantuanOpenDKTest extends TestCase
                 'last',
             ],
         ]);
-        
-        
+
+
     }
 }
