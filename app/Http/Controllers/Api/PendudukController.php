@@ -27,10 +27,12 @@ class PendudukController extends Controller
 
     public function index()
     {
-        $query = $this->penduduk->listPenduduk();
-        $all = $this->penduduk->listPenduduk(true);
+      
 
         if(request()->input('chart-view')){
+            $query = $this->penduduk->listPenduduk();
+            $all = $this->penduduk->listPenduduk(true);
+            
             return $this->fractal($query, new PendudukTransformer, 'penduduk')
             ->addMeta([
                 'all_data' => $all->map(fn ($item) => (new PendudukChartTransformer)->transform($item)),
