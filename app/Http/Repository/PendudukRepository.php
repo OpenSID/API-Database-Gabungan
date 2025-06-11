@@ -672,11 +672,6 @@ class PendudukRepository
 
     private function countStatistikPendudukHidup(string $where = null): array|object
     {
-        $tanggalPeristiwa = null;
-        $configDesa = null;
-        if (request('config_desa')) {
-            $configDesa = request('config_desa');
-        }
 
         if (isset(request('filter')['tahun']) || isset(request('filter')['bulan'])) {
             $periode = [request('filter')['tahun'] ?? date('Y'), request('filter')['bulan'] ?? '12', '01'];
@@ -693,9 +688,7 @@ class PendudukRepository
             $penduduk->whereRaw($where);
         }
 
-        if ($configDesa) {
-            $penduduk->filterDesa();
-        }
+        $penduduk->filterWilayah();
 
         return $penduduk->get();
     }

@@ -4,7 +4,9 @@ use Carbon\Carbon;
 use App\Models\Config;
 use Illuminate\Support\Str;
 use App\Models\SettingAplikasi;
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Schema;
 
 define('SASARAN', serialize([
     '1' => 'Penduduk',
@@ -22,7 +24,7 @@ if (! function_exists('app_version')) {
      */
     function app_version()
     {
-        return 'v2505.0.0';
+        return 'v2506.0.0';
     }
 }
 
@@ -55,24 +57,84 @@ if (! function_exists('setting')) {
     }
 }
 
-if (! function_exists('identitas')) {
+// if (! function_exists('identitas')) {
+//     /**
+//      * Get identitas desa.
+//      *
+//      * @return object|string
+//      */
+//     function identitas(int $config_id = null, string $params = null)
+//     {
+//         if ($config_id && $params) {
+//             $config = Config::where('id', $config_id)->first();
+//             if ($config) {
+//                 return $config->{$params};
+//             }
+//         }
+
+//         return null;
+//     }
+// }
+
+if (!function_exists('identitas')) {
     /**
      * Get identitas desa.
      *
      * @return object|string
      */
-    function identitas(int $config_id = null, string $params = null)
+    function identitas(?string $params = null)
     {
-        if ($config_id && $params) {
-            $config = Config::where('id', $config_id)->first();
-            if ($config) {
-                return $config->{$params};
-            }
+        $identitas = null;
+        if (Schema::hasColumn('config', 'app_key') && Config::where('app_key', get_app_key())->exists()) {
+            $identitas = Config::appKey()->first();
         }
 
-        return null;
+
+        if ($params && $identitas) {
+            return $identitas->{$params};
+        }
+
+        return $identitas;
     }
 }
+
+function set_app_key(): string
+{
+    return 'base64:' . base64_encode(random_bytes(32));
+}
+
+// function get_app_key(): string
+// {
+//     $dir = storage_path('desa');
+//     if (!is_dir($dir)) {
+//         mkdir($dir, 0755, true); // Buat folder dengan izin tulis
+//     }
+
+//     $file = storage_path('desa/app_key');
+
+//     if (!file_exists($file) || trim(file_get_contents($file)) === '') {
+//         $app_key = set_app_key();
+//         file_put_contents($file, $app_key);
+//     } else {
+//         $app_key = file_get_contents($file);
+//     }
+
+//     return trim($app_key);
+// }
+
+// identitas('nama_desa');
+if (!function_exists('get_app_key')) {
+    /**
+     * Get identitas desa.
+     *
+     * @return object|string
+     */
+    function get_app_key()
+    {
+        return Cache::get('APP_KEY');
+    }
+}
+
 
 if (! function_exists('bulan')) {
     /**

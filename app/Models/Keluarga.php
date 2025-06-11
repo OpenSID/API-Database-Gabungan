@@ -35,6 +35,11 @@ class Keluarga extends BaseModel
         return $this->hasOne(Penduduk::class, 'id', 'nik_kepala');
     }
 
+    public function LogKeluarga()
+    {
+        return $this->hasMany(LogKeluarga::class, 'id_kk', 'id')->withoutGlobalScope(\App\Scopes\ConfigIdScope::class);
+    }
+
     /**
      * Define a one-to-many relationship.
      *

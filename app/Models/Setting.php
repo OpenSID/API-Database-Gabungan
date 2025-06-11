@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Traits\FilterWilayahTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
+    use FilterWilayahTrait;
+    
     public $table = 'settings';
 
     public $fillable = [
