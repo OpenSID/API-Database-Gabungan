@@ -13,9 +13,9 @@ class SuplemenTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->user = User::inRandomOrder()->first();
-        $this->assertNotNull($this->user, "User tidak ditemukan di database. Pastikan ada data user.");
-        Sanctum::actingAs($this->user);
+        $user = User::inRandomOrder()->first();
+        $this->assertNotNull($user, "User tidak ditemukan di database. Pastikan ada data user.");
+        Sanctum::actingAs($user);
     }
 
     public function test_get_data_suplemen()
@@ -49,8 +49,8 @@ class SuplemenTest extends TestCase
     {
         $suplemen = Suplemen::factory()->create();
 
-        $updateData = ['sasaran' => 2, 
-            'nama' => 'Suplemen B', 
+        $updateData = ['sasaran' => 2,
+            'nama' => 'Suplemen B',
             'keterangan' => 'Keterangan Suplemen B',
             'status' => 0,
             'sumber' => 'OpenSID',

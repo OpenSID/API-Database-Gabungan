@@ -667,6 +667,9 @@ class JaminanSosialPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
+        if(!DataPresisiJaminanSosial::distinct('config_id')->exists()) {
+            $this->markTestSkipped('Tidak ada data jaminan sosial yang tersedia');
+        }
         $kodeKecamatan = DataPresisiJaminanSosial::distinct('config_id')->inRandomOrder()->first()->config->kode_kecamatan;
         $url = '/api/v1/data-presisi/jaminan-sosial?'.http_build_query([
             'filter[kepala_rtm]' => true,
@@ -692,6 +695,9 @@ class JaminanSosialPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
+        if(!DataPresisiJaminanSosial::distinct('config_id')->exists()) {
+            $this->markTestSkipped('Tidak ada data jaminan sosial yang tersedia');
+        }
         $kodeDesa = DataPresisiJaminanSosial::distinct('config_id')->inRandomOrder()->first()->config->kode_desa;
         $url = '/api/v1/data-presisi/jaminan-sosial?'.http_build_query([
             'filter[kepala_rtm]' => true,

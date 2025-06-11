@@ -9,13 +9,12 @@ use App\Http\Repository\PosyanduRepository;
 use App\Http\Repository\RtmRepository;
 use App\Http\Repository\StatistikRepository;
 use App\Http\Transformers\PosyanduTransformer;
-use App\Http\Transformers\StatistikDetailTransformer;
 use App\Http\Transformers\StatistikTransformer;
 use App\Models\Bantuan;
 use App\Models\BantuanPeserta;
+use App\Models\BantuanSaja;
 use App\Models\Config;
 use Illuminate\Http\Response;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 
 class StatistikController extends Controller
 {
@@ -32,7 +31,7 @@ class StatistikController extends Controller
     protected $desa;
 
     protected $nomor;
-    
+
     protected $sex;
 
     public function __construct(StatistikRepository $statistik)
@@ -65,7 +64,7 @@ class StatistikController extends Controller
     public function penduduk(PendudukRepository $penduduk)
     {
         if ($this->kategori) {
-            return $this->fractal($this->statistik->getStatistik($penduduk->listStatistik($this->kategori, $this->desa)), new StatistikTransformer(), 'statistik-penduduk')->respond();
+            return $this->fractal($this->statistik->getStatistik($penduduk->listStatistik($this->kategori, $this->desa)), new StatistikTransformer, 'statistik-penduduk')->respond();
         }
 
         return response()->json([
@@ -93,7 +92,7 @@ class StatistikController extends Controller
     public function keluarga(KeluargaRepository $keluarga)
     {
         if ($this->kategori) {
-            return $this->fractal($this->statistik->getStatistik($keluarga->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-keluarga')->respond();
+            return $this->fractal($this->statistik->getStatistik($keluarga->listStatistik($this->kategori)), new StatistikTransformer, 'statistik-keluarga')->respond();
         }
 
         return response()->json([
@@ -112,7 +111,7 @@ class StatistikController extends Controller
 
     public function rtm(RtmRepository $rtm)
     {
-        return $this->fractal($this->statistik->getStatistik($rtm->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-rtm')->respond();
+        return $this->fractal($this->statistik->getStatistik($rtm->listStatistik($this->kategori)), new StatistikTransformer, 'statistik-rtm')->respond();
     }
 
     public function refTahunRtm(RtmRepository $rtm)
@@ -125,13 +124,13 @@ class StatistikController extends Controller
 
     public function posyandu(PosyanduRepository $posyandu)
     {
-        return $this->fractal($posyandu->listPosyandu($this->kategori), new PosyanduTransformer(), 'posyandu')->respond();
+        return $this->fractal($posyandu->listPosyandu($this->kategori), new PosyanduTransformer, 'posyandu')->respond();
     }
 
     public function bantuan(BantuanRepository $bantuan)
     {
         if ($this->kategori) {
-            return $this->fractal($this->statistik->getStatistik($bantuan->listStatistik($this->kategori)), new StatistikTransformer(), 'statistik-bantuan')->respond();
+            return $this->fractal($this->statistik->getStatistik($bantuan->listStatistik($this->kategori)), new StatistikTransformer, 'statistik-bantuan')->respond();
         }
 
         return response()->json([
@@ -139,9 +138,10 @@ class StatistikController extends Controller
             'message' => 'Kategori tidak ditemukan',
         ], Response::HTTP_NOT_FOUND);
     }
+
     public function getListProgram()
     {
-        $program = Bantuan::get(['id', 'nama']);
+        $program = BantuanSaja::get(['id', 'nama']);
 
         return $program->toJson();
     }
@@ -159,11 +159,11 @@ class StatistikController extends Controller
         $kodeKabupaten = request()->input('filter.kode_kabupaten');
 
         $query = Config::selectRaw('config.kode_kabupaten, config.nama_kabupaten')
-                    ->distinct()
-                    ->orderBy('config.nama_kabupaten', 'ASC');
+            ->distinct()
+            ->orderBy('config.nama_kabupaten', 'ASC');
 
         // Tambahkan kondisi filter jika kode_kabupaten disediakan
-        if (!empty($kodeKabupaten)) {
+        if (! empty($kodeKabupaten)) {
             $query->where('config.kode_kabupaten', $kodeKabupaten);
         }
 
@@ -190,8 +190,8 @@ class StatistikController extends Controller
     {
         if (! empty($id)) {
             $tahun = Config::selectRaw('config.kode_desa, config.nama_desa')
-                    ->where('config.kode_kecamatan', '=', $id)
-                    ->distinct()->orderBy('config.nama_desa', 'ASC')->get();
+                ->where('config.kode_kecamatan', '=', $id)
+                ->distinct()->orderBy('config.nama_desa', 'ASC')->get();
 
             return $tahun->toJson();
         }
@@ -222,8 +222,8 @@ class StatistikController extends Controller
     {
         if ($this->kategori) {
             $data = BantuanPeserta::join('program', 'program.id', '=', 'program_peserta.program_id', 'left')
-               ->join('config', 'config.id', '=', 'program_peserta.config_id', 'left')
-               ->join('tweb_penduduk', 'tweb_penduduk.id', '=', 'program_peserta.kartu_id_pend', 'left');
+                ->join('config', 'config.id', '=', 'program_peserta.config_id', 'left')
+                ->join('tweb_penduduk', 'tweb_penduduk.id', '=', 'program_peserta.kartu_id_pend', 'left');
             if ($this->kategori == 'penduduk') {
                 $data = $data->where('program.sasaran', '=', Bantuan::SASARAN_PENDUDUK);
             } elseif ($this->kategori == 'keluarga') {

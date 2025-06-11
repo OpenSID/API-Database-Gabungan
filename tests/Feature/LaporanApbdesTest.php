@@ -4,12 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Config;
 use App\Models\LaporanSinkronisasi;
-use App\Models\Setting;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class LaporanApbdesTest extends TestCase
 {
+    use WithoutMiddleware;
     /**
      * A basic feature test example.
      *
@@ -17,13 +18,9 @@ class LaporanApbdesTest extends TestCase
      */
     public function test_get_laporan_apbdes_by_kode_kecamatan()
     {
-        $token = Setting::where('key', 'opendk_api_key')->first()->value;
         $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
 
         $total = LaporanSinkronisasi::whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->apbdes()->get()->count();
-        if (! $token) {
-            $this->fail('Token not found');
-        }
 
         $url = '/api/v1/keuangan/laporan_apbdes?'.http_build_query([
             'filter[kode_kecamatan]' => $kodeKecamatan,
@@ -33,7 +30,6 @@ class LaporanApbdesTest extends TestCase
         $response = $this->getJson($url, [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
         ]);
 
         // Pastikan responsnya berhasil

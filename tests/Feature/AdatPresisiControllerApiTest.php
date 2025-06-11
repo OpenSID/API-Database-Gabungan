@@ -544,6 +544,9 @@ class AdatPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
+        if(!DataPresisiAdat::exists()) {
+            $this->markTestSkipped('Tidak ada data presisi adat');
+        }
         $kodeKecamatan = DataPresisiAdat::distinct('config_id')->inRandomOrder()->first()->config->kode_kecamatan;
         $url = '/api/v1/data-presisi/adat?'.http_build_query([
             'filter[kepala_rtm]' => true,
@@ -569,6 +572,9 @@ class AdatPresisiControllerApiTest extends TestCase
     {
         $user = User::inRandomOrder()->first();
         Sanctum::actingAs($user);
+        if(!DataPresisiAdat::exists()) {
+            $this->markTestSkipped('Tidak ada data presisi adat');
+        }
         $kodeDesa = DataPresisiAdat::distinct('config_id')->inRandomOrder()->first()->config->kode_desa;
         $url = '/api/v1/data-presisi/adat?'.http_build_query([
             'filter[kepala_rtm]' => true,

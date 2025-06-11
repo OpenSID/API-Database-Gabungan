@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Config;
 use App\Models\Setting;
 use Illuminate\Http\Response;
+use Laravel\Sanctum\PersonalAccessToken;
 use Tests\TestCase;
 
 class DesaControllerApiTest extends TestCase
@@ -16,7 +17,7 @@ class DesaControllerApiTest extends TestCase
      */
     public function test_get_data_kecamatan_valid_token()
     {
-        $token = Setting::where('key', 'opendk_api_key')->first()->value;
+        $token = PersonalAccessToken::whereNotNull('plaintext')->orderBy('id', 'desc')->first()->plaintext ?? null;
         $kecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
         $totalDesa = Config::where('kode_kecamatan', $kecamatan)->count();
         if (! $token) {
@@ -24,7 +25,7 @@ class DesaControllerApiTest extends TestCase
         }
         $url = '/api/v1/desa?'.http_build_query([
             'filter[kode_kecamatan]' => $kecamatan,
-        ]);        
+        ]);
         $response = $this->getJson($url, [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',

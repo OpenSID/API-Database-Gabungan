@@ -64,7 +64,7 @@ class DataPresisiPanganControllerApiTest extends TestCase
             ]);
     }
 
-    
+
 
 
 
@@ -256,7 +256,9 @@ class DataPresisiPanganControllerApiTest extends TestCase
     public function test_updates_data_presisi_pangan_successfully()
     {
         $pangan = DataPresisiPangan::inRandomOrder()->first();
-
+        if(!$pangan) {
+            $this->markTestSkipped('Tidak ada data Pangan yang tersedia untuk pengujian.');
+        }
         // Act: Kirim request update
         $response = $this->postJson("/api/v1/data-presisi/pangan/update/{$pangan->rtm_id}", [
             'keluarga_id' => $pangan->keluarga_id,
@@ -276,7 +278,7 @@ class DataPresisiPanganControllerApiTest extends TestCase
             "frekwensi_konsumsi_buah_perhari" => "2 Kali",
             "frekwensi_konsumsi_daging_perhari" => "3 Kali"
         ]);
-        
+
 
         // Assert: Periksa response sukses
         $response->assertStatus(200)

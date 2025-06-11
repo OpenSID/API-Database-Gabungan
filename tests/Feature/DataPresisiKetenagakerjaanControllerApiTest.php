@@ -64,7 +64,7 @@ class DataPresisiKetenagakerjaanControllerApiTest extends TestCase
             ]);
     }
 
-    
+
 
 
 
@@ -226,7 +226,9 @@ class DataPresisiKetenagakerjaanControllerApiTest extends TestCase
     public function test_updates_data_presisi_ketenagakerjaan_successfully()
     {
         $ketenagakerjaan = DataPresisiKetenagakerjaan::inRandomOrder()->first();
-
+        if(!$ketenagakerjaan) {
+            $this->markTestSkipped('Tidak ada data Ketenagakerjaan yang tersedia untuk pengujian.');
+        }
         // Act: Kirim request update
         $response = $this->postJson("/api/v1/data-presisi/ketenagakerjaan/update/{$ketenagakerjaan->rtm_id}", [
             'form' => [
@@ -240,7 +242,7 @@ class DataPresisiKetenagakerjaanControllerApiTest extends TestCase
                 ]
             ]
         ]);
-        
+
         // Assert: Periksa response sukses
         $response->assertStatus(200)
             ->assertJson([

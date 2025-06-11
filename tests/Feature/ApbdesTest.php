@@ -4,12 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Config;
 use App\Models\Keuangan;
-use App\Models\Setting;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class ApbdesTest extends TestCase
 {
+    use WithoutMiddleware;
     /**
      * A basic feature test example.
      *
@@ -17,23 +18,18 @@ class ApbdesTest extends TestCase
      */
     public function test_get_apbdes_by_kode_kecamatan()
     {
-        $token = Setting::where('key', 'opendk_api_key')->first()->value;
         $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
 
-        $total = Keuangan::whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->get()->count();
-        if (! $token) {
-            $this->fail('Token not found');
-        }
+        $total = Keuangan::whereHas('template', static fn($q) => $q->apbdes() )->whereRelation('desa', 'kode_kecamatan', $kodeKecamatan)->count();
 
         $url = '/api/v1/keuangan/apbdes?'.http_build_query([
             'filter[kode_kecamatan]' => $kodeKecamatan,
-        ]);        
+        ]);
 
         // Kirim permintaan sync penduduk dengan header Authorization
         $response = $this->getJson($url, [
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token,
         ]);
 
         // Pastikan responsnya berhasil

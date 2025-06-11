@@ -64,7 +64,7 @@ class DataPresisiSeniBudayaControllerApiTest extends TestCase
             ]);
     }
 
-    
+
 
 
 
@@ -220,7 +220,9 @@ class DataPresisiSeniBudayaControllerApiTest extends TestCase
     public function test_updates_data_presisi_seni_budaya_successfully()
     {
         $seniBudaya = DataPresisiSeniBudaya::inRandomOrder()->first();
-
+        if( !$seniBudaya) {
+            $this->markTestSkipped('Tidak ada data DataPresisiSeniBudaya yang tersedia untuk pengujian.');
+        }
         // Act: Kirim request update
         $response = $this->postJson("/api/v1/data-presisi/seni-budaya/update/{$seniBudaya->rtm_id}", [
             'form' => [
@@ -246,7 +248,7 @@ class DataPresisiSeniBudayaControllerApiTest extends TestCase
                 ]
             ]
         ]);
-        
+
 
         // Assert: Periksa response sukses
         $response->assertStatus(200)

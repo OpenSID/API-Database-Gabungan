@@ -3,15 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class WilayahControllerTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -19,6 +17,7 @@ class WilayahControllerTest extends TestCase
 
         Sanctum::actingAs($user);
     }
+
     /**
      * A basic feature test example.
      */
