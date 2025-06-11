@@ -55,10 +55,10 @@ class PendudukRepository
             ->get();
     }
 
-    public function listPenduduk()
+    public function listPenduduk($all = false)
     {
         $defaultConfigId = 1;
-        return QueryBuilder::for(Penduduk::withRef()->filterWilayah())
+        $penduduk = QueryBuilder::for(Penduduk::withRef()->filterWilayah())
             ->allowedFields('*')
             ->allowedFilters([
                 AllowedFilter::exact('id'),
@@ -296,8 +296,51 @@ class PendudukRepository
                 'umur',
                 'created_at',
                 'tag_id_card'
-            ])
-            ->jsonPaginate();
+            ]);
+
+            if ($all == false) {
+                return $penduduk->jsonPaginate();
+            }
+
+            return $penduduk->get();
+
+            // return $penduduk->with([
+            //     'config:id,kode_kecamatan,nama_kecamatan',
+            //     'pendidikanKK:id,nama',
+            //     'pendidikan:id,nama',
+            //     'agama:id,nama',
+            //     'jenisKelamin:id,nama',
+            //     'pekerjaan:id,nama',
+            //     'statusKawin:id,nama',
+            //     'pendudukHubungan:id,nama',
+            //     'wargaNegara:id,nama',
+            //     'pendudukStatus:id,nama',
+            //     'golonganDarah:id,nama',
+            //     'cacat:id,nama',
+            //     'kb:id,nama',
+            //     'statusRekamKtp:id,nama',
+            // ])->select([
+            //     'id',
+            //     'config_id',
+            //     'pendidikan_kk_id',
+            //     'pendidikan_sedang_id',
+            //     'agama_id',
+            //     'sex',
+            //     'pekerjaan_id',
+            //     'status_kawin',
+            //     'kk_level',
+            //     'warganegara_id',
+            //     'status',
+            //     'golongan_darah_id',
+            //     'cacat_id',
+            //     'cara_kb_id',
+            //     'status_rekam',
+            //     'tanggallahir',
+            //     'suku',
+            //     'bpjs_ketenagakerjaan',
+            //     'hamil',
+            // ])->get();
+
     }
 
     public function listPendudukKesehatan()
