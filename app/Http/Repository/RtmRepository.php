@@ -126,7 +126,7 @@ class RtmRepository
 
     private function caseBdt(): array|object
     {
-        $bdt = Rtm::CountStatistik()->filters(request()->input('filter'), 'tgl_daftar');
+        $bdt = Rtm::filterWilayah()->countStatistik()->filters(request()->input('filter'), 'tgl_daftar');
         $queryFooter = $bdt->get();
         $dataHeader = $bdt->bdt(true)->get();
 
