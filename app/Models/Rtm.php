@@ -47,6 +47,26 @@ class Rtm extends BaseModel
         return $this->hasOne(PendudukSaja::class, 'id', 'nik_kepala');
     }
 
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiSandangs(): HasMany
+    {
+        return $this->hasMany(Sandang::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiSandang(): hasOne
+    {
+        return $this->hasOne(Sandang::class, 'rtm_id', 'id');
+    }
+
      /**
      * Define a one-to-one relationship.
      *

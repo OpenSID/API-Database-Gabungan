@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Repository\PendudukRepository;
 use App\Http\Repository\SandangRepository;
 use App\Http\Transformers\RtmTransformer;
 use App\Http\Transformers\SandangTransformer;
@@ -12,13 +13,14 @@ use Illuminate\Support\Facades\DB;
 
 class SandangController extends Controller
 {
-    public function __construct(protected SandangRepository $sandang)
+    public function __construct(protected SandangRepository $sandang, protected PendudukRepository $penduduk)
     {
     }
 
     public function sandang()
     {
-        return $this->fractal($this->sandang->listSandang(), new SandangTransformer(), 'data_presisi_sandang')->respond();
+        return $this->fractal($this->penduduk->listPenduduk(), new SandangTransformer(), 'data_presisi_sandang')->respond();
+        // return $this->fractal($this->sandang->listSandang(), new SandangTransformer(), 'data_presisi_sandang')->respond();
     }
 
     public function rtm()
