@@ -118,7 +118,7 @@ class WilayahRepository
                 }),
                 AllowedFilter::callback('search', function ($query, $value) {
                     $query->where(function ($query) use ($value) {
-                        $query->where('nama_desa', 'like', "%{$value}%");
+                        $query->where('nama_desa', 'like', "%{$value}%")->orWhere('nama_kecamatan', 'like', "%{$value}%");
                     });
                 }),
             ])
