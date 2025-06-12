@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Enums\LabelStatistikEnum;
+use App\Models\Traits\FilterWilayahRtmTrait;
 use App\Models\Traits\FilterWilayahTrait;
 use App\Models\Traits\QueryTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\hasOne;
 
 class Rtm extends BaseModel
 {
-    use FilterWilayahTrait;
+    use FilterWilayahRtmTrait;
     use QueryTrait;
 
     public const KATEGORI_STATISTIK = [
@@ -44,6 +45,26 @@ class Rtm extends BaseModel
     public function kepalaKeluargaSaja()
     {
         return $this->hasOne(PendudukSaja::class, 'id', 'nik_kepala');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasMany
+     */
+    public function dataPresisiSandangs(): HasMany
+    {
+        return $this->hasMany(Sandang::class, 'rtm_id', 'id');
+    }
+
+    /**
+     * Define a one-to-one relationship.
+     *
+     * @return hasOne
+     */
+    public function dataPresisiSandang(): hasOne
+    {
+        return $this->hasOne(Sandang::class, 'rtm_id', 'id');
     }
 
      /**
@@ -123,7 +144,7 @@ class Rtm extends BaseModel
             ->selectRaw("concat('{\"bdt\":\"',bdt,'\"}') as kriteria")
             ->join('tweb_penduduk', 'tweb_penduduk.id', '=', 'tweb_rtm.nik_kepala')
             ->where('tweb_penduduk.status_dasar', 1)
-            ->groupBy('tweb_rtm.id');
+            ->groupBy('tweb_rtm.id','tweb_rtm.bdt');
     }
 
     /**

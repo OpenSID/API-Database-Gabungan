@@ -50,19 +50,19 @@ class SandangRepository
                 AllowedFilter::exact('id'),
                 AllowedFilter::exact('nik_kepala'),
                 AllowedFilter::exact('no_kk'),
-                AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
-                    $query->whereHas('config', function ($query) use ($value) {
-                        $query->where('kode_kecamatan', $value);
-                    });
-                }),
-                AllowedFilter::callback('kode_desa', function ($query, $value) {
-                    $query->whereHas('config', function ($query) use ($value) {
-                        $query->where('kode_desa', $value);
-                    });
-                }),
+                // AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
+                //     $query->whereHas('config', function ($query) use ($value) {
+                //         $query->where('kode_kecamatan', $value);
+                //     });
+                // }),
+                // AllowedFilter::callback('kode_desa', function ($query, $value) {
+                //     $query->whereHas('config', function ($query) use ($value) {
+                //         $query->where('kode_desa', $value);
+                //     });
+                // }),
                 AllowedFilter::callback('search', function ($query, $value) {
-                    $query->where(function ($query) use ($value) {
-                        $query->whereRelation('penduduk', 'nik','like', "%{$value}%")->orWhereRelation('penduduk', 'nama','like', "%{$value}%");
+                    $query->whereHas('kepalaKeluarga', function($q) use($value){
+                        $q->where('nik', 'like', "%{$value}%")->orWhere('nama','like', "%{$value}%");
                     });
                 }),
             ])

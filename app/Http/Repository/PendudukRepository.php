@@ -71,6 +71,7 @@ class PendudukRepository
                 AllowedFilter::exact('agama_id'),
                 AllowedFilter::exact('cara_kb_id'),
                 AllowedFilter::exact('id_asuransi'),
+                AllowedFilter::exact('id_rtm'),
                 AllowedFilter::exact('hamil'),
                 AllowedFilter::exact('suku'),
                 AllowedFilter::exact('golongan_darah_id'),
