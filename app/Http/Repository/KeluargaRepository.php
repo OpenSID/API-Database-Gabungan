@@ -2,6 +2,8 @@
 
 namespace App\Http\Repository;
 
+use App\Models\Bantuan;
+use App\Models\Enums\StatusEnum;
 use App\Models\KelasSosial;
 use App\Models\Keluarga;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -24,6 +26,14 @@ class KeluargaRepository
                         case 'kelas-sosial':
                             $query->whereNotNull('kelas_sosial');
                             break;
+                        case 'keluarga':
+                            // bantuan-keluarga
+                            $query->whereIn('id', function($q) use($value){
+                                $q->select('kartu_id_pend')
+                                ->from('program_peserta as ps')
+                                ->join('program', 'program.id', 'ps.program_id')
+                                ->where('sasaran', Bantuan::SASARAN_KELUARGA);
+                            });
                         default:
                             break;
                     }
@@ -33,6 +43,14 @@ class KeluargaRepository
                         case 'kelas-sosial':
                             $query->whereNull('kelas_sosial');
                             break;
+                        case 'keluarga':
+                            // bantuan-keluarga
+                            $query->whereNotIn('id', function($q) use($value){
+                                $q->select('kartu_id_pend')
+                                ->from('program_peserta as ps')
+                                ->join('program', 'program.id', 'ps.program_id')
+                                ->where('sasaran', Bantuan::SASARAN_KELUARGA);
+                            });
                         default:
                             break;
                     }
@@ -41,6 +59,23 @@ class KeluargaRepository
                     switch ($value) {
                         default:
                             break;
+                    }
+                }),
+                AllowedFilter::callback('bantuan-keluarga', function ($query, $value) {
+                    if($value == StatusEnum::YA){
+                        $query->whereIn('id', function($q){
+                            $q->select('kartu_id_pend')
+                            ->from('program_peserta as ps')
+                            ->join('program as p', 'p.id', 'ps.program_id')
+                            ->where('p.sasaran', Bantuan::SASARAN_KELUARGA);
+                        });
+                    }else{
+                        $query->whereNotIn('id', function($q){
+                            $q->select('kartu_id_pend')
+                            ->from('program_peserta as ps')
+                            ->join('program as p', 'p.id', 'ps.program_id')
+                            ->where('p.sasaran', Bantuan::SASARAN_KELUARGA);
+                        });
                     }
                 }),
                 AllowedFilter::callback('kode_kecamatan', function ($query, $value) {
