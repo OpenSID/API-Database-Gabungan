@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace Tests\Feature;
 
 use App\Models\Config;
 use App\Models\Potensi;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tests\TestCase;
 
-class SummaryController extends Controller
+class SummaryControllerApiTest extends TestCase
 {
     private $defaultRequest = [
         'luas_wilayah' => 1,
@@ -16,19 +16,71 @@ class SummaryController extends Controller
         'luas_hutan' => 1,
         'luas_peternakan' => 1,
     ];
-
-    private $luasKebun;
+     private $luasKebun;
 
     private $luasHutan;
 
     private $luasTernak;
-
-    public function __invoke(Request $request)
+    /**
+     * A basic feature test example.
+     *
+     * @return void
+     */
+    public function test_get_data_summary()
     {
-        return response()->json([
-            'data' => $this->data($request),
+        $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
+        $url = '/api/v1/data-summary?'.http_build_query([
+            'filter' => [
+                'kode_kecamatan' => $kodeKecamatan,
+            ],
+        ]);
+        $response = $this->getJson($url);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'luas_wilayah',
+                'luas_pertanian',
+                'luas_perkebunan',
+                'luas_hutan',
+                'luas_peternakan',
+            ],
+            'message',
+        ]);
+
+        $response->assertExactJson([
+            'data' => $this->data(request()->merge([
+                'filter' => [
+                    'kode_kecamatan' => $kodeKecamatan,
+                ],
+            ])),
             'message' => 'Berhasil mengambil data summary',
-        ], Response::HTTP_OK);
+        ]);
+    }
+
+    public function test_get_data_summary_kecamatan()
+    {
+        $kodeKecamatan = Config::inRandomOrder()->first()->kode_kecamatan;
+        $url = '/api/v1/data-summary?'.http_build_query([
+            'filter' => [
+                'kode_kecamatan' => $kodeKecamatan,
+            ],
+        ]);
+        $response = $this->getJson($url);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonStructure([
+            'data' => [
+                'luas_wilayah',
+                'luas_pertanian',
+                'luas_perkebunan',
+                'luas_hutan',
+                'luas_peternakan',
+            ],
+            'message',
+        ]);
+        $response->assertExactJson([
+            'data' => $this->data(request()),
+            'message' => 'Berhasil mengambil data summary',
+        ]);
     }
 
     private function data($request)
@@ -36,6 +88,7 @@ class SummaryController extends Controller
         $result = [];
         $userRequest = [];
         $filter = $request->get('filter');
+
         if ($filter) {
             $filterDesa = $filter['kode_desa'] ?? null;
             $filterKecamatan = $filter['kode_kecamatan'] ?? null;
