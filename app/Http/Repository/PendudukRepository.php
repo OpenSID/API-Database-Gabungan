@@ -145,6 +145,15 @@ class PendudukRepository
                                 ->where('program.sasaran', Bantuan::SASARAN_PENDUDUK);
                             });
                             break;
+                        case 'keluarga':
+                            // bantuan-keluarga
+                            $query->whereIn('id', function($q) use($value){
+                                $q->select('kartu_id_pend')
+                                ->from('program_peserta as ps')
+                                ->join('program', 'program.id', 'ps.program_id')
+                                ->where('program.sasaran', Bantuan::SASARAN_KELUARGA);
+                            });
+                            break;
                         default:
                             $query->whereNotNull($referensi['idReferensi']);
                             break;
@@ -213,7 +222,15 @@ class PendudukRepository
                                 ->join('program', 'program.id', 'ps.program_id')
                                 ->where('sasaran', Bantuan::SASARAN_PENDUDUK);
                             });
-
+                            break;
+                        case 'keluarga':
+                            // bantuan-keluarga
+                            $query->whereNotIn('id', function($q) use($value){
+                                $q->select('kartu_id_pend')
+                                ->from('program_peserta as ps')
+                                ->join('program', 'program.id', 'ps.program_id')
+                                ->where('sasaran', Bantuan::SASARAN_KELUARGA);
+                            });
                             break;
                         default:
                             $query->whereNull($referensi['idReferensi']);
@@ -237,6 +254,13 @@ class PendudukRepository
                 AllowedFilter::callback('bantuan-penduduk', function ($query, $value) {
                     if($value == StatusEnum::YA){
                         $query->whereIn('id', function($q){
+                            $q->select('kartu_id_pend')
+                            ->from('program_peserta as ps')
+                            ->join('program as p', 'p.id', 'ps.program_id')
+                            ->where('p.sasaran', Bantuan::SASARAN_PENDUDUK);
+                        });
+                    }else{
+                        $query->whereNotIn('id', function($q){
                             $q->select('kartu_id_pend')
                             ->from('program_peserta as ps')
                             ->join('program as p', 'p.id', 'ps.program_id')
